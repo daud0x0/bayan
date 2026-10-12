@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../../app/bootstrap.dart';
 import '../../../core/typography/app_typography.dart';
+import '../../../core/widgets/auto_scroll_bar.dart';
 import '../../../core/widgets/islamic_decorations.dart';
 import '../../../domain/models/bookmark_model.dart';
 import '../../../domain/models/content_item.dart';
@@ -27,6 +29,10 @@ class _HadithReaderViewState extends State<HadithReaderView> {
   late HadithItem _currentHadith;
   List<HadithItem> _collectionHadiths = [];
   bool _initialized = false;
+  bool _isAutoScrollActive = false;
+  bool _isAutoScrollPlaying = false;
+  double _autoScrollSpeed = 1.0;
+  Timer? _autoScrollTimer;
 
   @override
   void initState() {
@@ -46,8 +52,64 @@ class _HadithReaderViewState extends State<HadithReaderView> {
 
   @override
   void dispose() {
+    _autoScrollTimer?.cancel();
     _scrollController.dispose();
     super.dispose();
+  }
+
+  void _toggleAutoScroll() {
+    setState(() {
+      _isAutoScrollActive = !_isAutoScrollActive;
+      if (_isAutoScrollActive) {
+        _isAutoScrollPlaying = true;
+        _startAutoScrollTimer();
+      } else {
+        _isAutoScrollPlaying = false;
+        _autoScrollTimer?.cancel();
+      }
+    });
+  }
+
+  void _startAutoScrollTimer() {
+    _autoScrollTimer?.cancel();
+    _autoScrollTimer = Timer.periodic(const Duration(milliseconds: 32), (_) {
+      if (!mounted || !_isAutoScrollPlaying || !_scrollController.hasClients) return;
+      final max = _scrollController.position.maxScrollExtent;
+      final current = _scrollController.offset;
+      if (current >= max) {
+        setState(() => _isAutoScrollPlaying = false);
+        _autoScrollTimer?.cancel();
+        return;
+      }
+      final step = _autoScrollSpeed * 1.2;
+      final next = (current + step).clamp(0.0, max);
+      _scrollController.jumpTo(next);
+    });
+  }
+
+  void _onAutoScrollPlayPauseToggle() {
+    setState(() {
+      _isAutoScrollPlaying = !_isAutoScrollPlaying;
+      if (_isAutoScrollPlaying) {
+        _startAutoScrollTimer();
+      } else {
+        _autoScrollTimer?.cancel();
+      }
+    });
+  }
+
+  void _onAutoScrollSpeedSelected(double speed) {
+    setState(() {
+      _autoScrollSpeed = speed;
+    });
+  }
+
+  void _closeAutoScroll() {
+    setState(() {
+      _isAutoScrollActive = false;
+      _isAutoScrollPlaying = false;
+      _autoScrollTimer?.cancel();
+    });
   }
 
   Future<void> _loadCollectionHadiths() async {
@@ -335,6 +397,16 @@ class _HadithReaderViewState extends State<HadithReaderView> {
         ),
         actions: [
           IconButton(
+            icon: Icon(
+              _isAutoScrollActive
+                  ? Icons.motion_photos_paused_rounded
+                  : Icons.slow_motion_video_rounded,
+              color: _isAutoScrollActive ? const Color(0xFFC5A059) : null,
+            ),
+            tooltip: _isAutoScrollActive ? 'Auto-Scroll Active' : 'Start Auto-Scroll',
+            onPressed: _toggleAutoScroll,
+          ),
+          IconButton(
             icon: const Icon(Icons.tag),
             tooltip: 'Jump to Hadith',
             onPressed: () => _showJumpToHadithDialog(context),
@@ -405,10 +477,33 @@ class _HadithReaderViewState extends State<HadithReaderView> {
           ),
         ],
       ),
-      body: ListView(
-        controller: _scrollController,
-        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
-        children: [
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: _isAutoScrollActive
+          ? AutoScrollBar(
+              isPlaying: _isAutoScrollPlaying,
+              speed: _autoScrollSpeed,
+              onPlayPauseToggle: _onAutoScrollPlayPauseToggle,
+              onSpeedSelected: _onAutoScrollSpeedSelected,
+              onClose: _closeAutoScroll,
+            )
+          : null,
+      body: NotificationListener<ScrollNotification>(
+        onNotification: (notification) {
+          if (notification is ScrollStartNotification &&
+              notification.dragDetails != null) {
+            if (_isAutoScrollPlaying) {
+              setState(() {
+                _isAutoScrollPlaying = false;
+                _autoScrollTimer?.cancel();
+              });
+            }
+          }
+          return false;
+        },
+        child: ListView(
+          controller: _scrollController,
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+          children: [
           // Illuminated Metadata Frame: Book, Chapter, Narrator & Grading
           Container(
             padding: const EdgeInsets.all(18),
@@ -685,6 +780,7 @@ class _HadithReaderViewState extends State<HadithReaderView> {
           const SizedBox(height: 32),
         ],
       ),
-    );
-  }
+    ),
+  );
+}
 }
