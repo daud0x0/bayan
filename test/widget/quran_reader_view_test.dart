@@ -195,4 +195,49 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Surah 2'), findsOneWidget);
   });
+
+  testWidgets('QuranReaderView title tap opens QuranSurahsSheet and switches Surah', (tester) async {
+    const surah = QuranSurah(
+      number: 1,
+      nameArabic: 'الفاتحة',
+      nameEnglish: 'Al-Fatihah',
+      nameTranslation: 'The Opening',
+      ayahCount: 7,
+      revelationType: 'Meccan',
+    );
+
+    final scope = AppScope(
+      contentRepository: _FakeQuranContentRepository(),
+      bookmarkRepository: _FakeBookmarkRepository(),
+      readingProgressRepository: _FakeReadingProgressRepository(),
+      preferencesRepository: PreferencesRepository(),
+      initialPreferences: const UserPreferences(),
+    );
+
+    await tester.pumpWidget(
+      AppScopeProvider(
+        scope: scope,
+        child: const MaterialApp(
+          home: QuranReaderView(surah: surah),
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    // Tap title to open Surah switcher sheet
+    await tester.tap(find.text('1. Al-Fatihah'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Jump to Surah'), findsOneWidget);
+    expect(find.text('Al-Baqarah'), findsOneWidget);
+    expect(find.text('READING NOW'), findsOneWidget);
+
+    // Tap Al-Baqarah to switch
+    await tester.tap(find.text('Al-Baqarah'));
+    await tester.pumpAndSettle();
+
+    // Verify switched to Surah 2
+    expect(find.text('2. Al-Baqarah'), findsOneWidget);
+  });
 }

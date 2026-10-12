@@ -12,6 +12,7 @@ import '../../../domain/models/reading_progress_model.dart';
 import '../../../domain/models/user_preferences.dart';
 import '../../reflections/views/reflection_note_sheet.dart';
 import '../../share_cards/views/share_card_sheet.dart';
+import 'quran_surahs_sheet.dart';
 
 /// Full Surah reader supporting adjustable typography, bookmarking, and progress persistence.
 /// Complies with Section 4.2 and 12 of the Product Plan.
@@ -323,6 +324,14 @@ class _QuranReaderViewState extends State<QuranReaderView> {
     }
   }
 
+  void _openSurahSelector() {
+    QuranSurahsSheet.show(
+      context,
+      currentSurahNumber: widget.surah.number,
+      onSelectSurah: (surah) => _navigateToSurah(surah.number),
+    );
+  }
+
   void _showTypographySheet() {
     final scope = AppScope.of(context);
 
@@ -496,21 +505,50 @@ class _QuranReaderViewState extends State<QuranReaderView> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              '${widget.surah.number}. ${widget.surah.nameEnglish}',
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+        title: InkWell(
+          borderRadius: BorderRadius.circular(10),
+          onTap: _openSurahSelector,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Flexible(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Flexible(
+                            child: Text(
+                              '${widget.surah.number}. ${widget.surah.nameEnglish}',
+                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                          const Icon(
+                            Icons.keyboard_arrow_down_rounded,
+                            size: 18,
+                            color: Color(0xFFC5A059),
+                          ),
+                        ],
+                      ),
+                      Text(
+                        '${widget.surah.nameTranslation} • ${widget.surah.nameArabic}',
+                        style: TextStyle(
+                          fontSize: 11.5,
+                          color: Theme.of(context).colorScheme.outline,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-            Text(
-              '${widget.surah.nameTranslation} • ${widget.surah.nameArabic}',
-              style: TextStyle(
-                fontSize: 11.5,
-                color: Theme.of(context).colorScheme.outline,
-              ),
-            ),
-          ],
+          ),
         ),
         actions: [
           IconButton(
