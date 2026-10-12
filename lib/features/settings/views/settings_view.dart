@@ -176,19 +176,31 @@ class SettingsView extends StatelessWidget {
           Card(
             child: Column(
               children: [
-                ListTile(
-                  title: const Text('Theme Mode'),
-                  subtitle: Text(prefs.themeMode.name.toUpperCase()),
-                  trailing: SegmentedButton<ThemeMode>(
-                    segments: const [
-                      ButtonSegment(value: ThemeMode.light, icon: Icon(Icons.light_mode, size: 16)),
-                      ButtonSegment(value: ThemeMode.system, icon: Icon(Icons.brightness_auto, size: 16)),
-                      ButtonSegment(value: ThemeMode.dark, icon: Icon(Icons.dark_mode, size: 16)),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'Theme Mode',
+                        style: TextStyle(fontWeight: FontWeight.w600),
+                      ),
+                      SegmentedButton<ThemeMode>(
+                        style: const ButtonStyle(
+                          visualDensity: VisualDensity.compact,
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        ),
+                        segments: const [
+                          ButtonSegment(value: ThemeMode.light, icon: Icon(Icons.light_mode, size: 16)),
+                          ButtonSegment(value: ThemeMode.system, icon: Icon(Icons.brightness_auto, size: 16)),
+                          ButtonSegment(value: ThemeMode.dark, icon: Icon(Icons.dark_mode, size: 16)),
+                        ],
+                        selected: {prefs.themeMode},
+                        onSelectionChanged: (set) {
+                          scope.updatePreferences(prefs.copyWith(themeMode: set.first));
+                        },
+                      ),
                     ],
-                    selected: {prefs.themeMode},
-                    onSelectionChanged: (set) {
-                      scope.updatePreferences(prefs.copyWith(themeMode: set.first));
-                    },
                   ),
                 ),
                 const Divider(height: 1),
@@ -210,37 +222,53 @@ class SettingsView extends StatelessWidget {
           Card(
             child: Column(
               children: [
-                ListTile(
-                  title: const Text('Visual Palette Preset'),
-                  subtitle: Text(prefs.visualPreset.label),
-                  trailing: DropdownButton<VisualPreset>(
-                    value: prefs.visualPreset,
-                    underline: const SizedBox(),
-                    items: VisualPreset.values.map((p) {
-                      return DropdownMenuItem(value: p, child: Text(p.label));
-                    }).toList(),
-                    onChanged: (p) {
-                      if (p != null) {
-                        scope.updatePreferences(prefs.copyWith(visualPreset: p));
-                      }
-                    },
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'Palette Preset',
+                        style: TextStyle(fontWeight: FontWeight.w600),
+                      ),
+                      DropdownButton<VisualPreset>(
+                        value: prefs.visualPreset,
+                        underline: const SizedBox(),
+                        items: VisualPreset.values.map((p) {
+                          return DropdownMenuItem(value: p, child: Text(p.label));
+                        }).toList(),
+                        onChanged: (p) {
+                          if (p != null) {
+                            scope.updatePreferences(prefs.copyWith(visualPreset: p));
+                          }
+                        },
+                      ),
+                    ],
                   ),
                 ),
                 const Divider(height: 1),
-                ListTile(
-                  title: const Text('Visual Intensity'),
-                  subtitle: Text(prefs.visualIntensity.label),
-                  trailing: DropdownButton<VisualIntensity>(
-                    value: prefs.visualIntensity,
-                    underline: const SizedBox(),
-                    items: VisualIntensity.values.map((i) {
-                      return DropdownMenuItem(value: i, child: Text(i.label));
-                    }).toList(),
-                    onChanged: (i) {
-                      if (i != null) {
-                        scope.updatePreferences(prefs.copyWith(visualIntensity: i));
-                      }
-                    },
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'Visual Intensity',
+                        style: TextStyle(fontWeight: FontWeight.w600),
+                      ),
+                      DropdownButton<VisualIntensity>(
+                        value: prefs.visualIntensity,
+                        underline: const SizedBox(),
+                        items: VisualIntensity.values.map((i) {
+                          return DropdownMenuItem(value: i, child: Text(i.label));
+                        }).toList(),
+                        onChanged: (i) {
+                          if (i != null) {
+                            scope.updatePreferences(prefs.copyWith(visualIntensity: i));
+                          }
+                        },
+                      ),
+                    ],
                   ),
                 ),
               ],
