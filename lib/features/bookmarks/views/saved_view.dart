@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../../app/bootstrap.dart';
 import '../../../core/typography/app_typography.dart';
 import '../../../domain/models/bookmark_model.dart';
+import '../../../domain/models/content_item.dart';
 import '../../hadith/views/hadith_reader_view.dart';
 import '../../quran/views/quran_reader_view.dart';
+import '../../share_cards/views/share_card_sheet.dart';
 
 /// Saved items screen managing bookmarks and reading positions.
 /// Complies with Section 4.3 of the Product Plan with illuminated Islamic styling.
@@ -45,6 +48,51 @@ class _SavedViewState extends State<SavedView> {
         );
       }
     }
+  }
+
+  ContentItem _contentItemFromBookmark(Bookmark b) {
+    return ContentItem(
+      id: b.contentId,
+      contentType: b.contentType,
+      reference: b.reference,
+      arabicText: b.arabicExcerpt,
+      englishTranslation: b.translationExcerpt,
+      attribution: b.contentType == ContentType.quran
+          ? 'The Quran: Saheeh International'
+          : 'Authentic Hadith Tradition',
+    );
+  }
+
+  Future<void> _removeBookmarkWithUndo(
+    BuildContext context,
+    Bookmark b,
+    AppScope scope,
+  ) async {
+    if (scope.preferences.hapticFeedbackEnabled) {
+      HapticFeedback.mediumImpact();
+    }
+    await scope.bookmarkRepository.removeBookmark(b.id);
+    await scope.loadBookmarks();
+    setState(() {});
+
+    if (!context.mounted) return;
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Removed ${b.reference} from bookmarks'),
+        behavior: SnackBarBehavior.floating,
+        duration: const Duration(seconds: 4),
+        action: SnackBarAction(
+          label: 'Undo',
+          textColor: const Color(0xFFC5A059),
+          onPressed: () async {
+            await scope.bookmarkRepository.addBookmark(b);
+            await scope.loadBookmarks();
+            if (mounted) setState(() {});
+          },
+        ),
+      ),
+    );
   }
 
   @override
@@ -275,16 +323,6 @@ class _SavedViewState extends State<SavedView> {
                               ),
                             ),
                           ),
-                          IconButton(
-                            icon: const Icon(Icons.delete_outline_rounded, size: 20),
-                            tooltip: 'Remove bookmark',
-                            visualDensity: VisualDensity.compact,
-                            onPressed: () async {
-                              await scope.bookmarkRepository.removeBookmark(b.id);
-                              await scope.loadBookmarks();
-                              setState(() {});
-                            },
-                          ),
                         ],
                       ),
 
@@ -326,6 +364,82 @@ class _SavedViewState extends State<SavedView> {
                           height: 1.45,
                           color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.85),
                         ),
+                      ),
+
+                      const SizedBox(height: 10),
+                      Divider(
+                        height: 1,
+                        color: Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.25),
+                      ),
+                      const SizedBox(height: 4),
+
+                      // Action Bar: Read in Context + Copy, Share & Delete
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          TextButton.icon(
+                            onPressed: () => _openBookmarkContext(context, b, scope),
+                            icon: const Icon(Icons.auto_stories_outlined, size: 15),
+                            label: const Text(
+                              'Read in Context',
+                              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                            ),
+                            style: TextButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              visualDensity: VisualDensity.compact,
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            ),
+                          ),
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                icon: const Icon(Icons.copy_rounded, size: 18),
+                                tooltip: 'Copy Text',
+                                padding: const EdgeInsets.all(6),
+                                constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                                visualDensity: VisualDensity.compact,
+                                onPressed: () {
+                                  if (scope.preferences.hapticFeedbackEnabled) {
+                                    HapticFeedback.lightImpact();
+                                  }
+                                  Clipboard.setData(ClipboardData(
+                                    text: '${b.arabicExcerpt.isNotEmpty ? '${b.arabicExcerpt}\n\n' : ''}${b.translationExcerpt}\n— ${b.reference}',
+                                  ));
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text('Copied ${b.reference} to clipboard'),
+                                      behavior: SnackBarBehavior.floating,
+                                      duration: const Duration(seconds: 2),
+                                    ),
+                                  );
+                                },
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.share_outlined, size: 18),
+                                tooltip: 'Share Card',
+                                padding: const EdgeInsets.all(6),
+                                constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                                visualDensity: VisualDensity.compact,
+                                onPressed: () {
+                                  if (scope.preferences.hapticFeedbackEnabled) {
+                                    HapticFeedback.lightImpact();
+                                  }
+                                  final item = _contentItemFromBookmark(b);
+                                  ShareCardSheet.show(context, item);
+                                },
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.delete_outline_rounded, size: 18),
+                                tooltip: 'Remove bookmark',
+                                padding: const EdgeInsets.all(6),
+                                constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                                visualDensity: VisualDensity.compact,
+                                onPressed: () => _removeBookmarkWithUndo(context, b, scope),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
                     ],
                   ),
