@@ -32,6 +32,31 @@ class _QuranReaderViewState extends State<QuranReaderView> {
   bool _isLoading = true;
   bool _initialized = false;
   int? _activeReadingAyah;
+  double _readingProgress = 0.0;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_updateProgress);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_updateProgress);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _updateProgress() {
+    if (!_scrollController.hasClients) return;
+    final max = _scrollController.position.maxScrollExtent;
+    if (max > 0) {
+      final progress = (_scrollController.offset / max).clamp(0.0, 1.0);
+      if ((progress - _readingProgress).abs() > 0.01) {
+        setState(() => _readingProgress = progress);
+      }
+    }
+  }
 
   @override
   void didChangeDependencies() {
@@ -370,6 +395,15 @@ class _QuranReaderViewState extends State<QuranReaderView> {
             onPressed: _showTypographySheet,
           ),
         ],
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(3.0),
+          child: LinearProgressIndicator(
+            value: _readingProgress,
+            backgroundColor: Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.15),
+            valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFFC5A059)),
+            minHeight: 2.5,
+          ),
+        ),
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())

@@ -20,6 +20,7 @@ class _QuranIndexViewState extends State<QuranIndexView> {
   final TextEditingController _searchController = TextEditingController();
   List<QuranSurah> _surahs = [];
   List<QuranSurah> _filteredSurahs = [];
+  String _revelationFilter = 'All';
   bool _isLoading = true;
   bool _initialized = false;
 
@@ -39,20 +40,20 @@ class _QuranIndexViewState extends State<QuranIndexView> {
 
     setState(() {
       _surahs = surahs;
-      _filteredSurahs = surahs;
       _isLoading = false;
     });
+    _applyFilters();
   }
 
-  void _filter(String query) {
-    final q = query.trim().toLowerCase();
-    if (q.isEmpty) {
-      setState(() => _filteredSurahs = _surahs);
-      return;
-    }
-
+  void _applyFilters() {
+    final q = _searchController.text.trim().toLowerCase();
     setState(() {
       _filteredSurahs = _surahs.where((s) {
+        final matchesRevelation = _revelationFilter == 'All' ||
+            s.revelationType.toLowerCase() == _revelationFilter.toLowerCase();
+        if (!matchesRevelation) return false;
+
+        if (q.isEmpty) return true;
         final matchNum = s.number.toString().contains(q);
         final matchEn = s.nameEnglish.toLowerCase().contains(q);
         final matchTr = s.nameTranslation.toLowerCase().contains(q);
@@ -60,6 +61,10 @@ class _QuranIndexViewState extends State<QuranIndexView> {
         return matchNum || matchEn || matchTr || matchAr;
       }).toList();
     });
+  }
+
+  void _filter(String query) {
+    _applyFilters();
   }
 
   void _openSurah(QuranSurah surah, {int? ayahNumber}) {
@@ -119,18 +124,38 @@ class _QuranIndexViewState extends State<QuranIndexView> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              'CONTINUE READING',
-                              style: TextStyle(
-                                fontSize: 9.5,
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 0.7,
-                                color: Theme.of(context).colorScheme.primary,
-                              ),
+                            Row(
+                              children: [
+                                Text(
+                                  'CONTINUE READING',
+                                  style: TextStyle(
+                                    fontSize: 9.5,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 0.7,
+                                    color: Theme.of(context).colorScheme.primary,
+                                  ),
+                                ),
+                                const SizedBox(width: 6),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1.5),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFFC5A059).withValues(alpha: 0.18),
+                                    borderRadius: BorderRadius.circular(6),
+                                  ),
+                                  child: Text(
+                                    'Ayah ${lastProgress.itemNumber}',
+                                    style: const TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.bold,
+                                      color: Color(0xFFC5A059),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                            const SizedBox(height: 2),
+                            const SizedBox(height: 3),
                             Text(
-                              '${lastProgress.title} • ${lastProgress.subtitle}',
+                              lastProgress.title,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13.5),
@@ -191,6 +216,20 @@ class _QuranIndexViewState extends State<QuranIndexView> {
                     ),
                   ),
                   onChanged: _filter,
+                ),
+              ),
+
+              // Revelation Filter Chips
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 6),
+                child: Row(
+                  children: [
+                    _buildRevelationChip('All', _surahs.length),
+                    const SizedBox(width: 8),
+                    _buildRevelationChip('Meccan', 86),
+                    const SizedBox(width: 8),
+                    _buildRevelationChip('Medinan', 28),
+                  ],
                 ),
               ),
 
@@ -307,5 +346,27 @@ class _QuranIndexViewState extends State<QuranIndexView> {
     }
 
     return body;
+  }
+
+  Widget _buildRevelationChip(String type, int count) {
+    final isSelected = _revelationFilter == type;
+    final theme = Theme.of(context);
+    return FilterChip(
+      label: Text('$type ($count)'),
+      labelStyle: TextStyle(
+        fontSize: 12,
+        fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+        color: isSelected ? theme.colorScheme.onSecondaryContainer : theme.colorScheme.onSurfaceVariant,
+      ),
+      selected: isSelected,
+      visualDensity: VisualDensity.compact,
+      padding: const EdgeInsets.symmetric(horizontal: 4),
+      onSelected: (_) {
+        setState(() {
+          _revelationFilter = type;
+        });
+        _applyFilters();
+      },
+    );
   }
 }
