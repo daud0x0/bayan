@@ -74,17 +74,38 @@ class _HadithReaderViewState extends State<HadithReaderView> {
 
   void _startAutoScrollTimer() {
     _autoScrollTimer?.cancel();
+    if (!_scrollController.hasClients) return;
+    final max = _scrollController.position.maxScrollExtent;
+    if (max <= 10.0) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('This Hadith fits completely on screen.'),
+            duration: Duration(seconds: 2),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+      setState(() => _isAutoScrollPlaying = false);
+      return;
+    }
+
+    final current = _scrollController.offset;
+    if (current >= max - 5.0) {
+      _scrollController.jumpTo(0.0);
+    }
+
     _autoScrollTimer = Timer.periodic(const Duration(milliseconds: 32), (_) {
       if (!mounted || !_isAutoScrollPlaying || !_scrollController.hasClients) return;
-      final max = _scrollController.position.maxScrollExtent;
-      final current = _scrollController.offset;
-      if (current >= max) {
+      final maxExtent = _scrollController.position.maxScrollExtent;
+      final currentOffset = _scrollController.offset;
+      if (currentOffset >= maxExtent) {
         setState(() => _isAutoScrollPlaying = false);
         _autoScrollTimer?.cancel();
         return;
       }
-      final step = _autoScrollSpeed * 1.2;
-      final next = (current + step).clamp(0.0, max);
+      final step = _autoScrollSpeed * 1.5;
+      final next = (currentOffset + step).clamp(0.0, maxExtent);
       _scrollController.jumpTo(next);
     });
   }
