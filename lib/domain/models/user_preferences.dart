@@ -176,4 +176,26 @@ class UserPreferences {
           contentTypeFilter != null ? contentTypeFilter() : this.contentTypeFilter,
     );
   }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'selectedCategoryIds': selectedCategoryIds.toList(),
+      'themeMode': themeMode.name,
+      'themePalette': themePalette.name,
+      'eyeComfortSepia': eyeComfortSepia,
+      'hapticFeedbackEnabled': hapticFeedbackEnabled,
+      'keepScreenAwake': keepScreenAwake,
+      'showTransliteration': showTransliteration,
+      'plainReadingMode': plainReadingMode,
+      'visualPreset': visualPreset.name,
+      'visualIntensity': visualIntensity.name,
+      'arabicFontSize': arabicFontSize,
+      'translationFontSize': translationFontSize,
+      'readingDisplayMode': readingDisplayMode.name,
+      'arabicScriptStyle': arabicScriptStyle.name,
+      'pureBlackDark': pureBlackDark,
+      'lineSpacing': lineSpacing,
+      'contentTypeFilter': contentTypeFilter?.name,
+    };
+  }
 }

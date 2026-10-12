@@ -124,6 +124,11 @@ class AppDatabase {
     await db.execute('CREATE INDEX IF NOT EXISTS idx_notes_content_id ON reflection_notes(content_id);');
   }
 
+  Future<void> clearReadingProgress() async {
+    final db = await database;
+    await db.delete('reading_progress');
+  }
+
   Future<void> clearAllUserData() async {
     final db = await database;
     await db.delete('bookmarks');

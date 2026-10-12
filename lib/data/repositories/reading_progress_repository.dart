@@ -29,4 +29,9 @@ class ReadingProgressRepository {
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
+
+  Future<void> clearAllProgress() async {
+    final database = await _db.database;
+    await database.delete('reading_progress');
+  }
 }

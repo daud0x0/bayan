@@ -18,6 +18,8 @@ class ReflectionNotesRepository {
     return rows.map((r) => ReflectionNote.fromMap(r)).toList();
   }
 
+  Future<List<ReflectionNote>> getAllNotes() => getNotes();
+
   Future<ReflectionNote?> getNoteForContent(String contentId) async {
     final database = await _db.database;
     final rows = await database.query(

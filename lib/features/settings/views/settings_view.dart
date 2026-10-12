@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:share_plus/share_plus.dart';
 import '../../../app/bootstrap.dart';
 import '../../../core/typography/app_typography.dart';
+import '../../../data/services/user_data_exporter.dart';
 import '../../../domain/models/user_preferences.dart';
 import 'topic_preferences_view.dart';
 
@@ -271,6 +273,196 @@ class SettingsView extends StatelessWidget {
     );
   }
 
+
+  Future<void> _showExportDataSheet(BuildContext context, AppScope scope) async {
+    final bookmarks = await scope.bookmarkRepository.getBookmarks();
+    final notes = await scope.reflectionNotesRepository.getAllNotes();
+    final prefs = scope.preferences;
+
+    if (!context.mounted) return;
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (ctx) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: Theme.of(ctx).colorScheme.outlineVariant.withValues(alpha: 0.6),
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFC5A059).withValues(alpha: 0.15),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(Icons.file_download_outlined, color: Color(0xFFC5A059), size: 22),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Export & Backup Data',
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          '${notes.length} reflections • ${bookmarks.length} bookmarks',
+                          style: TextStyle(
+                            fontSize: 12.5,
+                            color: Theme.of(ctx).colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              Text(
+                'Your data is stored 100% locally on this device. You can export your Tadabbur reflection journal and bookmarks in portable formats at any time.',
+                style: TextStyle(
+                  fontSize: 13,
+                  color: Theme.of(ctx).colorScheme.onSurfaceVariant,
+                  height: 1.4,
+                ),
+              ),
+              const SizedBox(height: 20),
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: const CircleAvatar(
+                  radius: 18,
+                  backgroundColor: Color(0x1F2A9D8F),
+                  child: Icon(Icons.description_outlined, size: 20, color: Color(0xFF2A9D8F)),
+                ),
+                title: const Text('Copy as Markdown'),
+                subtitle: const Text('Human-readable format for Obsidian, Notion, or Notes apps'),
+                trailing: const Icon(Icons.copy_rounded, size: 18),
+                onTap: () async {
+                  final md = UserDataExporter.toMarkdown(bookmarks: bookmarks, notes: notes);
+                  await Clipboard.setData(ClipboardData(text: md));
+                  if (prefs.hapticFeedbackEnabled) {
+                    HapticFeedback.lightImpact();
+                  }
+                  if (ctx.mounted) Navigator.of(ctx).pop();
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Markdown export copied to clipboard.'),
+                        behavior: SnackBarBehavior.floating,
+                      ),
+                    );
+                  }
+                },
+              ),
+              Divider(height: 1, color: Theme.of(ctx).colorScheme.outlineVariant.withValues(alpha: 0.3)),
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: const CircleAvatar(
+                  radius: 18,
+                  backgroundColor: Color(0x1F4A6FA5),
+                  child: Icon(Icons.code_rounded, size: 20, color: Color(0xFF4A6FA5)),
+                ),
+                title: const Text('Copy as JSON'),
+                subtitle: const Text('Structured data backup for technical archiving'),
+                trailing: const Icon(Icons.copy_rounded, size: 18),
+                onTap: () async {
+                  final json = UserDataExporter.toJsonString(bookmarks: bookmarks, notes: notes, preferences: prefs);
+                  await Clipboard.setData(ClipboardData(text: json));
+                  if (prefs.hapticFeedbackEnabled) {
+                    HapticFeedback.lightImpact();
+                  }
+                  if (ctx.mounted) Navigator.of(ctx).pop();
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('JSON backup copied to clipboard.'),
+                        behavior: SnackBarBehavior.floating,
+                      ),
+                    );
+                  }
+                },
+              ),
+              Divider(height: 1, color: Theme.of(ctx).colorScheme.outlineVariant.withValues(alpha: 0.3)),
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: const CircleAvatar(
+                  radius: 18,
+                  backgroundColor: Color(0x1FC5A059),
+                  child: Icon(Icons.share_outlined, size: 20, color: Color(0xFFC5A059)),
+                ),
+                title: const Text('Share Export File / Text'),
+                subtitle: const Text('Send via messaging, email, or system share sheet'),
+                trailing: const Icon(Icons.chevron_right, size: 18),
+                onTap: () async {
+                  final md = UserDataExporter.toMarkdown(bookmarks: bookmarks, notes: notes);
+                  if (ctx.mounted) Navigator.of(ctx).pop();
+                  await SharePlus.instance.share(
+                    ShareParams(
+                      text: md,
+                      subject: 'My Quran & Hadith Tadabbur Journal',
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _confirmClearReadingHistory(BuildContext context, AppScope scope) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Clear Reading History?'),
+        content: const Text(
+          'This will reset your last-read Quran and Hadith reading positions. Your saved bookmarks, reflection notes, and preferences will be preserved.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            style: FilledButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.error),
+            onPressed: () async {
+              Navigator.of(ctx).pop();
+              await scope.clearReadingHistory();
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Reading history has been cleared.'),
+                    behavior: SnackBarBehavior.floating,
+                  ),
+                );
+              }
+            },
+            child: const Text('Clear History'),
+          ),
+        ],
+      ),
+    );
+  }
 
   void _confirmResetData(BuildContext context, AppScope scope) {
     showDialog(
@@ -733,8 +925,8 @@ class SettingsView extends StatelessWidget {
           ),
           const SizedBox(height: 18),
 
-          // Section: Privacy & Funding
-          _sectionHeader(context, 'Privacy & Funding', Icons.shield_outlined),
+          // Section: Privacy & Data
+          _sectionHeader(context, 'Privacy & Data', Icons.shield_outlined),
           Card(
             elevation: 0,
             shape: RoundedRectangleBorder(
@@ -751,6 +943,22 @@ class SettingsView extends StatelessWidget {
                   subtitle: Text(
                     'No accounts. No user tracking. Reading history is stored strictly on your device.',
                   ),
+                ),
+                Divider(height: 1, indent: 16, endIndent: 16, color: Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.3)),
+                ListTile(
+                  leading: const Icon(Icons.file_download_outlined, color: Color(0xFFC5A059)),
+                  title: const Text('Backup & Export Data'),
+                  subtitle: const Text('Export Tadabbur reflection journal, bookmarks, and preferences'),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () => _showExportDataSheet(context, scope),
+                ),
+                Divider(height: 1, indent: 16, endIndent: 16, color: Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.3)),
+                ListTile(
+                  leading: const Icon(Icons.history_toggle_off_rounded),
+                  title: const Text('Clear Reading History'),
+                  subtitle: const Text('Reset current reading positions (preserves bookmarks & notes)'),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () => _confirmClearReadingHistory(context, scope),
                 ),
                 Divider(height: 1, indent: 16, endIndent: 16, color: Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.3)),
                 ListTile(

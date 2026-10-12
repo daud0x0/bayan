@@ -5,8 +5,40 @@ import 'package:quran_hadis/data/repositories/bookmark_repository.dart';
 import 'package:quran_hadis/data/repositories/content_repository.dart';
 import 'package:quran_hadis/data/repositories/preferences_repository.dart';
 import 'package:quran_hadis/data/repositories/reading_progress_repository.dart';
+import 'package:quran_hadis/data/repositories/reflection_notes_repository.dart';
+import 'package:quran_hadis/domain/models/bookmark_model.dart';
+import 'package:quran_hadis/domain/models/reflection_note_model.dart';
 import 'package:quran_hadis/domain/models/user_preferences.dart';
 import 'package:quran_hadis/features/settings/views/settings_view.dart';
+
+class _MockBookmarkRepository extends BookmarkRepository {
+  final List<Bookmark> _items = [];
+
+  _MockBookmarkRepository([List<Bookmark>? initial]) {
+    if (initial != null) _items.addAll(initial);
+  }
+
+  @override
+  Future<List<Bookmark>> getBookmarks() async => List.unmodifiable(_items);
+
+  @override
+  Future<void> addBookmark(Bookmark bookmark) async => _items.add(bookmark);
+
+  @override
+  Future<void> removeBookmark(String id) async =>
+      _items.removeWhere((b) => b.id == id);
+}
+
+class _MockReflectionNotesRepository extends ReflectionNotesRepository {
+  final List<ReflectionNote> _notes = [];
+
+  _MockReflectionNotesRepository([List<ReflectionNote>? initial]) {
+    if (initial != null) _notes.addAll(initial);
+  }
+
+  @override
+  Future<List<ReflectionNote>> getNotes() async => List.unmodifiable(_notes);
+}
 
 /// Widget tests for the Settings screen.
 /// Verifies primary sections, controls, and interactive affordances render
@@ -16,9 +48,10 @@ void main() {
   AppScope makeScope({UserPreferences prefs = const UserPreferences()}) {
     return AppScope(
       contentRepository: ContentRepository(),
-      bookmarkRepository: BookmarkRepository(),
+      bookmarkRepository: _MockBookmarkRepository(),
       readingProgressRepository: ReadingProgressRepository(),
       preferencesRepository: PreferencesRepository(),
+      reflectionNotesRepository: _MockReflectionNotesRepository(),
       initialPreferences: prefs,
     );
   }
@@ -169,5 +202,48 @@ void main() {
 
     expect(find.textContaining('v1.0.0'), findsOneWidget);
     expect(find.textContaining('Offline-First Baseline'), findsOneWidget);
+  });
+
+  testWidgets('SettingsView shows Backup & Export Data sheet with markdown and json options', (tester) async {
+    final scope = makeScope();
+    await tester.pumpWidget(wrap(scope));
+
+    await tester.scrollUntilVisible(
+      find.text('Backup & Export Data'),
+      150,
+    );
+    await tester.ensureVisible(find.text('Backup & Export Data'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Backup & Export Data'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Export & Backup Data'), findsOneWidget);
+    expect(find.text('Copy as Markdown'), findsOneWidget);
+    expect(find.text('Copy as JSON'), findsOneWidget);
+    expect(find.text('Share Export File / Text'), findsOneWidget);
+  });
+
+  testWidgets('SettingsView shows Clear Reading History confirmation dialog', (tester) async {
+    final scope = makeScope();
+    await tester.pumpWidget(wrap(scope));
+
+    await tester.scrollUntilVisible(
+      find.text('Clear Reading History'),
+      150,
+    );
+    await tester.ensureVisible(find.text('Clear Reading History'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Clear Reading History'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Clear Reading History?'), findsOneWidget);
+    expect(find.text('Clear History'), findsOneWidget);
+
+    await tester.tap(find.text('Cancel'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Clear Reading History?'), findsNothing);
   });
 }

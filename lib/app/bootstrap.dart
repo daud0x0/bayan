@@ -131,6 +131,13 @@ class AppScope extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> clearReadingHistory() async {
+    await readingProgressRepository.clearAllProgress();
+    _lastQuranProgress = null;
+    _lastHadithProgress = null;
+    notifyListeners();
+  }
+
   Future<void> resetAllLocalData() async {
     await AppDatabase.instance.clearAllUserData();
     await preferencesRepository.clearPreferences();
