@@ -5,6 +5,7 @@ import '../../../core/typography/app_typography.dart';
 import '../../../domain/models/bookmark_model.dart';
 import '../../../domain/models/content_item.dart';
 import '../../../domain/use_cases/feed_algorithm.dart';
+import '../../reflections/views/reflection_note_sheet.dart';
 import '../../share_cards/views/share_card_sheet.dart';
 
 /// Single discovery card in the feed displaying Quran or Hadith teaching.
@@ -381,6 +382,30 @@ class DiscoveryCard extends StatelessWidget {
                           HapticFeedback.lightImpact();
                         }
                         ShareCardSheet.show(context, item);
+                      },
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        Icons.edit_note_rounded,
+                        size: 20,
+                        color: secondaryTextColor,
+                      ),
+                      tooltip: 'Tadabbur Reflection',
+                      padding: const EdgeInsets.all(6),
+                      constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                      visualDensity: VisualDensity.compact,
+                      onPressed: () {
+                        if (scope.preferences.hapticFeedbackEnabled) {
+                          HapticFeedback.lightImpact();
+                        }
+                        ReflectionNoteSheet.show(
+                          context,
+                          contentId: item.id,
+                          contentType: item.contentType,
+                          reference: item.reference,
+                          arabicExcerpt: item.arabicText,
+                          translationExcerpt: item.englishTranslation,
+                        );
                       },
                     ),
                   ],

@@ -5,7 +5,9 @@ import 'package:quran_hadis/data/repositories/bookmark_repository.dart';
 import 'package:quran_hadis/data/repositories/content_repository.dart';
 import 'package:quran_hadis/data/repositories/preferences_repository.dart';
 import 'package:quran_hadis/data/repositories/reading_progress_repository.dart';
+import 'package:quran_hadis/data/repositories/reflection_notes_repository.dart';
 import 'package:quran_hadis/domain/models/bookmark_model.dart';
+import 'package:quran_hadis/domain/models/reflection_note_model.dart';
 import 'package:quran_hadis/domain/models/user_preferences.dart';
 import 'package:quran_hadis/features/bookmarks/views/saved_view.dart';
 
@@ -26,13 +28,52 @@ class _MockBookmarkRepository extends BookmarkRepository {
   Future<void> removeBookmark(String id) async => _items.removeWhere((b) => b.id == id);
 }
 
+class _MockReflectionNotesRepository extends ReflectionNotesRepository {
+  final List<ReflectionNote> _notes = [];
+
+  _MockReflectionNotesRepository([List<ReflectionNote>? initial]) {
+    if (initial != null) _notes.addAll(initial);
+  }
+
+  @override
+  Future<List<ReflectionNote>> getNotes() async => List.unmodifiable(_notes);
+
+  @override
+  Future<ReflectionNote?> getNoteForContent(String contentId) async {
+    for (final n in _notes) {
+      if (n.contentId == contentId) return n;
+    }
+    return null;
+  }
+
+  @override
+  Future<void> saveNote(ReflectionNote note) async {
+    _notes.removeWhere((n) => n.id == note.id);
+    _notes.add(note);
+  }
+
+  @override
+  Future<void> deleteNote(String id) async {
+    _notes.removeWhere((n) => n.id == id);
+  }
+
+  @override
+  Future<bool> hasNote(String contentId) async {
+    return _notes.any((n) => n.contentId == contentId);
+  }
+}
+
 void main() {
-  AppScope makeScope({List<Bookmark>? bookmarks}) {
+  AppScope makeScope({
+    List<Bookmark>? bookmarks,
+    List<ReflectionNote>? notes,
+  }) {
     return AppScope(
       contentRepository: ContentRepository(),
       bookmarkRepository: _MockBookmarkRepository(bookmarks),
       readingProgressRepository: ReadingProgressRepository(),
       preferencesRepository: PreferencesRepository(),
+      reflectionNotesRepository: _MockReflectionNotesRepository(notes),
       initialPreferences: const UserPreferences(),
     );
   }
@@ -45,7 +86,7 @@ void main() {
   }
 
   testWidgets('SavedView renders segmented control and empty state when no bookmarks', (tester) async {
-    final scope = makeScope(bookmarks: []);
+    final scope = makeScope(bookmarks: [], notes: []);
     await tester.pumpWidget(wrap(scope));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 100));
@@ -53,11 +94,12 @@ void main() {
     expect(find.text('Saved & History'), findsOneWidget);
     expect(find.text('Bookmarks (0)'), findsOneWidget);
     expect(find.text('Reading History'), findsOneWidget);
+    expect(find.text('Reflections (0)'), findsOneWidget);
     expect(find.text('No saved bookmarks yet'), findsOneWidget);
   });
 
   testWidgets('SavedView toggles to Reading History segment', (tester) async {
-    final scope = makeScope(bookmarks: []);
+    final scope = makeScope(bookmarks: [], notes: []);
     await tester.pumpWidget(wrap(scope));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 100));
@@ -68,6 +110,20 @@ void main() {
     await tester.pump(const Duration(milliseconds: 100));
 
     expect(find.text('No reading history yet'), findsOneWidget);
+  });
+
+  testWidgets('SavedView toggles to Reflections segment and shows empty state', (tester) async {
+    final scope = makeScope(bookmarks: [], notes: []);
+    await tester.pumpWidget(wrap(scope));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
+
+    // Tap Reflections segment
+    await tester.tap(find.text('Reflections (0)'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
+
+    expect(find.text('No Reflections Yet'), findsOneWidget);
   });
 
   testWidgets('SavedView displays bookmark cards and filter chips when bookmarks exist', (tester) async {
@@ -94,7 +150,7 @@ void main() {
       ),
     ];
 
-    final scope = makeScope(bookmarks: sampleBookmarks);
+    final scope = makeScope(bookmarks: sampleBookmarks, notes: []);
     await tester.pumpWidget(wrap(scope));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 100));
@@ -106,5 +162,38 @@ void main() {
 
     expect(find.text('Surah Al-Fatihah [1:1]'), findsOneWidget);
     expect(find.text('Sahih al-Bukhari 1'), findsOneWidget);
+  });
+
+  testWidgets('SavedView displays reflection cards when notes exist', (tester) async {
+    final now = DateTime.now();
+    final sampleNotes = <ReflectionNote>[
+      ReflectionNote(
+        id: 'note_1',
+        contentId: 'quran_2_255',
+        contentType: ContentType.quran,
+        reference: 'Surah Al-Baqarah [2:255]',
+        arabicExcerpt: 'اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ',
+        translationExcerpt: 'Allah - there is no deity except Him, the Ever-Living, the Sustainer of all existence.',
+        noteText: 'Ayat al-Kursi reminds me to place absolute trust in the Sustainer of all existence.',
+        createdAt: now,
+        updatedAt: now,
+      ),
+    ];
+
+    final scope = makeScope(bookmarks: [], notes: sampleNotes);
+    await tester.pumpWidget(wrap(scope));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
+
+    expect(find.text('Reflections (1)'), findsOneWidget);
+
+    // Tap Reflections segment
+    await tester.tap(find.text('Reflections (1)'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
+
+    expect(find.text('Surah Al-Baqarah [2:255]'), findsOneWidget);
+    expect(find.text('Ayat al-Kursi reminds me to place absolute trust in the Sustainer of all existence.'), findsOneWidget);
+    expect(find.text('Read in Context'), findsOneWidget);
   });
 }

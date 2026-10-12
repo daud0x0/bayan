@@ -8,6 +8,7 @@ import '../../../domain/models/content_item.dart';
 import '../../../domain/models/hadith_models.dart';
 import '../../../domain/models/reading_progress_model.dart';
 import '../../../domain/models/user_preferences.dart';
+import '../../reflections/views/reflection_note_sheet.dart';
 import '../../share_cards/views/share_card_sheet.dart';
 
 /// Hadith reader displaying Arabic, English translation, narrator, grading, and attribution.
@@ -383,6 +384,23 @@ class _HadithReaderViewState extends State<HadithReaderView> {
                 HapticFeedback.lightImpact();
               }
               ShareCardSheet.show(context, contentItem);
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.edit_note_rounded),
+            tooltip: 'Tadabbur Reflection',
+            onPressed: () async {
+              if (prefs.hapticFeedbackEnabled) {
+                HapticFeedback.lightImpact();
+              }
+              await ReflectionNoteSheet.show(
+                context,
+                contentId: 'hadith_${_currentHadith.id}',
+                contentType: ContentType.hadith,
+                reference: _currentHadith.reference,
+                arabicExcerpt: _currentHadith.arabicText,
+                translationExcerpt: _currentHadith.englishTranslation,
+              );
             },
           ),
         ],

@@ -8,6 +8,7 @@ import '../../../domain/models/content_item.dart';
 import '../../../domain/models/quran_models.dart';
 import '../../../domain/models/reading_progress_model.dart';
 import '../../../domain/models/user_preferences.dart';
+import '../../reflections/views/reflection_note_sheet.dart';
 import '../../share_cards/views/share_card_sheet.dart';
 
 /// Full Surah reader supporting adjustable typography, bookmarking, and progress persistence.
@@ -29,6 +30,7 @@ class QuranReaderView extends StatefulWidget {
 class _QuranReaderViewState extends State<QuranReaderView> {
   final ScrollController _scrollController = ScrollController();
   List<QuranAyah> _ayahs = [];
+  Set<String> _reflectedAyahIds = {};
   bool _isLoading = true;
   bool _initialized = false;
   int? _activeReadingAyah;
@@ -90,6 +92,8 @@ class _QuranReaderViewState extends State<QuranReaderView> {
       });
     }
 
+    await _loadReflectionNotes();
+
     // Record reading progress
     await scope.recordProgress(
       ReadingProgress(
@@ -99,6 +103,69 @@ class _QuranReaderViewState extends State<QuranReaderView> {
         title: 'Surah ${widget.surah.nameEnglish}',
         subtitle: 'Verse $initialAyah • ${widget.surah.nameArabic}',
         updatedAt: DateTime.now(),
+      ),
+    );
+  }
+
+  Future<void> _loadReflectionNotes() async {
+    final scope = AppScope.of(context);
+    final notes = await scope.reflectionNotesRepository.getNotes();
+    if (!mounted) return;
+    setState(() {
+      _reflectedAyahIds = notes
+          .where((n) => n.contentType == ContentType.quran)
+          .map((n) => n.contentId)
+          .toSet();
+    });
+  }
+
+  void _showSurahInfoDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Row(
+          children: [
+            const Icon(Icons.info_outline_rounded, color: Color(0xFFC5A059), size: 22),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                'Surah ${widget.surah.nameEnglish}',
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Text(
+                widget.surah.nameArabic,
+                style: AppTypography.arabic(
+                  fontSize: 26,
+                  color: const Color(0xFFC5A059),
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            const Divider(),
+            const SizedBox(height: 8),
+            Text('• Translation: "${widget.surah.nameTranslation}"', style: const TextStyle(fontSize: 13)),
+            const SizedBox(height: 4),
+            Text('• Revelation Place: ${widget.surah.revelationType}', style: const TextStyle(fontSize: 13)),
+            const SizedBox(height: 4),
+            Text('• Total Verses: ${widget.surah.ayahCount} Ayahs', style: const TextStyle(fontSize: 13)),
+            const SizedBox(height: 4),
+            Text('• Chapter Number: ${widget.surah.number} of 114', style: const TextStyle(fontSize: 13)),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: const Text('Close'),
+          ),
+        ],
       ),
     );
   }
@@ -390,6 +457,11 @@ class _QuranReaderViewState extends State<QuranReaderView> {
             onPressed: _showJumpToAyahDialog,
           ),
           IconButton(
+            icon: const Icon(Icons.info_outline_rounded),
+            tooltip: 'Surah Overview',
+            onPressed: () => _showSurahInfoDialog(context),
+          ),
+          IconButton(
             icon: const Icon(Icons.format_size_rounded),
             tooltip: 'Typography Controls',
             onPressed: _showTypographySheet,
@@ -522,6 +594,7 @@ class _QuranReaderViewState extends State<QuranReaderView> {
     final isBookmarked = scope.isBookmarked('quran_${ayah.id}');
     final isHighlighted = widget.initialAyahNumber == ayah.ayahNumber;
     final isReadingPosition = _activeReadingAyah == ayah.ayahNumber;
+    final hasReflection = _reflectedAyahIds.contains('quran_${ayah.id}');
 
     final contentItem = ContentItem(
       id: 'quran_${ayah.id}',
@@ -647,6 +720,31 @@ class _QuranReaderViewState extends State<QuranReaderView> {
                         HapticFeedback.lightImpact();
                       }
                       ShareCardSheet.show(context, contentItem);
+                    },
+                    visualDensity: VisualDensity.compact,
+                  ),
+                  IconButton(
+                    icon: Icon(
+                      hasReflection ? Icons.edit_note_rounded : Icons.edit_note_outlined,
+                      size: 20,
+                      color: hasReflection ? const Color(0xFFC5A059) : null,
+                    ),
+                    tooltip: hasReflection ? 'Edit Reflection' : 'Add Reflection (Tadabbur)',
+                    onPressed: () async {
+                      if (prefs.hapticFeedbackEnabled) {
+                        HapticFeedback.lightImpact();
+                      }
+                      final changed = await ReflectionNoteSheet.show(
+                        context,
+                        contentId: 'quran_${ayah.id}',
+                        contentType: ContentType.quran,
+                        reference: 'Surah ${widget.surah.nameEnglish} [${ayah.surahNumber}:${ayah.ayahNumber}]',
+                        arabicExcerpt: ayah.arabicText,
+                        translationExcerpt: ayah.englishTranslation,
+                      );
+                      if (changed == true && mounted) {
+                        await _loadReflectionNotes();
+                      }
                     },
                     visualDensity: VisualDensity.compact,
                   ),

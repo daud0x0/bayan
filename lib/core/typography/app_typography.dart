@@ -70,11 +70,13 @@ class AppTypography {
     required double fontSize,
     Color? color,
     FontWeight fontWeight = FontWeight.normal,
+    FontStyle fontStyle = FontStyle.normal,
     double height = 1.6,
   }) {
     return TextStyle(
       fontSize: fontSize,
       fontWeight: fontWeight,
+      fontStyle: fontStyle,
       height: height,
       color: color,
       letterSpacing: 0.15,

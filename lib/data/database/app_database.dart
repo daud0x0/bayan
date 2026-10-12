@@ -26,7 +26,7 @@ class AppDatabase {
       databaseFactory = databaseFactoryFfi;
       return await openDatabase(
         inMemoryDatabasePath,
-        version: 1,
+        version: 2,
         onCreate: (db, version) async {
           await _createTables(db);
         },
@@ -41,8 +41,19 @@ class AppDatabase {
 
     String dbPath;
     if (!kIsWeb && (Platform.isLinux || Platform.isWindows || Platform.isMacOS)) {
-      final docDir = await getApplicationSupportDirectory();
-      dbPath = p.join(docDir.path, 'quran_hadith_app.db');
+      try {
+        final docDir = await getApplicationSupportDirectory();
+        dbPath = p.join(docDir.path, 'quran_hadith_app.db');
+      } catch (_) {
+        // Fallback for widget test environment without path_provider channel
+        return await openDatabase(
+          inMemoryDatabasePath,
+          version: 2,
+          onCreate: (db, version) async {
+            await _createTables(db);
+          },
+        );
+      }
     } else {
       final databasesPath = await getDatabasesPath();
       dbPath = p.join(databasesPath, 'quran_hadith_app.db');
