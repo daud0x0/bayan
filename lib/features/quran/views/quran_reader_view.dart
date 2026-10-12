@@ -48,6 +48,12 @@ class _QuranReaderViewState extends State<QuranReaderView> {
       _isLoading = false;
     });
 
+    if (widget.initialAyahNumber != null && widget.initialAyahNumber! > 1) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _scrollToAyah(widget.initialAyahNumber!);
+      });
+    }
+
     // Record reading progress
     await scope.recordProgress(
       ReadingProgress(
@@ -59,6 +65,69 @@ class _QuranReaderViewState extends State<QuranReaderView> {
         updatedAt: DateTime.now(),
       ),
     );
+  }
+
+  void _scrollToAyah(int ayahNumber) {
+    final index = _ayahs.indexWhere((a) => a.ayahNumber == ayahNumber);
+    if (index != -1 && _scrollController.hasClients) {
+      final approximateOffset = 220.0 + (index * 200.0);
+      _scrollController.animateTo(
+        approximateOffset.clamp(0.0, _scrollController.position.maxScrollExtent),
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
+
+  void _showJumpToAyahDialog() {
+    if (_ayahs.isEmpty) return;
+    final controller = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          title: Text('Jump to Verse (1 - ${widget.surah.ayahCount})'),
+          content: TextField(
+            controller: controller,
+            keyboardType: TextInputType.number,
+            autofocus: true,
+            decoration: const InputDecoration(
+              hintText: 'Enter verse number',
+              border: OutlineInputBorder(),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              child: const Text('Cancel'),
+            ),
+            FilledButton(
+              onPressed: () {
+                final target = int.tryParse(controller.text);
+                if (target != null && target >= 1 && target <= widget.surah.ayahCount) {
+                  Navigator.of(ctx).pop();
+                  _scrollToAyah(target);
+                }
+              },
+              child: const Text('Jump'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _navigateToSurah(int surahNumber) async {
+    if (surahNumber < 1 || surahNumber > 114) return;
+    final scope = AppScope.of(context);
+    final surah = await scope.contentRepository.getSurah(surahNumber);
+    if (surah != null && mounted) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (_) => QuranReaderView(surah: surah),
+        ),
+      );
+    }
   }
 
   void _showTypographySheet() {
@@ -169,6 +238,11 @@ class _QuranReaderViewState extends State<QuranReaderView> {
           ],
         ),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.pin_outlined),
+            tooltip: 'Jump to Verse',
+            onPressed: _showJumpToAyahDialog,
+          ),
           IconButton(
             icon: const Icon(Icons.format_size_rounded),
             tooltip: 'Typography Controls',
@@ -325,7 +399,43 @@ class _QuranReaderViewState extends State<QuranReaderView> {
                     );
                   }),
 
-                const SizedBox(height: 24),
+                // Chapter Navigation: Previous and Next Surah
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 20),
+                  child: Row(
+                    children: [
+                      if (widget.surah.number > 1)
+                        Expanded(
+                          child: OutlinedButton.icon(
+                            onPressed: () => _navigateToSurah(widget.surah.number - 1),
+                            icon: const Icon(Icons.arrow_back_rounded, size: 16),
+                            label: Text(
+                              'Surah ${widget.surah.number - 1}',
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        )
+                      else
+                        const Spacer(),
+                      const SizedBox(width: 12),
+                      if (widget.surah.number < 114)
+                        Expanded(
+                          child: FilledButton.tonalIcon(
+                            onPressed: () => _navigateToSurah(widget.surah.number + 1),
+                            label: Text(
+                              'Surah ${widget.surah.number + 1}',
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            icon: const Icon(Icons.arrow_forward_rounded, size: 16),
+                          ),
+                        )
+                      else
+                        const Spacer(),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 12),
                 Center(
                   child: Text(
                     'Translation: Saheeh International\nMedina Mushaf (Hafs an Asim) Standard Edition',

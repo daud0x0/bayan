@@ -28,9 +28,29 @@ class ShareCardSheet extends StatefulWidget {
   State<ShareCardSheet> createState() => _ShareCardSheetState();
 }
 
+enum CardAspectRatio {
+  standard('Card'),
+  square('Square 1:1'),
+  wallpaper('Wallpaper 9:16');
+
+  const CardAspectRatio(this.label);
+  final String label;
+}
+
+enum ContentDisplayMode {
+  both('Arabic & English'),
+  arabicOnly('Arabic Only'),
+  englishOnly('English Only');
+
+  const ContentDisplayMode(this.label);
+  final String label;
+}
+
 class _ShareCardSheetState extends State<ShareCardSheet> {
   final GlobalKey _cardKey = GlobalKey();
   late VisualPreset _selectedPreset;
+  CardAspectRatio _aspectRatio = CardAspectRatio.standard;
+  ContentDisplayMode _displayMode = ContentDisplayMode.both;
   bool _isExporting = false;
 
   bool _initialized = false;
@@ -138,101 +158,172 @@ class _ShareCardSheetState extends State<ShareCardSheet> {
                         key: _cardKey,
                         child: Container(
                           width: double.infinity,
-                          constraints: const BoxConstraints(maxWidth: 420),
-                          child: ProceduralBackground(
-                            params: params,
-                            borderRadius: 24,
-                            child: Padding(
-                              padding: const EdgeInsets.all(28.0),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: [
-                                  // Content Badge
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 10, vertical: 4),
-                                        decoration: BoxDecoration(
-                                          color: params.primaryTextColor.withValues(alpha: 0.12),
-                                          borderRadius: BorderRadius.circular(12),
+                          constraints: BoxConstraints(
+                            maxWidth: _aspectRatio == CardAspectRatio.wallpaper ? 340 : 420,
+                          ),
+                          child: AspectRatio(
+                            aspectRatio: _aspectRatio == CardAspectRatio.square
+                                ? 1.0
+                                : _aspectRatio == CardAspectRatio.wallpaper
+                                    ? 9 / 16
+                                    : 4 / 5,
+                            child: ProceduralBackground(
+                              params: params,
+                              borderRadius: 24,
+                              child: Padding(
+                                padding: const EdgeInsets.all(24.0),
+                                child: Center(
+                                  child: SingleChildScrollView(
+                                    physics: const NeverScrollableScrollPhysics(),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                                      children: [
+                                        // Content Badge
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Container(
+                                              padding: const EdgeInsets.symmetric(
+                                                  horizontal: 10, vertical: 4),
+                                              decoration: BoxDecoration(
+                                                color: params.primaryTextColor.withValues(alpha: 0.12),
+                                                borderRadius: BorderRadius.circular(12),
+                                              ),
+                                              child: Text(
+                                                widget.item.contentType.displayName.toUpperCase(),
+                                                style: AppTypography.badge(
+                                                  color: params.primaryTextColor,
+                                                ),
+                                              ),
+                                            ),
+                                            const Icon(
+                                              Icons.auto_awesome_outlined,
+                                              size: 18,
+                                              color: Colors.white70,
+                                            ),
+                                          ],
                                         ),
-                                        child: Text(
-                                          widget.item.contentType.displayName.toUpperCase(),
-                                          style: AppTypography.badge(
+                                        const SizedBox(height: 18),
+
+                                        // Arabic text
+                                        if (_displayMode != ContentDisplayMode.englishOnly &&
+                                            widget.item.arabicText.isNotEmpty) ...[
+                                          Text(
+                                            widget.item.arabicText,
+                                            textAlign: TextAlign.center,
+                                            textDirection: TextDirection.rtl,
+                                            style: AppTypography.arabic(
+                                              fontSize: _aspectRatio == CardAspectRatio.wallpaper ? 22 : 20,
+                                              color: params.primaryTextColor,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 14),
+                                        ],
+
+                                        // Translation text
+                                        if (_displayMode != ContentDisplayMode.arabicOnly) ...[
+                                          Text(
+                                            widget.item.englishTranslation,
+                                            textAlign: TextAlign.center,
+                                            style: AppTypography.translation(
+                                              fontSize: _aspectRatio == CardAspectRatio.wallpaper ? 14.5 : 14,
+                                              color: params.primaryTextColor.withValues(alpha: 0.95),
+                                            ),
+                                          ),
+                                          const SizedBox(height: 18),
+                                        ],
+
+                                        // Divider
+                                        Container(
+                                          height: 1,
+                                          color: params.primaryTextColor.withValues(alpha: 0.15),
+                                        ),
+                                        const SizedBox(height: 10),
+
+                                        // Reference and Attribution
+                                        Text(
+                                          widget.item.reference,
+                                          textAlign: TextAlign.center,
+                                          style: AppTypography.reference(
                                             color: params.primaryTextColor,
+                                            fontSize: 12.5,
                                           ),
                                         ),
-                                      ),
-                                      const Icon(
-                                        Icons.auto_awesome_outlined,
-                                        size: 18,
-                                        color: Colors.white70,
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 20),
-
-                                  // Arabic text
-                                  if (widget.item.arabicText.isNotEmpty) ...[
-                                    Text(
-                                      widget.item.arabicText,
-                                      textAlign: TextAlign.center,
-                                      textDirection: TextDirection.rtl,
-                                      style: AppTypography.arabic(
-                                        fontSize: 22,
-                                        color: params.primaryTextColor,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 16),
-                                  ],
-
-                                  // Translation text
-                                  Text(
-                                    widget.item.englishTranslation,
-                                    textAlign: TextAlign.center,
-                                    style: AppTypography.translation(
-                                      fontSize: 15,
-                                      color: params.primaryTextColor.withValues(alpha: 0.95),
+                                        const SizedBox(height: 3),
+                                        Text(
+                                          widget.item.attribution,
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontSize: 10,
+                                            color: params.secondaryTextColor,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                  const SizedBox(height: 24),
-
-                                  // Divider
-                                  Container(
-                                    height: 1,
-                                    color: params.primaryTextColor.withValues(alpha: 0.15),
-                                  ),
-                                  const SizedBox(height: 12),
-
-                                  // Reference and Attribution
-                                  Text(
-                                    widget.item.reference,
-                                    textAlign: TextAlign.center,
-                                    style: AppTypography.reference(
-                                      color: params.primaryTextColor,
-                                      fontSize: 13,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    widget.item.attribution,
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontSize: 10.5,
-                                      color: params.secondaryTextColor,
-                                    ),
-                                  ),
-                                ],
+                                ),
                               ),
                             ),
                           ),
                         ),
                       ),
                     ),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 20),
+
+                    // Format & Aspect Ratio Selector
+                    Text(
+                      'Format & Dimensions',
+                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                    ),
+                    const SizedBox(height: 8),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: CardAspectRatio.values.map((ratio) {
+                          return Padding(
+                            padding: const EdgeInsets.only(right: 8.0),
+                            child: ChoiceChip(
+                              label: Text(ratio.label),
+                              selected: ratio == _aspectRatio,
+                              onSelected: (val) {
+                                if (val) setState(() => _aspectRatio = ratio);
+                              },
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Content Display Mode Selector
+                    Text(
+                      'Text Content',
+                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                    ),
+                    const SizedBox(height: 8),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: ContentDisplayMode.values.map((mode) {
+                          return Padding(
+                            padding: const EdgeInsets.only(right: 8.0),
+                            child: ChoiceChip(
+                              label: Text(mode.label),
+                              selected: mode == _displayMode,
+                              onSelected: (val) {
+                                if (val) setState(() => _displayMode = mode);
+                              },
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
 
                     // Palette Preset Selector
                     Text(
@@ -241,7 +332,7 @@ class _ShareCardSheetState extends State<ShareCardSheet> {
                             fontWeight: FontWeight.bold,
                           ),
                     ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 8),
                     SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       child: Row(

@@ -29,7 +29,12 @@ class DiscoveryCard extends StatelessWidget {
           children: [
             Icon(Icons.info_outline, size: 22),
             SizedBox(width: 8),
-            Text('Why am I seeing this?'),
+            Expanded(
+              child: Text(
+                'Why am I seeing this?',
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
           ],
         ),
         content: Column(
