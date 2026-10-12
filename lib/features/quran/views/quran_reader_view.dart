@@ -5,6 +5,7 @@ import '../../../app/bootstrap.dart';
 import '../../../core/typography/app_typography.dart';
 import '../../../core/widgets/auto_scroll_bar.dart';
 import '../../../core/widgets/islamic_decorations.dart';
+import '../../../data/services/quran_audio_player_service.dart';
 import '../../../domain/models/bookmark_model.dart';
 import '../../../domain/models/content_item.dart';
 import '../../../domain/models/quran_models.dart';
@@ -12,6 +13,7 @@ import '../../../domain/models/reading_progress_model.dart';
 import '../../../domain/models/user_preferences.dart';
 import '../../reflections/views/reflection_note_sheet.dart';
 import '../../share_cards/views/share_card_sheet.dart';
+import '../widgets/quran_audio_bar.dart';
 import 'quran_surahs_sheet.dart';
 
 /// Full Surah reader supporting adjustable typography, bookmarking, and progress persistence.
@@ -42,6 +44,8 @@ class _QuranReaderViewState extends State<QuranReaderView> {
   bool _isAutoScrollPlaying = false;
   double _autoScrollSpeed = 1.0;
   Timer? _autoScrollTimer;
+  QuranAudioPlayerService? _audioService;
+  int? _lastScrolledAudioAyah;
 
   @override
   void initState() {
@@ -51,6 +55,8 @@ class _QuranReaderViewState extends State<QuranReaderView> {
 
   @override
   void dispose() {
+    _audioService?.removeListener(_onAudioStateChanged);
+    _audioService?.stop();
     _autoScrollTimer?.cancel();
     _scrollController.removeListener(_updateProgress);
     _scrollController.dispose();
@@ -147,10 +153,37 @@ class _QuranReaderViewState extends State<QuranReaderView> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    final newService = AppScope.of(context).audioPlayerService;
+    if (_audioService != newService) {
+      _audioService?.removeListener(_onAudioStateChanged);
+      _audioService = newService;
+      _audioService?.addListener(_onAudioStateChanged);
+    }
     if (!_initialized) {
       _loadAyahs();
       _initialized = true;
     }
+  }
+
+  void _onAudioStateChanged() {
+    if (!mounted || _audioService == null) return;
+    final audio = _audioService!;
+    if (audio.currentSurahNumber == widget.surah.number &&
+        audio.currentAyahNumber != null &&
+        audio.currentAyahNumber != _lastScrolledAudioAyah) {
+      _lastScrolledAudioAyah = audio.currentAyahNumber;
+      _scrollToAyah(audio.currentAyahNumber!);
+    }
+    if (audio.errorMessage != null && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(audio.errorMessage!),
+          behavior: SnackBarBehavior.floating,
+          duration: const Duration(seconds: 3),
+        ),
+      );
+    }
+    setState(() {});
   }
 
   Future<void> _loadAyahs() async {
@@ -574,6 +607,36 @@ class _QuranReaderViewState extends State<QuranReaderView> {
         actions: [
           IconButton(
             icon: Icon(
+              (_audioService?.currentSurahNumber == widget.surah.number &&
+                      (_audioService?.isPlaying ?? false))
+                  ? Icons.headphones_rounded
+                  : Icons.headphones_outlined,
+              color: (_audioService?.currentSurahNumber == widget.surah.number &&
+                      ((_audioService?.isPlaying ?? false) ||
+                          (_audioService?.currentAyahNumber != null)))
+                  ? const Color(0xFFC5A059)
+                  : null,
+            ),
+            tooltip: (_audioService?.currentSurahNumber == widget.surah.number &&
+                    (_audioService?.isPlaying ?? false))
+                ? 'Pause Recitation'
+                : 'Listen to Recitation',
+            onPressed: () {
+              final audio = _audioService ?? scope.audioPlayerService;
+              if (audio.currentSurahNumber == widget.surah.number &&
+                  audio.currentAyahNumber != null) {
+                audio.togglePlayPause();
+              } else {
+                audio.playAyah(
+                  surah: widget.surah.number,
+                  ayah: _activeReadingAyah ?? 1,
+                  totalAyahs: widget.surah.ayahCount,
+                );
+              }
+            },
+          ),
+          IconButton(
+            icon: Icon(
               _isAutoScrollActive
                   ? Icons.motion_photos_paused_rounded
                   : Icons.slow_motion_video_rounded,
@@ -609,15 +672,24 @@ class _QuranReaderViewState extends State<QuranReaderView> {
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: _isAutoScrollActive
-          ? AutoScrollBar(
-              isPlaying: _isAutoScrollPlaying,
-              speed: _autoScrollSpeed,
-              onPlayPauseToggle: _onAutoScrollPlayPauseToggle,
-              onSpeedSelected: _onAutoScrollSpeedSelected,
-              onClose: _closeAutoScroll,
+      floatingActionButton: (_audioService != null &&
+              _audioService!.currentSurahNumber == widget.surah.number &&
+              _audioService!.currentAyahNumber != null)
+          ? QuranAudioBar(
+              audioService: _audioService!,
+              onClose: () {
+                _audioService!.stop();
+              },
             )
-          : null,
+          : (_isAutoScrollActive
+              ? AutoScrollBar(
+                  isPlaying: _isAutoScrollPlaying,
+                  speed: _autoScrollSpeed,
+                  onPlayPauseToggle: _onAutoScrollPlayPauseToggle,
+                  onSpeedSelected: _onAutoScrollSpeedSelected,
+                  onClose: _closeAutoScroll,
+                )
+              : null),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : NotificationListener<ScrollNotification>(
@@ -752,6 +824,10 @@ class _QuranReaderViewState extends State<QuranReaderView> {
     final hasReflection = scope.hasReflection('quran_${ayah.id}') ||
         _reflectedAyahIds.contains('quran_${ayah.id}');
 
+    final audio = _audioService ?? scope.audioPlayerService;
+    final isCurrentlyReciting = audio.currentSurahNumber == widget.surah.number &&
+        audio.currentAyahNumber == ayah.ayahNumber;
+
     final contentItem = ContentItem(
       id: 'quran_${ayah.id}',
       contentType: ContentType.quran,
@@ -767,15 +843,19 @@ class _QuranReaderViewState extends State<QuranReaderView> {
       margin: const EdgeInsets.only(bottom: 14),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: isHighlighted
-            ? Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.25)
-            : Theme.of(context).colorScheme.surface,
+        color: isCurrentlyReciting
+            ? const Color(0xFFC5A059).withValues(alpha: 0.12)
+            : (isHighlighted
+                ? Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.25)
+                : Theme.of(context).colorScheme.surface),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: isHighlighted || isReadingPosition
-              ? Theme.of(context).colorScheme.primary
-              : const Color(0xFFC5A059).withValues(alpha: 0.22),
-          width: isHighlighted || isReadingPosition ? 1.6 : 1.0,
+          color: isCurrentlyReciting
+              ? const Color(0xFFC5A059)
+              : (isHighlighted || isReadingPosition
+                  ? Theme.of(context).colorScheme.primary
+                  : const Color(0xFFC5A059).withValues(alpha: 0.22)),
+          width: isCurrentlyReciting ? 2.0 : (isHighlighted || isReadingPosition ? 1.6 : 1.0),
         ),
         boxShadow: [
           BoxShadow(
@@ -797,11 +877,39 @@ class _QuranReaderViewState extends State<QuranReaderView> {
                   RubElHizbBadge(
                     number: ayah.ayahNumber,
                     size: 36,
-                    accentColor: isReadingPosition
-                        ? Theme.of(context).colorScheme.primary
+                    accentColor: isCurrentlyReciting || isReadingPosition
+                        ? const Color(0xFFC5A059)
                         : const Color(0xFFC5A059),
                   ),
-                  if (isReadingPosition) ...[
+                  if (isCurrentlyReciting) ...[
+                    const SizedBox(width: 8),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFC5A059).withValues(alpha: 0.20),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            audio.isPlaying ? Icons.volume_up_rounded : Icons.pause_rounded,
+                            size: 11,
+                            color: const Color(0xFFC5A059),
+                          ),
+                          const SizedBox(width: 3),
+                          Text(
+                            audio.isPlaying ? 'RECITING' : 'PAUSED',
+                            style: const TextStyle(
+                              fontSize: 9,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFFC5A059),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ] else if (isReadingPosition) ...[
                     const SizedBox(width: 8),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
@@ -823,6 +931,35 @@ class _QuranReaderViewState extends State<QuranReaderView> {
               ),
               Row(
                 children: [
+                  IconButton(
+                    icon: Icon(
+                      isCurrentlyReciting && audio.isPlaying
+                          ? Icons.pause_circle_rounded
+                          : (isCurrentlyReciting
+                              ? Icons.play_circle_fill_rounded
+                              : Icons.play_circle_outline_rounded),
+                      size: 20,
+                      color: isCurrentlyReciting ? const Color(0xFFC5A059) : null,
+                    ),
+                    tooltip: isCurrentlyReciting && audio.isPlaying
+                        ? 'Pause Recitation'
+                        : 'Play Verse Recitation',
+                    onPressed: () {
+                      if (prefs.hapticFeedbackEnabled) {
+                        HapticFeedback.lightImpact();
+                      }
+                      if (isCurrentlyReciting) {
+                        audio.togglePlayPause();
+                      } else {
+                        audio.playAyah(
+                          surah: widget.surah.number,
+                          ayah: ayah.ayahNumber,
+                          totalAyahs: widget.surah.ayahCount,
+                        );
+                      }
+                    },
+                    visualDensity: VisualDensity.compact,
+                  ),
                   IconButton(
                     icon: const Icon(Icons.copy_rounded, size: 18),
                     tooltip: 'Copy Verse',
