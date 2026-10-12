@@ -8,6 +8,7 @@ import '../data/repositories/reflection_notes_repository.dart';
 import '../domain/models/bookmark_model.dart';
 import '../domain/models/content_item.dart';
 import '../domain/models/reading_progress_model.dart';
+import '../domain/models/reflection_note_model.dart';
 import '../domain/models/user_preferences.dart';
 import '../visual_engine/generator/seeded_generator.dart';
 
@@ -35,6 +36,9 @@ class AppScope extends ChangeNotifier {
 
   final Set<String> _bookmarkedIds = {};
   Set<String> get bookmarkedIds => _bookmarkedIds;
+
+  final Set<String> _reflectedContentIds = {};
+  Set<String> get reflectedContentIds => _reflectedContentIds;
 
   ReadingProgress? _lastQuranProgress;
   ReadingProgress? get lastQuranProgress => _lastQuranProgress;
@@ -70,6 +74,7 @@ class AppScope extends ChangeNotifier {
   Future<void> _init() async {
     await contentRepository.initialize();
     await loadBookmarks();
+    await loadReflectionNotes();
     await _loadProgress();
     _isReady = true;
     notifyListeners();
@@ -79,6 +84,29 @@ class AppScope extends ChangeNotifier {
     final bookmarks = await bookmarkRepository.getBookmarks();
     _bookmarkedIds.clear();
     _bookmarkedIds.addAll(bookmarks.map((b) => b.contentId));
+  }
+
+  Future<void> loadReflectionNotes() async {
+    final notes = await reflectionNotesRepository.getNotes();
+    _reflectedContentIds.clear();
+    _reflectedContentIds.addAll(notes.map((n) => n.contentId));
+  }
+
+  bool hasReflection(String contentId) => _reflectedContentIds.contains(contentId);
+
+  Future<void> saveReflectionNote(ReflectionNote note) async {
+    await reflectionNotesRepository.saveNote(note);
+    _reflectedContentIds.add(note.contentId);
+    notifyListeners();
+  }
+
+  Future<void> deleteReflectionNote(String id, String contentId) async {
+    await reflectionNotesRepository.deleteNote(id);
+    final hasRemaining = await reflectionNotesRepository.hasNote(contentId);
+    if (!hasRemaining) {
+      _reflectedContentIds.remove(contentId);
+    }
+    notifyListeners();
   }
 
   Future<void> _loadProgress() async {
@@ -142,6 +170,7 @@ class AppScope extends ChangeNotifier {
     await AppDatabase.instance.clearAllUserData();
     await preferencesRepository.clearPreferences();
     _bookmarkedIds.clear();
+    _reflectedContentIds.clear();
     _lastQuranProgress = null;
     _lastHadithProgress = null;
     _preferences = const UserPreferences();

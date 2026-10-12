@@ -126,6 +126,7 @@ class DiscoveryCard extends StatelessWidget {
     final textColor = colorScheme.onSurface;
     final secondaryTextColor = colorScheme.onSurfaceVariant;
     final outlineColor = colorScheme.outlineVariant;
+    final hasReflection = scope.hasReflection(item.id);
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
@@ -386,11 +387,11 @@ class DiscoveryCard extends StatelessWidget {
                     ),
                     IconButton(
                       icon: Icon(
-                        Icons.edit_note_rounded,
+                        hasReflection ? Icons.note_alt_rounded : Icons.edit_note_rounded,
                         size: 20,
-                        color: secondaryTextColor,
+                        color: hasReflection ? const Color(0xFFC5A059) : secondaryTextColor,
                       ),
-                      tooltip: 'Tadabbur Reflection',
+                      tooltip: hasReflection ? 'Edit Tadabbur Reflection' : 'Tadabbur Reflection',
                       padding: const EdgeInsets.all(6),
                       constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
                       visualDensity: VisualDensity.compact,

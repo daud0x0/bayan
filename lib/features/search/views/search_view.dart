@@ -417,8 +417,18 @@ class _SearchViewState extends State<SearchView> {
                                         },
                                       ),
                                       IconButton(
-                                        icon: const Icon(Icons.edit_note_rounded, size: 18),
-                                        tooltip: 'Tadabbur Reflection',
+                                        icon: Icon(
+                                          scope.hasReflection(item.id)
+                                              ? Icons.note_alt_rounded
+                                              : Icons.edit_note_rounded,
+                                          size: 18,
+                                          color: scope.hasReflection(item.id)
+                                              ? const Color(0xFFC5A059)
+                                              : null,
+                                        ),
+                                        tooltip: scope.hasReflection(item.id)
+                                            ? 'Edit Tadabbur Reflection'
+                                            : 'Tadabbur Reflection',
                                         padding: const EdgeInsets.all(4),
                                         constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
                                         visualDensity: VisualDensity.compact,

@@ -127,7 +127,7 @@ class _ReflectionNoteSheetState extends State<ReflectionNoteSheet> {
       updatedAt: now,
     );
 
-    await scope.reflectionNotesRepository.saveNote(note);
+    await scope.saveReflectionNote(note);
 
     if (!mounted) return;
     setState(() => _isSaving = false);
@@ -174,7 +174,7 @@ class _ReflectionNoteSheetState extends State<ReflectionNoteSheet> {
       HapticFeedback.mediumImpact();
     }
 
-    await scope.reflectionNotesRepository.deleteNote(_currentNote!.id);
+    await scope.deleteReflectionNote(_currentNote!.id, widget.contentId);
 
     if (!mounted) return;
     setState(() => _isDeleting = false);

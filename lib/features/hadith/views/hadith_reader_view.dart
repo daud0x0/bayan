@@ -384,6 +384,7 @@ class _HadithReaderViewState extends State<HadithReaderView> {
     final nextHadith = hasNext ? _collectionHadiths[currentIndex + 1] : null;
 
     final isPlain = prefs.plainReadingMode;
+    final hasReflection = scope.hasReflection('hadith_${_currentHadith.id}');
 
     return Scaffold(
       appBar: AppBar(
@@ -459,8 +460,11 @@ class _HadithReaderViewState extends State<HadithReaderView> {
             },
           ),
           IconButton(
-            icon: const Icon(Icons.edit_note_rounded),
-            tooltip: 'Tadabbur Reflection',
+            icon: Icon(
+              hasReflection ? Icons.note_alt_rounded : Icons.edit_note_rounded,
+              color: hasReflection ? const Color(0xFFC5A059) : null,
+            ),
+            tooltip: hasReflection ? 'Edit Reflection' : 'Tadabbur Reflection',
             onPressed: () async {
               if (prefs.hapticFeedbackEnabled) {
                 HapticFeedback.lightImpact();

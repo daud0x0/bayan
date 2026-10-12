@@ -690,7 +690,8 @@ class _QuranReaderViewState extends State<QuranReaderView> {
     final isBookmarked = scope.isBookmarked('quran_${ayah.id}');
     final isHighlighted = widget.initialAyahNumber == ayah.ayahNumber;
     final isReadingPosition = _activeReadingAyah == ayah.ayahNumber;
-    final hasReflection = _reflectedAyahIds.contains('quran_${ayah.id}');
+    final hasReflection = scope.hasReflection('quran_${ayah.id}') ||
+        _reflectedAyahIds.contains('quran_${ayah.id}');
 
     final contentItem = ContentItem(
       id: 'quran_${ayah.id}',
