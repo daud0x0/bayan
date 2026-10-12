@@ -385,7 +385,7 @@ class _SearchViewState extends State<SearchView> {
                                         icon: const Icon(Icons.copy_rounded, size: 17),
                                         tooltip: 'Copy',
                                         padding: const EdgeInsets.all(4),
-                                        constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                                        constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
                                         visualDensity: VisualDensity.compact,
                                         onPressed: () {
                                           if (scope.preferences.hapticFeedbackEnabled) {
@@ -407,7 +407,7 @@ class _SearchViewState extends State<SearchView> {
                                         icon: const Icon(Icons.share_outlined, size: 17),
                                         tooltip: 'Share Card',
                                         padding: const EdgeInsets.all(4),
-                                        constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                                        constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
                                         visualDensity: VisualDensity.compact,
                                         onPressed: () {
                                           if (scope.preferences.hapticFeedbackEnabled) {
@@ -430,7 +430,7 @@ class _SearchViewState extends State<SearchView> {
                                             ? 'Edit Tadabbur Reflection'
                                             : 'Tadabbur Reflection',
                                         padding: const EdgeInsets.all(4),
-                                        constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                                        constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
                                         visualDensity: VisualDensity.compact,
                                         onPressed: () {
                                           if (scope.preferences.hapticFeedbackEnabled) {

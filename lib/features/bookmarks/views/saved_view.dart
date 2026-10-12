@@ -478,7 +478,7 @@ class _SavedViewState extends State<SavedView> {
                               icon: const Icon(Icons.copy_rounded, size: 18),
                               tooltip: 'Copy Text',
                               padding: const EdgeInsets.all(6),
-                              constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                              constraints: const BoxConstraints(minWidth: 42, minHeight: 42),
                               visualDensity: VisualDensity.compact,
                               onPressed: () {
                                 if (scope.preferences.hapticFeedbackEnabled) {
@@ -500,7 +500,7 @@ class _SavedViewState extends State<SavedView> {
                               icon: const Icon(Icons.share_outlined, size: 18),
                               tooltip: 'Share Card',
                               padding: const EdgeInsets.all(6),
-                              constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                              constraints: const BoxConstraints(minWidth: 42, minHeight: 42),
                               visualDensity: VisualDensity.compact,
                               onPressed: () {
                                 if (scope.preferences.hapticFeedbackEnabled) {
@@ -514,7 +514,7 @@ class _SavedViewState extends State<SavedView> {
                               icon: const Icon(Icons.delete_outline_rounded, size: 18),
                               tooltip: 'Remove bookmark',
                               padding: const EdgeInsets.all(6),
-                              constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                              constraints: const BoxConstraints(minWidth: 42, minHeight: 42),
                               visualDensity: VisualDensity.compact,
                               onPressed: () => _removeBookmarkWithUndo(context, b, scope),
                             ),
@@ -833,7 +833,7 @@ class _SavedViewState extends State<SavedView> {
                               icon: const Icon(Icons.edit_outlined, size: 18),
                               tooltip: 'Edit Note',
                               padding: const EdgeInsets.all(6),
-                              constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                              constraints: const BoxConstraints(minWidth: 42, minHeight: 42),
                               visualDensity: VisualDensity.compact,
                               onPressed: () async {
                                 final updated = await ReflectionNoteSheet.show(
@@ -854,7 +854,7 @@ class _SavedViewState extends State<SavedView> {
                               icon: const Icon(Icons.copy_rounded, size: 18),
                               tooltip: 'Copy Note',
                               padding: const EdgeInsets.all(6),
-                              constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                              constraints: const BoxConstraints(minWidth: 42, minHeight: 42),
                               visualDensity: VisualDensity.compact,
                               onPressed: () {
                                 if (scope.preferences.hapticFeedbackEnabled) {
@@ -876,7 +876,7 @@ class _SavedViewState extends State<SavedView> {
                               icon: const Icon(Icons.share_outlined, size: 18),
                               tooltip: 'Share Card',
                               padding: const EdgeInsets.all(6),
-                              constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                              constraints: const BoxConstraints(minWidth: 42, minHeight: 42),
                               visualDensity: VisualDensity.compact,
                               onPressed: () {
                                 if (scope.preferences.hapticFeedbackEnabled) {
@@ -890,7 +890,7 @@ class _SavedViewState extends State<SavedView> {
                               icon: const Icon(Icons.delete_outline_rounded, size: 18),
                               tooltip: 'Delete reflection',
                               padding: const EdgeInsets.all(6),
-                              constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                              constraints: const BoxConstraints(minWidth: 42, minHeight: 42),
                               visualDensity: VisualDensity.compact,
                               onPressed: () => _removeReflectionWithUndo(context, note, scope),
                             ),

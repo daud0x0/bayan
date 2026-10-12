@@ -333,7 +333,7 @@ class DiscoveryCard extends StatelessWidget {
                       ),
                       tooltip: 'Copy Text',
                       padding: const EdgeInsets.all(6),
-                      constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                      constraints: const BoxConstraints(minWidth: 42, minHeight: 42),
                       visualDensity: VisualDensity.compact,
                       onPressed: () {
                         if (scope.preferences.hapticFeedbackEnabled) {
@@ -359,7 +359,7 @@ class DiscoveryCard extends StatelessWidget {
                       ),
                       tooltip: isBookmarked ? 'Remove Bookmark' : 'Save Bookmark',
                       padding: const EdgeInsets.all(6),
-                      constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                      constraints: const BoxConstraints(minWidth: 42, minHeight: 42),
                       visualDensity: VisualDensity.compact,
                       onPressed: () {
                         if (scope.preferences.hapticFeedbackEnabled) {
@@ -376,7 +376,7 @@ class DiscoveryCard extends StatelessWidget {
                       ),
                       tooltip: 'Share Card',
                       padding: const EdgeInsets.all(6),
-                      constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                      constraints: const BoxConstraints(minWidth: 42, minHeight: 42),
                       visualDensity: VisualDensity.compact,
                       onPressed: () {
                         if (scope.preferences.hapticFeedbackEnabled) {
@@ -393,7 +393,7 @@ class DiscoveryCard extends StatelessWidget {
                       ),
                       tooltip: hasReflection ? 'Edit Tadabbur Reflection' : 'Tadabbur Reflection',
                       padding: const EdgeInsets.all(6),
-                      constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                      constraints: const BoxConstraints(minWidth: 42, minHeight: 42),
                       visualDensity: VisualDensity.compact,
                       onPressed: () {
                         if (scope.preferences.hapticFeedbackEnabled) {
