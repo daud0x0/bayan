@@ -71,6 +71,36 @@ class DiscoveryCard extends StatelessWidget {
           ],
         ),
         actions: [
+          if (item.categoryIds.isNotEmpty)
+            TextButton(
+              onPressed: () {
+                final catId = item.categoryIds.first;
+                final current = Set<String>.from(scope.preferences.selectedCategoryIds);
+                final willFollow = !current.contains(catId);
+                if (willFollow) {
+                  current.add(catId);
+                } else {
+                  current.remove(catId);
+                }
+                scope.updatePreferences(scope.preferences.copyWith(selectedCategoryIds: current));
+                Navigator.of(ctx).pop();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      willFollow
+                          ? 'Added "${catId.replaceAll('_', ' ')}" to preferred topics.'
+                          : 'Removed "${catId.replaceAll('_', ' ')}" from preferred topics.',
+                    ),
+                    duration: const Duration(seconds: 2),
+                  ),
+                );
+              },
+              child: Text(
+                scope.preferences.selectedCategoryIds.contains(item.categoryIds.first)
+                    ? 'Show Less of Topic'
+                    : 'Prioritize Topic',
+              ),
+            ),
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(),
             child: const Text('Close'),

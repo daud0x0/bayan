@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import '../../../app/bootstrap.dart';
 import '../../../core/typography/app_typography.dart';
+import '../../../core/utils/arabic_utils.dart';
 import '../../../domain/models/bookmark_model.dart';
 import '../../../domain/models/content_item.dart';
 
-/// Full-text search across offline Quran and Hadith libraries.
+/// Full-text search across offline Quran and Hadith libraries with match highlighting.
 /// Complies with Section 10 of the Product Plan.
 class SearchView extends StatefulWidget {
   const SearchView({super.key, required this.onSelectContentItem});
@@ -45,8 +46,131 @@ class _SearchViewState extends State<SearchView> {
     });
   }
 
+  Widget _buildHighlightedText({
+    required String text,
+    required String query,
+    required TextStyle baseStyle,
+    required TextStyle highlightStyle,
+    TextAlign textAlign = TextAlign.start,
+    TextDirection? textDirection,
+    int maxLines = 2,
+  }) {
+    final trimmedQuery = query.trim();
+    if (trimmedQuery.isEmpty || text.isEmpty) {
+      return Text(
+        text,
+        maxLines: maxLines,
+        overflow: TextOverflow.ellipsis,
+        textAlign: textAlign,
+        textDirection: textDirection,
+        style: baseStyle,
+      );
+    }
+
+    final lowerText = text.toLowerCase();
+    final lowerQuery = trimmedQuery.toLowerCase();
+    final spans = <InlineSpan>[];
+    int start = 0;
+
+    while (start < text.length) {
+      final index = lowerText.indexOf(lowerQuery, start);
+      if (index == -1) {
+        spans.add(TextSpan(text: text.substring(start), style: baseStyle));
+        break;
+      }
+      if (index > start) {
+        spans.add(TextSpan(text: text.substring(start, index), style: baseStyle));
+      }
+      spans.add(TextSpan(
+        text: text.substring(index, index + trimmedQuery.length),
+        style: highlightStyle,
+      ));
+      start = index + trimmedQuery.length;
+    }
+
+    return Text.rich(
+      TextSpan(children: spans),
+      maxLines: maxLines,
+      overflow: TextOverflow.ellipsis,
+      textAlign: textAlign,
+      textDirection: textDirection,
+    );
+  }
+
+  Widget _buildHighlightedArabicText({
+    required String text,
+    required String query,
+    required TextStyle baseStyle,
+    required TextStyle highlightStyle,
+    int maxLines = 2,
+  }) {
+    final trimmedQuery = query.trim();
+    if (trimmedQuery.isEmpty || text.isEmpty) {
+      return Text(
+        text,
+        maxLines: maxLines,
+        overflow: TextOverflow.ellipsis,
+        textAlign: TextAlign.right,
+        textDirection: TextDirection.rtl,
+        style: baseStyle,
+      );
+    }
+
+    // Check if exact substring exists in text
+    if (text.contains(trimmedQuery)) {
+      return _buildHighlightedText(
+        text: text,
+        query: trimmedQuery,
+        baseStyle: baseStyle,
+        highlightStyle: highlightStyle,
+        textAlign: TextAlign.right,
+        textDirection: TextDirection.rtl,
+        maxLines: maxLines,
+      );
+    }
+
+    // Check normalized word-by-word matching for diacritic variance
+    final normalizedQuery = ArabicUtils.normalizeForSearch(trimmedQuery);
+    if (normalizedQuery.isEmpty) {
+      return Text(
+        text,
+        maxLines: maxLines,
+        overflow: TextOverflow.ellipsis,
+        textAlign: TextAlign.right,
+        textDirection: TextDirection.rtl,
+        style: baseStyle,
+      );
+    }
+
+    final words = text.split(' ');
+    final spans = <InlineSpan>[];
+
+    for (int i = 0; i < words.length; i++) {
+      final word = words[i];
+      final isMatch = ArabicUtils.containsNormalized(word, trimmedQuery);
+      spans.add(TextSpan(
+        text: word,
+        style: isMatch ? highlightStyle : baseStyle,
+      ));
+      if (i < words.length - 1) {
+        spans.add(TextSpan(text: ' ', style: baseStyle));
+      }
+    }
+
+    return Text.rich(
+      TextSpan(children: spans),
+      maxLines: maxLines,
+      overflow: TextOverflow.ellipsis,
+      textAlign: TextAlign.right,
+      textDirection: TextDirection.rtl,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final queryText = _queryController.text;
+    final primaryColor = Theme.of(context).colorScheme.primary;
+
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 0,
@@ -103,6 +227,16 @@ class _SearchViewState extends State<SearchView> {
                     _performSearch(_queryController.text);
                   },
                 ),
+                const Spacer(),
+                if (!_isSearching && queryText.trim().isNotEmpty)
+                  Text(
+                    '${_results.length} found',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: Theme.of(context).colorScheme.outline,
+                    ),
+                  ),
               ],
             ),
           ),
@@ -130,6 +264,20 @@ class _SearchViewState extends State<SearchView> {
                         itemBuilder: (context, index) {
                           final item = _results[index];
 
+                          final arabicBase = AppTypography.arabic(fontSize: 17);
+                          final arabicHighlight = arabicBase.copyWith(
+                            backgroundColor: primaryColor.withValues(alpha: 0.18),
+                            color: primaryColor,
+                            fontWeight: FontWeight.bold,
+                          );
+
+                          final enBase = const TextStyle(fontSize: 13);
+                          final enHighlight = enBase.copyWith(
+                            backgroundColor: primaryColor.withValues(alpha: 0.18),
+                            color: primaryColor,
+                            fontWeight: FontWeight.bold,
+                          );
+
                           return ListTile(
                             contentPadding: const EdgeInsets.symmetric(
                                 horizontal: 16, vertical: 8),
@@ -139,10 +287,7 @@ class _SearchViewState extends State<SearchView> {
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 6, vertical: 2),
                                   decoration: BoxDecoration(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .primary
-                                        .withValues(alpha: 0.12),
+                                    color: primaryColor.withValues(alpha: 0.12),
                                     borderRadius: BorderRadius.circular(6),
                                   ),
                                   child: Text(
@@ -150,7 +295,7 @@ class _SearchViewState extends State<SearchView> {
                                     style: TextStyle(
                                       fontSize: 10,
                                       fontWeight: FontWeight.bold,
-                                      color: Theme.of(context).colorScheme.primary,
+                                      color: primaryColor,
                                     ),
                                   ),
                                 ),
@@ -172,20 +317,18 @@ class _SearchViewState extends State<SearchView> {
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: [
                                   if (item.arabicText.isNotEmpty)
-                                    Text(
-                                      item.arabicText,
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                      textAlign: TextAlign.right,
-                                      textDirection: TextDirection.rtl,
-                                      style: AppTypography.arabic(fontSize: 17),
+                                    _buildHighlightedArabicText(
+                                      text: item.arabicText,
+                                      query: queryText,
+                                      baseStyle: arabicBase,
+                                      highlightStyle: arabicHighlight,
                                     ),
                                   const SizedBox(height: 4),
-                                  Text(
-                                    item.englishTranslation,
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(fontSize: 13),
+                                  _buildHighlightedText(
+                                    text: item.englishTranslation,
+                                    query: queryText,
+                                    baseStyle: enBase,
+                                    highlightStyle: enHighlight,
                                   ),
                                 ],
                               ),
