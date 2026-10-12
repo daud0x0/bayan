@@ -1,0 +1,1291 @@
+{
+  "edition": {
+    "name": "King Fahd Complex / Uthmani Script",
+    "language": "ar",
+    "type": "uthmani",
+    "version": "1.0.0"
+  },
+  "translation": {
+    "name": "Saheeh International",
+    "language": "en",
+    "translator": "Saheeh International",
+    "attribution": "The Quran: English Meanings by Saheeh International",
+    "version": "1.0.0"
+  },
+  "surahs": [
+    {
+      "number": 1,
+      "name_ar": "الفاتحة",
+      "name_en": "Al-Fatihah",
+      "name_translation": "The Opening",
+      "ayah_count": 7,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 2,
+      "name_ar": "البقرة",
+      "name_en": "Al-Baqarah",
+      "name_translation": "The Cow",
+      "ayah_count": 286,
+      "revelation_type": "Medinan"
+    },
+    {
+      "number": 3,
+      "name_ar": "آل عمران",
+      "name_en": "Ali 'Imran",
+      "name_translation": "Family of Imran",
+      "ayah_count": 200,
+      "revelation_type": "Medinan"
+    },
+    {
+      "number": 4,
+      "name_ar": "النساء",
+      "name_en": "An-Nisa",
+      "name_translation": "The Women",
+      "ayah_count": 176,
+      "revelation_type": "Medinan"
+    },
+    {
+      "number": 5,
+      "name_ar": "المائدة",
+      "name_en": "Al-Ma'idah",
+      "name_translation": "The Table Spread",
+      "ayah_count": 120,
+      "revelation_type": "Medinan"
+    },
+    {
+      "number": 6,
+      "name_ar": "الأنعام",
+      "name_en": "Al-An'am",
+      "name_translation": "The Cattle",
+      "ayah_count": 165,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 7,
+      "name_ar": "الأعراف",
+      "name_en": "Al-A'raf",
+      "name_translation": "The Heights",
+      "ayah_count": 206,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 8,
+      "name_ar": "الأنفال",
+      "name_en": "Al-Anfal",
+      "name_translation": "The Spoils of War",
+      "ayah_count": 75,
+      "revelation_type": "Medinan"
+    },
+    {
+      "number": 9,
+      "name_ar": "التوبة",
+      "name_en": "At-Tawbah",
+      "name_translation": "The Repentance",
+      "ayah_count": 129,
+      "revelation_type": "Medinan"
+    },
+    {
+      "number": 10,
+      "name_ar": "يونس",
+      "name_en": "Yunus",
+      "name_translation": "Jonah",
+      "ayah_count": 109,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 11,
+      "name_ar": "هود",
+      "name_en": "Hud",
+      "name_translation": "Hud",
+      "ayah_count": 123,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 12,
+      "name_ar": "يوسف",
+      "name_en": "Yusuf",
+      "name_translation": "Joseph",
+      "ayah_count": 111,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 13,
+      "name_ar": "الرعد",
+      "name_en": "Ar-Ra'd",
+      "name_translation": "The Thunder",
+      "ayah_count": 43,
+      "revelation_type": "Medinan"
+    },
+    {
+      "number": 14,
+      "name_ar": "إبراهيم",
+      "name_en": "Ibrahim",
+      "name_translation": "Abraham",
+      "ayah_count": 52,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 15,
+      "name_ar": "الحجر",
+      "name_en": "Al-Hijr",
+      "name_translation": "The Rocky Tract",
+      "ayah_count": 99,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 16,
+      "name_ar": "النحل",
+      "name_en": "An-Nahl",
+      "name_translation": "The Bee",
+      "ayah_count": 128,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 17,
+      "name_ar": "الإسراء",
+      "name_en": "Al-Isra",
+      "name_translation": "The Night Journey",
+      "ayah_count": 111,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 18,
+      "name_ar": "الكهف",
+      "name_en": "Al-Kahf",
+      "name_translation": "The Cave",
+      "ayah_count": 110,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 19,
+      "name_ar": "مريم",
+      "name_en": "Maryam",
+      "name_translation": "Mary",
+      "ayah_count": 98,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 20,
+      "name_ar": "طه",
+      "name_en": "Ta-Ha",
+      "name_translation": "Ta-Ha",
+      "ayah_count": 135,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 21,
+      "name_ar": "الأنبياء",
+      "name_en": "Al-Anbiya",
+      "name_translation": "The Prophets",
+      "ayah_count": 112,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 22,
+      "name_ar": "الحج",
+      "name_en": "Al-Hajj",
+      "name_translation": "The Pilgrimage",
+      "ayah_count": 78,
+      "revelation_type": "Medinan"
+    },
+    {
+      "number": 23,
+      "name_ar": "المؤمنون",
+      "name_en": "Al-Mu'minun",
+      "name_translation": "The Believers",
+      "ayah_count": 118,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 24,
+      "name_ar": "النور",
+      "name_en": "An-Nur",
+      "name_translation": "The Light",
+      "ayah_count": 64,
+      "revelation_type": "Medinan"
+    },
+    {
+      "number": 25,
+      "name_ar": "الفرقان",
+      "name_en": "Al-Furqan",
+      "name_translation": "The Criterion",
+      "ayah_count": 77,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 26,
+      "name_ar": "الشعراء",
+      "name_en": "Ash-Shu'ara",
+      "name_translation": "The Poets",
+      "ayah_count": 227,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 27,
+      "name_ar": "النمل",
+      "name_en": "An-Naml",
+      "name_translation": "The Ants",
+      "ayah_count": 93,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 28,
+      "name_ar": "القصص",
+      "name_en": "Al-Qasas",
+      "name_translation": "The Stories",
+      "ayah_count": 88,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 29,
+      "name_ar": "العنكبوت",
+      "name_en": "Al-'Ankabut",
+      "name_translation": "The Spider",
+      "ayah_count": 69,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 30,
+      "name_ar": "الروم",
+      "name_en": "Ar-Rum",
+      "name_translation": "The Romans",
+      "ayah_count": 60,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 31,
+      "name_ar": "لقمان",
+      "name_en": "Luqman",
+      "name_translation": "Luqman",
+      "ayah_count": 34,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 32,
+      "name_ar": "السجدة",
+      "name_en": "As-Sajdah",
+      "name_translation": "The Prostration",
+      "ayah_count": 30,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 33,
+      "name_ar": "الأحزاب",
+      "name_en": "Al-Ahzab",
+      "name_translation": "The Combined Forces",
+      "ayah_count": 73,
+      "revelation_type": "Medinan"
+    },
+    {
+      "number": 34,
+      "name_ar": "سبأ",
+      "name_en": "Saba",
+      "name_translation": "Sheba",
+      "ayah_count": 54,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 35,
+      "name_ar": "فاطر",
+      "name_en": "Fatir",
+      "name_translation": "Originator",
+      "ayah_count": 45,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 36,
+      "name_ar": "يس",
+      "name_en": "Ya-Sin",
+      "name_translation": "Ya-Sin",
+      "ayah_count": 83,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 37,
+      "name_ar": "الصافات",
+      "name_en": "As-Saffat",
+      "name_translation": "Those who set the Ranks",
+      "ayah_count": 182,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 38,
+      "name_ar": "ص",
+      "name_en": "Sad",
+      "name_translation": "The Letter Sad",
+      "ayah_count": 88,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 39,
+      "name_ar": "الزمر",
+      "name_en": "Az-Zumar",
+      "name_translation": "The Troops",
+      "ayah_count": 75,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 40,
+      "name_ar": "غافر",
+      "name_en": "Ghafir",
+      "name_translation": "The Forgiver",
+      "ayah_count": 85,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 41,
+      "name_ar": "فصلت",
+      "name_en": "Fussilat",
+      "name_translation": "Explained in Detail",
+      "ayah_count": 54,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 42,
+      "name_ar": "الشورى",
+      "name_en": "Ash-Shura",
+      "name_translation": "The Consultation",
+      "ayah_count": 53,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 43,
+      "name_ar": "الزخرف",
+      "name_en": "Az-Zukhruf",
+      "name_translation": "The Ornaments of Gold",
+      "ayah_count": 89,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 44,
+      "name_ar": "الدخان",
+      "name_en": "Ad-Dukhan",
+      "name_translation": "The Smoke",
+      "ayah_count": 59,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 45,
+      "name_ar": "الجاثية",
+      "name_en": "Al-Jathiyah",
+      "name_translation": "The Crouching",
+      "ayah_count": 37,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 46,
+      "name_ar": "الأحقاف",
+      "name_en": "Al-Ahqaf",
+      "name_translation": "The Wind-Curved Sandhills",
+      "ayah_count": 35,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 47,
+      "name_ar": "محمد",
+      "name_en": "Muhammad",
+      "name_translation": "Muhammad",
+      "ayah_count": 38,
+      "revelation_type": "Medinan"
+    },
+    {
+      "number": 48,
+      "name_ar": "الفتح",
+      "name_en": "Al-Fath",
+      "name_translation": "The Victory",
+      "ayah_count": 29,
+      "revelation_type": "Medinan"
+    },
+    {
+      "number": 49,
+      "name_ar": "الحجرات",
+      "name_en": "Al-Hujurat",
+      "name_translation": "The Rooms",
+      "ayah_count": 18,
+      "revelation_type": "Medinan"
+    },
+    {
+      "number": 50,
+      "name_ar": "ق",
+      "name_en": "Qaf",
+      "name_translation": "The Letter Qaf",
+      "ayah_count": 45,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 51,
+      "name_ar": "الذاريات",
+      "name_en": "Adh-Dhariyat",
+      "name_translation": "The Winnowing Winds",
+      "ayah_count": 60,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 52,
+      "name_ar": "الطور",
+      "name_en": "At-Tur",
+      "name_translation": "The Mount",
+      "ayah_count": 49,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 53,
+      "name_ar": "النجم",
+      "name_en": "An-Najm",
+      "name_translation": "The Star",
+      "ayah_count": 62,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 54,
+      "name_ar": "القمر",
+      "name_en": "Al-Qamar",
+      "name_translation": "The Moon",
+      "ayah_count": 55,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 55,
+      "name_ar": "الرحمن",
+      "name_en": "Ar-Rahman",
+      "name_translation": "The Beneficent",
+      "ayah_count": 78,
+      "revelation_type": "Medinan"
+    },
+    {
+      "number": 56,
+      "name_ar": "الواقعة",
+      "name_en": "Al-Waqi'ah",
+      "name_translation": "The Inevitable",
+      "ayah_count": 96,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 57,
+      "name_ar": "الحديد",
+      "name_en": "Al-Hadid",
+      "name_translation": "The Iron",
+      "ayah_count": 29,
+      "revelation_type": "Medinan"
+    },
+    {
+      "number": 58,
+      "name_ar": "المجادلة",
+      "name_en": "Al-Mujadila",
+      "name_translation": "The Pleading Woman",
+      "ayah_count": 22,
+      "revelation_type": "Medinan"
+    },
+    {
+      "number": 59,
+      "name_ar": "الحشر",
+      "name_en": "Al-Hashr",
+      "name_translation": "The Exile",
+      "ayah_count": 24,
+      "revelation_type": "Medinan"
+    },
+    {
+      "number": 60,
+      "name_ar": "الممتحنة",
+      "name_en": "Al-Mumtahanah",
+      "name_translation": "She that is to be examined",
+      "ayah_count": 13,
+      "revelation_type": "Medinan"
+    },
+    {
+      "number": 61,
+      "name_ar": "الصف",
+      "name_en": "As-Saff",
+      "name_translation": "The Ranks",
+      "ayah_count": 14,
+      "revelation_type": "Medinan"
+    },
+    {
+      "number": 62,
+      "name_ar": "الجمعة",
+      "name_en": "Al-Jumu'ah",
+      "name_translation": "The Congregation",
+      "ayah_count": 11,
+      "revelation_type": "Medinan"
+    },
+    {
+      "number": 63,
+      "name_ar": "المنافقون",
+      "name_en": "Al-Munafiqun",
+      "name_translation": "The Hypocrites",
+      "ayah_count": 11,
+      "revelation_type": "Medinan"
+    },
+    {
+      "number": 64,
+      "name_ar": "التغابن",
+      "name_en": "At-Taghabun",
+      "name_translation": "The Mutual Disillusion",
+      "ayah_count": 18,
+      "revelation_type": "Medinan"
+    },
+    {
+      "number": 65,
+      "name_ar": "الطلاق",
+      "name_en": "At-Talaq",
+      "name_translation": "The Divorce",
+      "ayah_count": 12,
+      "revelation_type": "Medinan"
+    },
+    {
+      "number": 66,
+      "name_ar": "التحريم",
+      "name_en": "At-Tahrim",
+      "name_translation": "The Prohibition",
+      "ayah_count": 12,
+      "revelation_type": "Medinan"
+    },
+    {
+      "number": 67,
+      "name_ar": "الملك",
+      "name_en": "Al-Mulk",
+      "name_translation": "The Sovereignty",
+      "ayah_count": 30,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 68,
+      "name_ar": "القلم",
+      "name_en": "Al-Qalam",
+      "name_translation": "The Pen",
+      "ayah_count": 52,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 69,
+      "name_ar": "الحاقة",
+      "name_en": "Al-Haqqah",
+      "name_translation": "The Reality",
+      "ayah_count": 52,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 70,
+      "name_ar": "المعارج",
+      "name_en": "Al-Ma'arij",
+      "name_translation": "The Ascending Stairways",
+      "ayah_count": 44,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 71,
+      "name_ar": "نوح",
+      "name_en": "Nuh",
+      "name_translation": "Noah",
+      "ayah_count": 28,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 72,
+      "name_ar": "الجن",
+      "name_en": "Al-Jinn",
+      "name_translation": "The Jinn",
+      "ayah_count": 28,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 73,
+      "name_ar": "المزمل",
+      "name_en": "Al-Muzzammil",
+      "name_translation": "The Enshrouded One",
+      "ayah_count": 20,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 74,
+      "name_ar": "المدثر",
+      "name_en": "Al-Muddaththir",
+      "name_translation": "The Cloaked One",
+      "ayah_count": 56,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 75,
+      "name_ar": "القيامة",
+      "name_en": "Al-Qiyamah",
+      "name_translation": "The Resurrection",
+      "ayah_count": 40,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 76,
+      "name_ar": "الإنسان",
+      "name_en": "Al-Insan",
+      "name_translation": "Man",
+      "ayah_count": 31,
+      "revelation_type": "Medinan"
+    },
+    {
+      "number": 77,
+      "name_ar": "المرسلات",
+      "name_en": "Al-Mursalat",
+      "name_translation": "The Emissaries",
+      "ayah_count": 50,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 78,
+      "name_ar": "النبأ",
+      "name_en": "An-Naba",
+      "name_translation": "The Tidings",
+      "ayah_count": 40,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 79,
+      "name_ar": "النازعات",
+      "name_en": "An-Nazi'at",
+      "name_translation": "Those who drag forth",
+      "ayah_count": 46,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 80,
+      "name_ar": "عبس",
+      "name_en": "'Abasa",
+      "name_translation": "He Frowned",
+      "ayah_count": 42,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 81,
+      "name_ar": "التكوير",
+      "name_en": "At-Takwir",
+      "name_translation": "The Overthrowing",
+      "ayah_count": 29,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 82,
+      "name_ar": "الانفطار",
+      "name_en": "Al-Infitar",
+      "name_translation": "The Cleaving",
+      "ayah_count": 19,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 83,
+      "name_ar": "المطففين",
+      "name_en": "Al-Mutaffifin",
+      "name_translation": "Defrauding",
+      "ayah_count": 36,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 84,
+      "name_ar": "الانشقاق",
+      "name_en": "Al-Inshiqaq",
+      "name_translation": "The Splitting Open",
+      "ayah_count": 25,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 85,
+      "name_ar": "البروج",
+      "name_en": "Al-Buruj",
+      "name_translation": "The Mansions of the Stars",
+      "ayah_count": 22,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 86,
+      "name_ar": "الطارق",
+      "name_en": "At-Tariq",
+      "name_translation": "The Morning Star",
+      "ayah_count": 17,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 87,
+      "name_ar": "الأعلى",
+      "name_en": "Al-A'la",
+      "name_translation": "The Most High",
+      "ayah_count": 19,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 88,
+      "name_ar": "الغاشية",
+      "name_en": "Al-Ghashiyah",
+      "name_translation": "The Overwhelming",
+      "ayah_count": 26,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 89,
+      "name_ar": "الفجر",
+      "name_en": "Al-Fajr",
+      "name_translation": "The Dawn",
+      "ayah_count": 30,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 90,
+      "name_ar": "البلد",
+      "name_en": "Al-Balad",
+      "name_translation": "The City",
+      "ayah_count": 20,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 91,
+      "name_ar": "الشمس",
+      "name_en": "Ash-Shams",
+      "name_translation": "The Sun",
+      "ayah_count": 15,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 92,
+      "name_ar": "الليل",
+      "name_en": "Al-Layl",
+      "name_translation": "The Night",
+      "ayah_count": 21,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 93,
+      "name_ar": "الضحى",
+      "name_en": "Ad-Duha",
+      "name_translation": "The Morning Hours",
+      "ayah_count": 11,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 94,
+      "name_ar": "الشرح",
+      "name_en": "Ash-Sharh",
+      "name_translation": "The Relief",
+      "ayah_count": 8,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 95,
+      "name_ar": "التين",
+      "name_en": "At-Tin",
+      "name_translation": "The Fig",
+      "ayah_count": 8,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 96,
+      "name_ar": "العلق",
+      "name_en": "Al-'Alaq",
+      "name_translation": "The Clot",
+      "ayah_count": 19,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 97,
+      "name_ar": "القدر",
+      "name_en": "Al-Qadr",
+      "name_translation": "The Power",
+      "ayah_count": 5,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 98,
+      "name_ar": "البينة",
+      "name_en": "Al-Bayyinah",
+      "name_translation": "The Clear Proof",
+      "ayah_count": 8,
+      "revelation_type": "Medinan"
+    },
+    {
+      "number": 99,
+      "name_ar": "الزلزلة",
+      "name_en": "Az-Zalzalah",
+      "name_translation": "The Earthquake",
+      "ayah_count": 8,
+      "revelation_type": "Medinan"
+    },
+    {
+      "number": 100,
+      "name_ar": "العاديات",
+      "name_en": "Al-'Adiyat",
+      "name_translation": "The Courser",
+      "ayah_count": 11,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 101,
+      "name_ar": "القارعة",
+      "name_en": "Al-Qari'ah",
+      "name_translation": "The Calamity",
+      "ayah_count": 11,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 102,
+      "name_ar": "التكاثر",
+      "name_en": "At-Takathur",
+      "name_translation": "The Rivalry in world increase",
+      "ayah_count": 8,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 103,
+      "name_ar": "العصر",
+      "name_en": "Al-'Asr",
+      "name_translation": "The Declining Day",
+      "ayah_count": 3,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 104,
+      "name_ar": "الهمزة",
+      "name_en": "Al-Humazah",
+      "name_translation": "The Traducer",
+      "ayah_count": 9,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 105,
+      "name_ar": "الفيل",
+      "name_en": "Al-Fil",
+      "name_translation": "The Elephant",
+      "ayah_count": 5,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 106,
+      "name_ar": "قريش",
+      "name_en": "Quraysh",
+      "name_translation": "Quraysh",
+      "ayah_count": 4,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 107,
+      "name_ar": "الماعون",
+      "name_en": "Al-Ma'un",
+      "name_translation": "Small Kindnesses",
+      "ayah_count": 7,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 108,
+      "name_ar": "الكوثر",
+      "name_en": "Al-Kawthar",
+      "name_translation": "Abundance",
+      "ayah_count": 3,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 109,
+      "name_ar": "الكافرون",
+      "name_en": "Al-Kafirun",
+      "name_translation": "The Disbelievers",
+      "ayah_count": 6,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 110,
+      "name_ar": "النصر",
+      "name_en": "An-Nasr",
+      "name_translation": "Divine Support",
+      "ayah_count": 3,
+      "revelation_type": "Medinan"
+    },
+    {
+      "number": 111,
+      "name_ar": "المسد",
+      "name_en": "Al-Masad",
+      "name_translation": "The Palm Fiber",
+      "ayah_count": 5,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 112,
+      "name_ar": "الإخلاص",
+      "name_en": "Al-Ikhlas",
+      "name_translation": "The Sincerity",
+      "ayah_count": 4,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 113,
+      "name_ar": "الفلق",
+      "name_en": "Al-Falaq",
+      "name_translation": "The Daybreak",
+      "ayah_count": 5,
+      "revelation_type": "Meccan"
+    },
+    {
+      "number": 114,
+      "name_ar": "الناس",
+      "name_en": "An-Nas",
+      "name_translation": "Mankind",
+      "ayah_count": 6,
+      "revelation_type": "Meccan"
+    }
+  ],
+  "ayahs": [
+    {
+      "surah": 1,
+      "ayah": 1,
+      "ar": "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ",
+      "en": "In the name of Allah, the Entirely Merciful, the Especially Merciful."
+    },
+    {
+      "surah": 1,
+      "ayah": 2,
+      "ar": "الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ",
+      "en": "[All] praise is [due] to Allah, Lord of the worlds -"
+    },
+    {
+      "surah": 1,
+      "ayah": 3,
+      "ar": "الرَّحْمَٰنِ الرَّحِيمِ",
+      "en": "The Entirely Merciful, the Especially Merciful,"
+    },
+    {
+      "surah": 1,
+      "ayah": 4,
+      "ar": "مَالِكِ يَوْمِ الدِّينِ",
+      "en": "Sovereign of the Day of Recompense."
+    },
+    {
+      "surah": 1,
+      "ayah": 5,
+      "ar": "إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ",
+      "en": "It is You we worship and You we ask for help."
+    },
+    {
+      "surah": 1,
+      "ayah": 6,
+      "ar": "اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ",
+      "en": "Guide us to the straight path -"
+    },
+    {
+      "surah": 1,
+      "ayah": 7,
+      "ar": "صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ",
+      "en": "The path of those upon whom You have bestowed favor, not of those who have evoked [Your] anger or of those who are astray."
+    },
+    {
+      "surah": 2,
+      "ayah": 45,
+      "ar": "وَاسْتَعِينُوا بِالصَّبْرِ وَالصَّلَاةِ ۚ وَإِنَّهَا لَكَبِيرَةٌ إِلَّا عَلَى الْخَاشِعِينَ",
+      "en": "And seek help through patience and prayer, and indeed, it is difficult except for the humbly submissive [to Allah]."
+    },
+    {
+      "surah": 2,
+      "ayah": 152,
+      "ar": "فَاذْكُرُونِي أَذْكُرْكُمْ وَاشْكُرُوا لِي وَلَا تَكْفُرُونِ",
+      "en": "So remember Me; I will remember you. And be grateful to Me and do not deny Me."
+    },
+    {
+      "surah": 2,
+      "ayah": 153,
+      "ar": "يَا أَيُّهَا الَّذِينَ آمَنُوا اسْتَعِينُوا بِالصَّبْرِ وَالصَّلَاةِ ۚ إِنَّ اللَّهَ مَعَ الصَّابِرِينَ",
+      "en": "O you who have believed, seek help through patience and prayer. Indeed, Allah is with the patient."
+    },
+    {
+      "surah": 2,
+      "ayah": 155,
+      "ar": "وَلَنَبْلُوَنَّكُم بِشَيْءٍ مِّنَ الْخَوْفِ وَالْجُوعِ وَنَقْصٍ مِّنَ الْأَمْوَالِ وَالْأَنفُسِ وَالثَّمَرَاتِ ۗ وَبَشِّرِ الصَّابِرِينَ",
+      "en": "And We will surely test you with something of fear and hunger and a loss of wealth and lives and fruits, but give good tidings to the patient,"
+    },
+    {
+      "surah": 2,
+      "ayah": 186,
+      "ar": "وَإِذَا سَأَلَكَ عِبَادِي عَنِّي فَإِنِّي قَرِيبٌ ۖ أُجِيبُ دَعْوَةَ الدَّاعِ إِذَا دَعَانِ ۖ فَلْيَسْتَجِيبُوا لِي وَلْيُؤْمِنُوا بِي لَعَلَّهُمْ يَرْشُدُونَ",
+      "en": "And when My servants ask you concerning Me, indeed I am near. I respond to the invocation of the supplicant when he calls upon Me. So let them respond to Me and believe in Me that they may be [rightly] guided."
+    },
+    {
+      "surah": 2,
+      "ayah": 255,
+      "ar": "اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ ۚ لَّهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ ۗ مَن ذَا الَّذِي يَشْفَعُ عِندَهُ إِلَّا بِإِذْنِهِ ۚ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ ۖ وَلَا يُحِيطُونَ بِشَيْءٍ مِّنْ عِلْمِهِ إِلَّا بِمَا شَاءَ ۚ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ ۖ وَلَا يَئُودُهُ حِفْظُهُمَا ۚ وَهُوَ الْعَلِيُّ الْعَظِيمُ",
+      "en": "Allah - there is no deity except Him, the Ever-Living, the Sustainer of [all] existence. Neither drowsiness overtakes Him nor sleep. To Him belongs whatever is in the heavens and whatever is on the earth. Who is it that can intercede with Him except by His permission? He knows what is before them and what will be after them, and they encompass not a thing of His knowledge except for what He wills. His Kursi extends over the heavens and the earth, and their preservation tires Him not. And He is the Most High, the Most Great."
+    },
+    {
+      "surah": 2,
+      "ayah": 286,
+      "ar": "لَا يُكَلِّفُ اللَّهُ نَفْسًا إِلَّا وُسْعَهَا ۚ لَهَا مَا كَسَبَتْ وَعَلَيْهَا مَا اكْتَسَبَتْ ۗ رَبَّنَا لَا تُؤَاخِذْنَا إِن نَّسِينَا أَوْ أَخْطَأْنَا",
+      "en": "Allah does not charge a soul except [with that within] its capacity. It will have [the consequence of] what [good] it has gained, and it will bear [the consequence of] what [evil] it has earned. 'Our Lord, do not impose blame upon us if we have forgotten or erred.'"
+    },
+    {
+      "surah": 3,
+      "ayah": 139,
+      "ar": "وَلَا تَهِنُوا وَلَا تَحْزَنُوا وَأَنتُمُ الْأَعْلَوْنَ إِن كُنتُم مُّؤْمِنِينَ",
+      "en": "So do not weaken and do not grieve, and you will be superior if you are [true] believers."
+    },
+    {
+      "surah": 3,
+      "ayah": 159,
+      "ar": "فَبِمَا رَحْمَةٍ مِّنَ اللَّهِ لِنتَ لَهُمْ ۖ وَلَوْ كُنتَ فَظًّا غَلِيظَ الْقَلْبِ لَانفَضُّوا مِنْ حَوْلِكَ ۖ فَاعْفُ عَنْهُمْ وَاسْتَغْفِرْ لَهُمْ وَشَاوِرْهُمْ فِي الْأَمْرِ ۖ فَإِذَا عَزَمْتَ فَتَوَكَّلْ عَلَى اللَّهِ ۚ إِنَّ اللَّهَ يُحِبُّ الْمُتَوَكِّلِينَ",
+      "en": "So by mercy from Allah, [O Muhammad], you were lenient with them. And if you had been rude and harsh in heart, they would have disbanded from about you. So pardon them and ask forgiveness for them and consult them in the matter. And when you have decided, then rely upon Allah. Indeed, Allah loves those who rely [upon Him]."
+    },
+    {
+      "surah": 16,
+      "ayah": 128,
+      "ar": "إِنَّ اللَّهَ مَعَ الَّذِينَ اتَّقَوا وَّالَّذِينَ هُم مُّحْسِنُونَ",
+      "en": "Indeed, Allah is with those who fear Him and those who are doers of good."
+    },
+    {
+      "surah": 17,
+      "ayah": 23,
+      "ar": "وَقَضَىٰ رَبُّكَ أَلَّا تَعْبُدُوا إِلَّا إِيَّاهُ وَبِالْوَالِدَيْنِ إِحْسَانًا ۚ إِمَّا يَبْلُغَنَّ عِندَكَ الْكِبَرَ أَحَدُهُمَا أَوْ كِلَاهُمَا فَلَا تَقُل لَّهُمَا أُفٍّ وَلَا تَنْهَرْهُمَا وَقُل لَّهُمَا قَوْلًا كَرِيمًا",
+      "en": "And your Lord has decreed that you not worship except Him, and to parents, good treatment. Whether one or both of them reach old age [while] with you, say not to them [so much as], 'uff,' and do not repel them but speak to them a noble word."
+    },
+    {
+      "surah": 20,
+      "ayah": 114,
+      "ar": "فَتَعَالَى اللَّهُ الْمَلِكُ الْحَقُّ ۗ وَلَا تَعْجَلْ بِالْقُرْآنِ مِن قَبْلِ أَن يُقْضَىٰ إِلَيْكَ وَحْيُهُ ۖ وَقُل رَّبِّ زِدْنِي عِلْمًا",
+      "en": "So high [above all] is Allah, the Sovereign, the Truth. And do not hasten with [recitation of] the Qur'an before its revelation is completed to you, and say, 'My Lord, increase me in knowledge.'"
+    },
+    {
+      "surah": 24,
+      "ayah": 35,
+      "ar": "اللَّهُ نُورُ السَّمَاوَاتِ وَالْأَرْضِ ۚ مَثَلُ نُورِهِ كَمِشْكَاةٍ فِيهَا مِصْبَاحٌ ۖ الْمِصْبَاحُ فِي زُجَاجَةٍ ۖ الزُّجَاجَةُ كَأَنَّهَا كَوْكَبٌ دُرِّيٌّ",
+      "en": "Allah is the Light of the heavens and the earth. The example of His light is like a niche within which is a lamp, the lamp is within glass, the glass as if it were a pearly [white] star..."
+    },
+    {
+      "surah": 39,
+      "ayah": 53,
+      "ar": "قُلْ يَا عِبَادِيَ الَّذِينَ أَسْرَفُوا عَلَىٰ أَنفُسِهِمْ لَا تَقْنَطُوا مِن رَّحْمَةِ اللَّهِ ۚ إِنَّ اللَّهَ يَغْفِرُ الذُّنُوبَ جَمِيعًا ۚ إِنَّهُ هُوَ الْغَفُورُ الرَّحِيمُ",
+      "en": "Say, 'O My servants who have transgressed against themselves [by sinning], do not despair of the mercy of Allah. Indeed, Allah forgives all sins. Indeed, it is He who is the Forgiving, the Merciful.'"
+    },
+    {
+      "surah": 40,
+      "ayah": 60,
+      "ar": "وَقَالَ رَبُّكُمُ ادْعُونِي أَسْتَجِبْ لَكُمْ ۚ إِنَّ الَّذِينَ يَسْتَكْبِرُونَ عَنْ عِبَادَتِي سَيَدْخُلُونَ جَهَنَّمَ دَاخِرِينَ",
+      "en": "And your Lord says, 'Call upon Me; I will respond to you.' Indeed, those who disdain My worship will enter Hell [rendered] contemptible."
+    },
+    {
+      "surah": 49,
+      "ayah": 10,
+      "ar": "إِنَّمَا الْمُؤْمِنُونَ إِخْوَةٌ فَأَصْلِحُوا بَيْنَ أَخَوَيْكُمْ ۚ وَاتَّقُوا اللَّهَ لَعَلَّكُمْ تُرْحَمُونَ",
+      "en": "The believers are but brothers, so make settlement between your brothers. And fear Allah that you may receive mercy."
+    },
+    {
+      "surah": 49,
+      "ayah": 13,
+      "ar": "يَا أَيُّهَا النَّاسُ إِنَّا خَلَقْنَاكُم مِّن ذَكَرٍ وَأُنثَىٰ وَجَعَلْنَاكُمْ شُعُوبًا وَقَبَائِلَ لِتَعَارَفُوا ۚ إِنَّ أَكْرَمَكُمْ عِندَ اللَّهِ أَتْقَاكُمْ ۚ إِنَّ اللَّهَ عَلِيمٌ خَبِيرٌ",
+      "en": "O mankind, indeed We have created you from male and female and made you peoples and tribes that you may know one another. Indeed, the most noble of you in the sight of Allah is the most righteous of you. Indeed, Allah is Knowing and Acquainted."
+    },
+    {
+      "surah": 57,
+      "ayah": 4,
+      "ar": "هُوَ الَّذِي خَلَقَ السَّمَاوَاتِ وَالْأَرْضَ فِي سِتَّةِ أَيَّامٍ ثُمَّ اسْتَوَىٰ عَلَى الْعَرْشِ ۚ يَعْلَمُ مَا يَلِجُ فِي الْأَرْضِ وَمَا يَخْرُجُ مِنْهَا وَمَا يَنزِلُ مِنَ السَّمَاءِ وَمَا يَعْرُجُ فِيهَا ۖ وَهُوَ مَعَكُمْ أَيْنَ مَا كُنتُمْ ۚ وَاللَّهُ بِمَا تَعْمَلُونَ بَصِيرٌ",
+      "en": "It is He who created the heavens and earth in six days and then established Himself above the Throne. He knows what penetrates into the earth and what comes forth from it and what descends from the heaven and what ascends therein. And He is with you wherever you are. And Allah, of what you do, is Seeing."
+    },
+    {
+      "surah": 65,
+      "ayah": 2,
+      "ar": "وَمَن يَتَّقِ اللَّهَ يَجْعَل لَّهُ مَخْرَجًا",
+      "en": "And whoever fears Allah - He will make for him a way out."
+    },
+    {
+      "surah": 65,
+      "ayah": 3,
+      "ar": "وَيَرْزُقْهُ مِنْ حَيْثُ لَا يَحْتَسِبُ ۚ وَمَن يَتَوَكَّلْ عَلَى اللَّهِ فَهُوَ حَسْبُهُ ۚ إِنَّ اللَّهَ بَالِغُ أَمْرِهِ ۚ قَدْ جَعَلَ اللَّهُ لِكُلِّ شَيْءٍ قَدْرًا",
+      "en": "And will provide for him from where he does not expect. And whoever relies upon Allah - then He is sufficient for him. Indeed, Allah will accomplish His purpose. Allah has already set for everything a [decreed] extent."
+    },
+    {
+      "surah": 67,
+      "ayah": 1,
+      "ar": "تَبَارَكَ الَّذِي بِيَدِهِ الْمُلْكُ وَهُوَ عَلَىٰ كُلِّ شَيْءٍ قَدِيرٌ",
+      "en": "Blessed is He in whose hand is dominion, and He is over all things competent -"
+    },
+    {
+      "surah": 67,
+      "ayah": 2,
+      "ar": "الَّذِي خَلَقَ الْمَوْتَ وَالْحَيَاةَ لِيَبْلُوَكُمْ أَيُّكُمْ أَحْسَنُ عَمَلًا ۚ وَهُوَ الْعَزِيزُ الْغَفُورُ",
+      "en": "[He] who created death and life to test you [as to] which of you is best in deed - and He is the Exalted in Might, the Forgiving -"
+    },
+    {
+      "surah": 93,
+      "ayah": 1,
+      "ar": "وَالضُّحَىٰ",
+      "en": "By the morning brightness"
+    },
+    {
+      "surah": 93,
+      "ayah": 2,
+      "ar": "وَاللَّيْلِ إِذَا سَجَىٰ",
+      "en": "And [by] the night when it covers with darkness,"
+    },
+    {
+      "surah": 93,
+      "ayah": 3,
+      "ar": "مَا وَدَّعَكَ رَبُّكَ وَمَا قَلَىٰ",
+      "en": "Your Lord has not taken leave of you, [O Muhammad], nor has He detested [you]."
+    },
+    {
+      "surah": 93,
+      "ayah": 4,
+      "ar": "وَلَلْآخِرَةُ خَيْرٌ لَّكَ مِنَ الْأُولَىٰ",
+      "en": "And the Hereafter is better for you than the first [life]."
+    },
+    {
+      "surah": 93,
+      "ayah": 5,
+      "ar": "وَلَسَوْفَ يُعْطِيكَ رَبُّكَ فَتَرْضَىٰ",
+      "en": "And your Lord is going to give you, and you will be satisfied."
+    },
+    {
+      "surah": 94,
+      "ayah": 1,
+      "ar": "أَلَمْ نَشْرَحْ لَكَ صَدْرَكَ",
+      "en": "Did We not expand for you, [O Muhammad], your breast?"
+    },
+    {
+      "surah": 94,
+      "ayah": 2,
+      "ar": "وَوَضَعْنَا عَنكَ وِزْرَكَ",
+      "en": "And We removed from you your burden"
+    },
+    {
+      "surah": 94,
+      "ayah": 3,
+      "ar": "الَّذِي أَنقَضَ ظَهْرَكَ",
+      "en": "Which had weighed upon your back"
+    },
+    {
+      "surah": 94,
+      "ayah": 4,
+      "ar": "وَرَفَعْنَا لَكَ ذِكْرَكَ",
+      "en": "And raised high for you your repute."
+    },
+    {
+      "surah": 94,
+      "ayah": 5,
+      "ar": "فَإِنَّ مَعَ الْعُسْرِ يُسْرًا",
+      "en": "For indeed, with hardship [will be] ease."
+    },
+    {
+      "surah": 94,
+      "ayah": 6,
+      "ar": "إِنَّ مَعَ الْعُسْرِ يُسْرًا",
+      "en": "Indeed, with hardship [will be] ease."
+    },
+    {
+      "surah": 94,
+      "ayah": 7,
+      "ar": "فَإِذَا فَرَغْتَ فَانصَبْ",
+      "en": "So when you have finished [your duties], then stand up [for worship]."
+    },
+    {
+      "surah": 94,
+      "ayah": 8,
+      "ar": "وَإِلَىٰ رَبِّكَ فَارْغَب",
+      "en": "And to your Lord direct [your] longing."
+    },
+    {
+      "surah": 103,
+      "ayah": 1,
+      "ar": "وَالْعَصْرِ",
+      "en": "By time,"
+    },
+    {
+      "surah": 103,
+      "ayah": 2,
+      "ar": "إِنَّ الْإِنسَانَ لَفِي خُسْرٍ",
+      "en": "Indeed, mankind is in loss,"
+    },
+    {
+      "surah": 103,
+      "ayah": 3,
+      "ar": "إِلَّا الَّذِينَ آمَنُوا وَعَمِلُوا الصَّالِحَاتِ وَتَوَاصَوْا بِالْحَقِّ وَتَوَاصَوْا بِالصَّبْرِ",
+      "en": "Except for those who have believed and done righteous deeds and advised each other to truth and advised each other to patience."
+    },
+    {
+      "surah": 112,
+      "ayah": 1,
+      "ar": "قُلْ هُوَ اللَّهُ أَحَدٌ",
+      "en": "Say, 'He is Allah, [who is] One,"
+    },
+    {
+      "surah": 112,
+      "ayah": 2,
+      "ar": "اللَّهُ الصَّمَدُ",
+      "en": "Allah, the Eternal Refuge."
+    },
+    {
+      "surah": 112,
+      "ayah": 3,
+      "ar": "لَمْ يَلِدْ وَلَمْ يُولَدْ",
+      "en": "He neither begets nor is born,"
+    },
+    {
+      "surah": 112,
+      "ayah": 4,
+      "ar": "وَلَمْ يَكُن لَّهُ كُفُوًا أَحَدٌ",
+      "en": "Nor is there to Him any equivalent.'"
+    },
+    {
+      "surah": 113,
+      "ayah": 1,
+      "ar": "قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ",
+      "en": "Say, 'I seek refuge in the Lord of daybreak"
+    },
+    {
+      "surah": 113,
+      "ayah": 2,
+      "ar": "مِن شَرِّ مَا خَلَقَ",
+      "en": "From the evil of that which He created"
+    },
+    {
+      "surah": 113,
+      "ayah": 3,
+      "ar": "وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ",
+      "en": "And from the evil of darkness when it settles"
+    },
+    {
+      "surah": 113,
+      "ayah": 4,
+      "ar": "وَمِن شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ",
+      "en": "And from the evil of the blowers in knots"
+    },
+    {
+      "surah": 113,
+      "ayah": 5,
+      "ar": "وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ",
+      "en": "And from the evil of an envier when he envies.'"
+    },
+    {
+      "surah": 114,
+      "ayah": 1,
+      "ar": "قُلْ أَعُوذُ بِرَبِّ النَّاسِ",
+      "en": "Say, 'I seek refuge in the Lord of mankind,"
+    },
+    {
+      "surah": 114,
+      "ayah": 2,
+      "ar": "مَلِكِ النَّاسِ",
+      "en": "The Sovereign of mankind,"
+    },
+    {
+      "surah": 114,
+      "ayah": 3,
+      "ar": "إِلَٰهِ النَّاسِ",
+      "en": "The God of mankind,"
+    },
+    {
+      "surah": 114,
+      "ayah": 4,
+      "ar": "مِن شَرِّ الْوَسْوَاسِ الْخَنَّاسِ",
+      "en": "From the evil of the retreating whisperer -"
+    },
+    {
+      "surah": 114,
+      "ayah": 5,
+      "ar": "الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ",
+      "en": "Who whispers into the breasts of mankind -"
+    },
+    {
+      "surah": 114,
+      "ayah": 6,
+      "ar": "مِنَ الْجِنَّةِ وَالنَّاسِ",
+      "en": "From among the jinn and mankind.'"
+    }
+  ]
+}

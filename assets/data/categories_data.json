@@ -1,0 +1,363 @@
+{
+  "version": "1.0.0",
+  "categories": [
+    {
+      "id": "hardship_and_hope",
+      "title": "Hardship and Hope",
+      "description": "Find comfort, reassurance, and divine solace during life's most challenging seasons.",
+      "icon": "wb_sunny_outlined",
+      "content_links": [
+        {
+          "content_type": "quran",
+          "content_id": "94_5",
+          "reference": "Surah Ash-Sharh [94:5-6]",
+          "relationship": "direct",
+          "rationale": "Explicit divine assurance that with every hardship arrives relief and ease."
+        },
+        {
+          "content_type": "quran",
+          "content_id": "93_3",
+          "reference": "Surah Ad-Duha [93:3-5]",
+          "relationship": "direct",
+          "rationale": "Affirmation that Allah has not abandoned the believer and promises a brighter future."
+        },
+        {
+          "content_type": "hadith",
+          "content_id": "bukhari_5645",
+          "reference": "Sahih al-Bukhari 5645",
+          "relationship": "direct",
+          "rationale": "Teaches that physical and emotional pain can serve as spiritual expiation and redemption."
+        }
+      ]
+    },
+    {
+      "id": "patience",
+      "title": "Patience (Sabr)",
+      "description": "Cultivate perseverance, steadfastness, and dignified restraint in thought and deed.",
+      "icon": "shield_outlined",
+      "content_links": [
+        {
+          "content_type": "quran",
+          "content_id": "2_153",
+          "reference": "Surah Al-Baqarah [2:153]",
+          "relationship": "direct",
+          "rationale": "Divine injunction directing the faithful to seek aid through patient endurance and prayer."
+        },
+        {
+          "content_type": "hadith",
+          "content_id": "muslim_2999",
+          "reference": "Sahih Muslim 2999",
+          "relationship": "direct",
+          "rationale": "Highlights how both gratitude in ease and patience in hardship transform every state into good."
+        },
+        {
+          "content_type": "quran",
+          "content_id": "103_3",
+          "reference": "Surah Al-'Asr [103:3]",
+          "relationship": "thematic",
+          "rationale": "Emphasizes mutual counsel toward truth and unwavering patience to overcome human loss."
+        }
+      ]
+    },
+    {
+      "id": "gratitude",
+      "title": "Gratitude (Shukr)",
+      "description": "Acknowledge blessings, nurture contentedness, and praise the Provider of all goodness.",
+      "icon": "favorite_border",
+      "content_links": [
+        {
+          "content_type": "quran",
+          "content_id": "1_2",
+          "reference": "Surah Al-Fatihah [1:2]",
+          "relationship": "direct",
+          "rationale": "Foundational verse opening the Quran in perpetual praise and recognition of the Lord of worlds."
+        },
+        {
+          "content_type": "quran",
+          "content_id": "2_152",
+          "reference": "Surah Al-Baqarah [2:152]",
+          "relationship": "direct",
+          "rationale": "Direct command connecting remembrance with thankful celebration and rejecting ingratitude."
+        },
+        {
+          "content_type": "hadith",
+          "content_id": "muslim_2999",
+          "reference": "Sahih Muslim 2999",
+          "relationship": "thematic",
+          "rationale": "Points out that giving thanks during pleasant times is inherently good and rewarded."
+        }
+      ]
+    },
+    {
+      "id": "repentance_and_istighfar",
+      "title": "Repentance & Istighfar",
+      "description": "Turning back to Allah with humility, seeking pardon, and renewing our devotion.",
+      "icon": "refresh_outlined",
+      "content_links": [
+        {
+          "content_type": "quran",
+          "content_id": "39_53",
+          "reference": "Surah Az-Zumar [39:53]",
+          "relationship": "direct",
+          "rationale": "The most expansive divine invitation never to despair of Allah's limitless forgiveness."
+        },
+        {
+          "content_type": "hadith",
+          "content_id": "bukhari_6306",
+          "reference": "Sahih al-Bukhari 6306",
+          "relationship": "direct",
+          "rationale": "The Master Supplication (Sayyid al-Istighfar) recognizing divine blessings and confessing shortcomings."
+        },
+        {
+          "content_type": "hadith",
+          "content_id": "muslim_2749",
+          "reference": "Sahih Muslim 2749",
+          "relationship": "thematic",
+          "rationale": "Illustrates how divine clemency welcomes sincere repentance from fallible human beings."
+        }
+      ]
+    },
+    {
+      "id": "mercy_and_forgiveness",
+      "title": "Mercy and Forgiveness",
+      "description": "Reflecting on divine compassion and manifesting gentle mercy toward all creation.",
+      "icon": "water_drop_outlined",
+      "content_links": [
+        {
+          "content_type": "quran",
+          "content_id": "1_1",
+          "reference": "Surah Al-Fatihah [1:1]",
+          "relationship": "direct",
+          "rationale": "Invocation of Allah's boundless mercy (Ar-Rahman) and specific mercy (Ar-Rahim)."
+        },
+        {
+          "content_type": "quran",
+          "content_id": "3_159",
+          "reference": "Surah Ali 'Imran [3:159]",
+          "relationship": "direct",
+          "rationale": "Praising the Prophet's softness of heart and enjoining mutual pardon and consultation."
+        }
+      ]
+    },
+    {
+      "id": "trust_in_allah",
+      "title": "Trust in Allah (Tawakkul)",
+      "description": "Surrendering worries to the Almighty after taking conscientious and honest effort.",
+      "icon": "anchor_outlined",
+      "content_links": [
+        {
+          "content_type": "quran",
+          "content_id": "65_3",
+          "reference": "Surah At-Talaq [65:3]",
+          "relationship": "direct",
+          "rationale": "Explicit assurance that whoever places their full trust in Allah will find Him sufficient."
+        },
+        {
+          "content_type": "quran",
+          "content_id": "3_159",
+          "reference": "Surah Ali 'Imran [3:159]",
+          "relationship": "direct",
+          "rationale": "Command to take resolute decisions and rely completely upon Allah's love."
+        }
+      ]
+    },
+    {
+      "id": "prayer_and_remembrance",
+      "title": "Prayer & Remembrance (Dhikr)",
+      "description": "Anchoring the restless heart through mindful devotion, supplication, and contemplation.",
+      "icon": "alarm_outlined",
+      "content_links": [
+        {
+          "content_type": "quran",
+          "content_id": "2_186",
+          "reference": "Surah Al-Baqarah [2:186]",
+          "relationship": "direct",
+          "rationale": "Affirms Allah's intimate nearness and His responsiveness to every sincere caller."
+        },
+        {
+          "content_type": "hadith",
+          "content_id": "bukhari_6407",
+          "reference": "Sahih al-Bukhari 6407",
+          "relationship": "direct",
+          "rationale": "Two phrases light on the tongue and heavy in the scales of divine remembrance."
+        },
+        {
+          "content_type": "quran",
+          "content_id": "40_60",
+          "reference": "Surah Ghafir [40:60]",
+          "relationship": "direct",
+          "rationale": "Divine injunction promising an answer to those who supplicate."
+        }
+      ]
+    },
+    {
+      "id": "guidance_and_wisdom",
+      "title": "Guidance and Wisdom",
+      "description": "Seeking celestial clarity, moral discernment, and enlightened understanding in our journeys.",
+      "icon": "lightbulb_outlined",
+      "content_links": [
+        {
+          "content_type": "quran",
+          "content_id": "1_6",
+          "reference": "Surah Al-Fatihah [1:6]",
+          "relationship": "direct",
+          "rationale": "Daily supplication for guidance upon the straight path of righteous favor."
+        },
+        {
+          "content_type": "quran",
+          "content_id": "24_35",
+          "reference": "Surah An-Nur [24:35]",
+          "relationship": "contextual",
+          "rationale": "The famous Verse of Light (Ayat an-Nur) representing divine illumination in the soul."
+        }
+      ]
+    },
+    {
+      "id": "charity_and_generosity",
+      "title": "Charity & Generosity (Sadaqah)",
+      "description": "Sharing sustenance freely, uplifting the vulnerable, and spreading warm goodwill.",
+      "icon": "volunteer_activism_outlined",
+      "content_links": [
+        {
+          "content_type": "hadith",
+          "content_id": "bukhari_13",
+          "reference": "Sahih al-Bukhari 13",
+          "relationship": "thematic",
+          "rationale": "The foundation of fraternal empathy—wanting for one's brother what one loves for oneself."
+        }
+      ]
+    },
+    {
+      "id": "family_and_relationships",
+      "title": "Family and Relationships",
+      "description": "Honoring sacred parental rights, cherishing kin, and treating loved ones with gentle kindness.",
+      "icon": "group_outlined",
+      "content_links": [
+        {
+          "content_type": "quran",
+          "content_id": "17_23",
+          "reference": "Surah Al-Isra [17:23]",
+          "relationship": "direct",
+          "rationale": "Inviolable command to treat aging parents with tender respect and speak noble words."
+        },
+        {
+          "content_type": "hadith",
+          "content_id": "bukhari_6011",
+          "reference": "Sahih al-Bukhari 6011",
+          "relationship": "direct",
+          "rationale": "Prophetic instruction placing the mother at the pinnacle of companionship three times."
+        }
+      ]
+    },
+    {
+      "id": "character_and_conduct",
+      "title": "Character & Conduct (Akhlaq)",
+      "description": "Adorning intentions with honesty, humility, fairness, and noble ethical decorum.",
+      "icon": "military_tech_outlined",
+      "content_links": [
+        {
+          "content_type": "hadith",
+          "content_id": "bukhari_1",
+          "reference": "Sahih al-Bukhari 1",
+          "relationship": "direct",
+          "rationale": "The cornerstone of Islamic conduct: every act is judged by its inner intention."
+        },
+        {
+          "content_type": "hadith",
+          "content_id": "muslim_2564",
+          "reference": "Sahih Muslim 2564",
+          "relationship": "direct",
+          "rationale": "Reminds us that divine scrutiny centers on the heart's purity and deeds, not outward forms."
+        },
+        {
+          "content_type": "quran",
+          "content_id": "49_13",
+          "reference": "Surah Al-Hujurat [49:13]",
+          "relationship": "thematic",
+          "rationale": "True nobility resides purely in conscious God-fearing piety (taqwa)."
+        }
+      ]
+    },
+    {
+      "id": "fear_and_hope",
+      "title": "Fear and Hope",
+      "description": "Balancing awe of divine majesty with luminous hope in His infinite grace.",
+      "icon": "balance_outlined",
+      "content_links": [
+        {
+          "content_type": "quran",
+          "content_id": "3_139",
+          "reference": "Surah Ali 'Imran [3:139]",
+          "relationship": "thematic",
+          "rationale": "Overcoming despair and anxiety through genuine conviction in faith."
+        },
+        {
+          "content_type": "quran",
+          "content_id": "2_286",
+          "reference": "Surah Al-Baqarah [2:286]",
+          "relationship": "thematic",
+          "rationale": "Comfort that no soul is burdened beyond its capacity."
+        }
+      ]
+    },
+    {
+      "id": "travel",
+      "title": "Travel & Exploration",
+      "description": "Supplications, reflections, and safe conduct for journeys across the horizons.",
+      "icon": "flight_takeoff_outlined",
+      "content_links": [
+        {
+          "content_type": "hadith",
+          "content_id": "muslim_1342",
+          "reference": "Sahih Muslim 1342",
+          "relationship": "direct",
+          "rationale": "The prophetic prayer when embarking on travel, imploring piety and safety."
+        }
+      ]
+    },
+    {
+      "id": "seeking_knowledge",
+      "title": "Seeking Knowledge ('Ilm)",
+      "description": "Purifying the intellect through learning, reflection, and sacred inquiry.",
+      "icon": "menu_book_outlined",
+      "content_links": [
+        {
+          "content_type": "quran",
+          "content_id": "20_114",
+          "reference": "Surah Ta-Ha [20:114]",
+          "relationship": "direct",
+          "rationale": "The sublime prayer: 'My Lord, increase me in knowledge.'"
+        },
+        {
+          "content_type": "hadith",
+          "content_id": "muslim_2699",
+          "reference": "Sahih Muslim 2699",
+          "relationship": "direct",
+          "rationale": "Walking the pathway of knowledge eases the road to Paradise."
+        }
+      ]
+    },
+    {
+      "id": "death_and_hereafter",
+      "title": "Death and the Hereafter",
+      "description": "Contemplating the transient nature of this world and preparing for eternal life.",
+      "icon": "hourglass_bottom_outlined",
+      "content_links": [
+        {
+          "content_type": "quran",
+          "content_id": "67_2",
+          "reference": "Surah Al-Mulk [67:2]",
+          "relationship": "direct",
+          "rationale": "Life and death created as purposeful trials to test who is best in deed."
+        },
+        {
+          "content_type": "quran",
+          "content_id": "112_1",
+          "reference": "Surah Al-Ikhlas [112:1-4]",
+          "relationship": "thematic",
+          "rationale": "The singular absolute reality of Allah, transcendent and eternal."
+        }
+      ]
+    }
+  ]
+}
