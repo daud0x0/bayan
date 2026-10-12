@@ -20,7 +20,7 @@ class QuranHadithApp extends StatelessWidget {
     final prefs = scope.preferences;
 
     return MaterialApp(
-      title: 'Quran & Hadith Discovery',
+      title: 'Bayan — Quran & Hadith',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light(
         palette: prefs.themePalette,

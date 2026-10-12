@@ -980,10 +980,33 @@ class SettingsView extends StatelessWidget {
           ),
           const SizedBox(height: 32),
           Center(
-            child: Text(
-              'Quran & Hadith Discovery • v1.0.0 (Offline-First Baseline)\nBuilt with Flutter & Dart',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 11, color: Theme.of(context).colorScheme.outline),
+            child: Column(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(14),
+                  child: Image.asset(
+                    'assets/images/app_logo.png',
+                    width: 52,
+                    height: 52,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  'Bayan — Quran & Hadith • v1.0.0',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                ),
+                const SizedBox(height: 3),
+                Text(
+                  'Timeless Wisdom • Offline-First Baseline\nBuilt with Flutter & Dart',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 11, color: Theme.of(context).colorScheme.outline),
+                ),
+              ],
             ),
           ),
           const SizedBox(height: 24),

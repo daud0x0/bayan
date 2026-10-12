@@ -116,7 +116,7 @@ class _DiscoverViewState extends State<DiscoverView> {
           ),
           const SizedBox(height: 4),
           Text(
-            'Find peace, patience, and guidance in timeless verses and authentic traditions.',
+            'Welcome to Bayan — find peace, patience, and guidance in timeless verses and authentic traditions.',
             style: TextStyle(
               fontSize: 13,
               height: 1.4,
