@@ -177,28 +177,32 @@ class SettingsView extends StatelessWidget {
             child: Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text(
                         'Theme Mode',
                         style: TextStyle(fontWeight: FontWeight.w600),
                       ),
-                      SegmentedButton<ThemeMode>(
-                        style: const ButtonStyle(
-                          visualDensity: VisualDensity.compact,
-                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      const SizedBox(height: 10),
+                      SizedBox(
+                        width: double.infinity,
+                        child: SegmentedButton<ThemeMode>(
+                          style: const ButtonStyle(
+                            visualDensity: VisualDensity.compact,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          ),
+                          segments: const [
+                            ButtonSegment(value: ThemeMode.light, icon: Icon(Icons.light_mode, size: 16), label: Text('Light')),
+                            ButtonSegment(value: ThemeMode.system, icon: Icon(Icons.brightness_auto, size: 16), label: Text('Auto')),
+                            ButtonSegment(value: ThemeMode.dark, icon: Icon(Icons.dark_mode, size: 16), label: Text('Dark')),
+                          ],
+                          selected: {prefs.themeMode},
+                          onSelectionChanged: (set) {
+                            scope.updatePreferences(prefs.copyWith(themeMode: set.first));
+                          },
                         ),
-                        segments: const [
-                          ButtonSegment(value: ThemeMode.light, icon: Icon(Icons.light_mode, size: 16)),
-                          ButtonSegment(value: ThemeMode.system, icon: Icon(Icons.brightness_auto, size: 16)),
-                          ButtonSegment(value: ThemeMode.dark, icon: Icon(Icons.dark_mode, size: 16)),
-                        ],
-                        selected: {prefs.themeMode},
-                        onSelectionChanged: (set) {
-                          scope.updatePreferences(prefs.copyWith(themeMode: set.first));
-                        },
                       ),
                     ],
                   ),
@@ -223,17 +227,19 @@ class SettingsView extends StatelessWidget {
             child: Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
-                        'Palette Preset',
-                        style: TextStyle(fontWeight: FontWeight.w600),
+                      const Expanded(
+                        child: Text(
+                          'Palette Preset',
+                          style: TextStyle(fontWeight: FontWeight.w600),
+                        ),
                       ),
                       DropdownButton<VisualPreset>(
                         value: prefs.visualPreset,
                         underline: const SizedBox(),
+                        isDense: true,
                         items: VisualPreset.values.map((p) {
                           return DropdownMenuItem(value: p, child: Text(p.label));
                         }).toList(),
@@ -248,17 +254,19 @@ class SettingsView extends StatelessWidget {
                 ),
                 const Divider(height: 1),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
-                        'Visual Intensity',
-                        style: TextStyle(fontWeight: FontWeight.w600),
+                      const Expanded(
+                        child: Text(
+                          'Visual Intensity',
+                          style: TextStyle(fontWeight: FontWeight.w600),
+                        ),
                       ),
                       DropdownButton<VisualIntensity>(
                         value: prefs.visualIntensity,
                         underline: const SizedBox(),
+                        isDense: true,
                         items: VisualIntensity.values.map((i) {
                           return DropdownMenuItem(value: i, child: Text(i.label));
                         }).toList(),
