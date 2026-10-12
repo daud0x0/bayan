@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../../app/bootstrap.dart';
 import '../../../core/typography/app_typography.dart';
-import '../../../core/widgets/islamic_decorations.dart';
 import '../../../domain/models/bookmark_model.dart';
 import '../../../domain/models/content_item.dart';
 import '../../../domain/models/reading_progress_model.dart';

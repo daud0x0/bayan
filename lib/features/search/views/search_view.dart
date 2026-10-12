@@ -272,7 +272,7 @@ class _SearchViewState extends State<SearchView> {
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.symmetric(horizontal: 16),
               itemCount: _suggestedTopics.length,
-              separatorBuilder: (_, __) => const SizedBox(width: 8),
+              separatorBuilder: (_, index) => const SizedBox(width: 8),
               itemBuilder: (context, index) {
                 final topic = _suggestedTopics[index];
                 final isSelected = queryText.toLowerCase() == topic.toLowerCase();
