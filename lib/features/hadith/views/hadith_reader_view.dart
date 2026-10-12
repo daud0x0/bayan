@@ -12,6 +12,7 @@ import '../../../domain/models/reading_progress_model.dart';
 import '../../../domain/models/user_preferences.dart';
 import '../../reflections/views/reflection_note_sheet.dart';
 import '../../share_cards/views/share_card_sheet.dart';
+import 'hadith_books_sheet.dart';
 
 /// Hadith reader displaying Arabic, English translation, narrator, grading, and attribution.
 /// Complies with Section 4.2 and 12 of the Product Plan with illuminated manuscript styling.
@@ -28,6 +29,7 @@ class _HadithReaderViewState extends State<HadithReaderView> {
   final ScrollController _scrollController = ScrollController();
   late HadithItem _currentHadith;
   List<HadithItem> _collectionHadiths = [];
+  List<HadithBook> _books = [];
   bool _initialized = false;
   bool _isAutoScrollActive = false;
   bool _isAutoScrollPlaying = false;
@@ -117,10 +119,37 @@ class _HadithReaderViewState extends State<HadithReaderView> {
     final list = await scope.contentRepository.getHadiths(
       collectionId: _currentHadith.collectionId,
     );
+    final books = await scope.contentRepository.getHadithBooks(
+      _currentHadith.collectionId,
+    );
     if (!mounted) return;
     setState(() {
       _collectionHadiths = list;
+      _books = books;
     });
+  }
+
+  void _openBooksSheet() {
+    if (_books.isEmpty) return;
+    final colName = _currentHadith.collectionId == 'bukhari' ? 'Sahih al-Bukhari' : 'Sahih Muslim';
+    HadithBooksSheet.show(
+      context,
+      collectionName: colName,
+      books: _books,
+      selectedBookNumber: _currentHadith.bookNumber,
+      onSelectBook: (book) {
+        if (book != null) {
+          final target = _collectionHadiths.firstWhere(
+            (h) => h.bookNumber == book.bookNumber,
+            orElse: () => _collectionHadiths.firstWhere(
+              (h) => h.hadithNumber >= book.firstHadithNumber,
+              orElse: () => _currentHadith,
+            ),
+          );
+          _navigateToHadith(target);
+        }
+      },
+    );
   }
 
   Future<void> _recordProgress() async {
@@ -390,11 +419,33 @@ class _HadithReaderViewState extends State<HadithReaderView> {
       appBar: AppBar(
         centerTitle: false,
         titleSpacing: 0,
-        title: Text(
-          _currentHadith.reference,
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
+        title: InkWell(
+          borderRadius: BorderRadius.circular(8),
+          onTap: _books.isNotEmpty ? _openBooksSheet : null,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Flexible(
+                  child: Text(
+                    _currentHadith.reference,
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                if (_books.isNotEmpty) ...[
+                  const SizedBox(width: 4),
+                  const Icon(
+                    Icons.keyboard_arrow_down_rounded,
+                    size: 18,
+                    color: Color(0xFFC5A059),
+                  ),
+                ],
+              ],
+            ),
+          ),
         ),
         actions: [
           IconButton(

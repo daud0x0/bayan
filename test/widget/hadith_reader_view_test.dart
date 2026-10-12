@@ -65,4 +65,116 @@ void main() {
     expect(find.text('Reading & Typography Settings'), findsOneWidget);
     expect(find.text('Plain Reading Mode'), findsOneWidget);
   });
+
+  testWidgets('HadithReaderView title tap opens HadithBooksSheet and navigates to selected book', (tester) async {
+    final hadith1 = HadithItem(
+      id: 'bukhari_1',
+      collectionId: 'bukhari',
+      hadithNumber: 1,
+      bookNumber: 1,
+      bookNameEnglish: "Revelation (Bad' al-Wahy)",
+      bookNameArabic: 'كتاب بدء الوحي',
+      chapterName: 'How the Divine Inspiration started',
+      narrator: 'Umar ibn al-Khattab',
+      arabicText: 'إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ',
+      englishTranslation: 'Actions are but by intention...',
+      grading: 'Sahih',
+      attribution: 'Sahih al-Bukhari 1',
+    );
+
+    final hadith2 = HadithItem(
+      id: 'bukhari_2',
+      collectionId: 'bukhari',
+      hadithNumber: 8,
+      bookNumber: 2,
+      bookNameEnglish: 'Belief (Iman)',
+      bookNameArabic: 'كتاب الإيمان',
+      chapterName: 'Belief and its characteristics',
+      narrator: 'Ibn Umar',
+      arabicText: 'بُنِيَ الإِسْلاَمُ عَلَى خَمْسٍ',
+      englishTranslation: 'Islam is based on five principles...',
+      grading: 'Sahih',
+      attribution: 'Sahih al-Bukhari 8',
+    );
+
+    final books = [
+      const HadithBook(
+        collectionId: 'bukhari',
+        bookNumber: 1,
+        nameEnglish: 'Revelation',
+        nameArabic: 'بدء الوحي',
+        hadithCount: 7,
+        firstHadithNumber: 1,
+        lastHadithNumber: 7,
+      ),
+      const HadithBook(
+        collectionId: 'bukhari',
+        bookNumber: 2,
+        nameEnglish: 'Belief',
+        nameArabic: 'الإيمان',
+        hadithCount: 50,
+        firstHadithNumber: 8,
+        lastHadithNumber: 58,
+      ),
+    ];
+
+    final fakeRepo = _FakeHadithRepo(
+      hadiths: [hadith1, hadith2],
+      books: books,
+    );
+
+    final scope = AppScope(
+      contentRepository: fakeRepo,
+      bookmarkRepository: BookmarkRepository(),
+      readingProgressRepository: ReadingProgressRepository(),
+      preferencesRepository: PreferencesRepository(),
+      initialPreferences: const UserPreferences(),
+    );
+
+    await tester.pumpWidget(
+      AppScopeProvider(
+        scope: scope,
+        child: MaterialApp(
+          home: HadithReaderView(hadith: hadith1),
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    // Tap title in AppBar to open HadithBooksSheet
+    final appBarTitle = find.descendant(
+      of: find.byType(AppBar),
+      matching: find.text('Sahih al-Bukhari 1'),
+    );
+    await tester.tap(appBarTitle);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Sahih al-Bukhari Books'), findsOneWidget);
+    expect(find.text('Belief'), findsOneWidget);
+
+    // Tap Book 2 (Belief)
+    await tester.tap(find.text('Belief'));
+    await tester.pumpAndSettle();
+
+    // Verify reader navigated to hadith in Book 2
+    expect(find.text('Sahih al-Bukhari 8'), findsWidgets);
+    expect(find.text('Narrated by Ibn Umar'), findsOneWidget);
+  });
+}
+
+class _FakeHadithRepo extends ContentRepository {
+  _FakeHadithRepo({required this.hadiths, required this.books});
+  final List<HadithItem> hadiths;
+  final List<HadithBook> books;
+
+  @override
+  Future<List<HadithItem>> getHadiths({String? collectionId, int? bookNumber}) async {
+    return hadiths;
+  }
+
+  @override
+  Future<List<HadithBook>> getHadithBooks(String collectionId) async {
+    return books;
+  }
 }
