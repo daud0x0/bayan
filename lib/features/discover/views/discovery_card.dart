@@ -152,7 +152,7 @@ class DiscoveryCard extends StatelessWidget {
               ],
       ),
       child: Padding(
-        padding: const EdgeInsets.all(22.0),
+        padding: const EdgeInsets.fromLTRB(18, 16, 18, 12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -285,54 +285,54 @@ class DiscoveryCard extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(height: 16),
-
-            // Divider
+            const SizedBox(height: 12),
             Divider(
               height: 1,
-              color: outlineColor.withValues(alpha: 0.35),
+              color: outlineColor.withValues(alpha: 0.25),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 4),
 
             // Action Buttons Row
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // Read in context button
-                FilledButton.tonalIcon(
+                // Read in context button (sleek compact pill)
+                TextButton.icon(
                   onPressed: onOpenContext,
                   icon: Icon(
-                    Icons.menu_book_rounded,
-                    size: 16,
+                    Icons.auto_stories_outlined,
+                    size: 15,
                     color: primaryBadgeColor,
                   ),
                   label: Text(
                     'Read in Context',
                     style: TextStyle(
-                      fontSize: 12.5,
-                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
                       color: primaryBadgeColor,
                     ),
                   ),
-                  style: FilledButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                  style: TextButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     visualDensity: VisualDensity.compact,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
-                    ),
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   ),
                 ),
 
                 // Actions: Copy, Bookmark & Share Card
                 Row(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     IconButton(
                       icon: Icon(
                         Icons.copy_rounded,
-                        size: 19,
+                        size: 18,
                         color: secondaryTextColor,
                       ),
                       tooltip: 'Copy Text',
+                      padding: const EdgeInsets.all(6),
+                      constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                      visualDensity: VisualDensity.compact,
                       onPressed: () {
                         if (scope.preferences.hapticFeedbackEnabled) {
                           HapticFeedback.lightImpact();
@@ -348,37 +348,40 @@ class DiscoveryCard extends StatelessWidget {
                           ),
                         );
                       },
-                      visualDensity: VisualDensity.compact,
                     ),
                     IconButton(
                       icon: Icon(
                         isBookmarked ? Icons.bookmark_rounded : Icons.bookmark_border_rounded,
-                        size: 21,
+                        size: 19,
                         color: isBookmarked ? const Color(0xFFC5A059) : secondaryTextColor,
                       ),
                       tooltip: isBookmarked ? 'Remove Bookmark' : 'Save Bookmark',
+                      padding: const EdgeInsets.all(6),
+                      constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                      visualDensity: VisualDensity.compact,
                       onPressed: () {
                         if (scope.preferences.hapticFeedbackEnabled) {
                           HapticFeedback.mediumImpact();
                         }
                         scope.toggleBookmark(item);
                       },
-                      visualDensity: VisualDensity.compact,
                     ),
                     IconButton(
                       icon: Icon(
                         Icons.share_outlined,
-                        size: 20,
+                        size: 18,
                         color: secondaryTextColor,
                       ),
                       tooltip: 'Share Card',
+                      padding: const EdgeInsets.all(6),
+                      constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                      visualDensity: VisualDensity.compact,
                       onPressed: () {
                         if (scope.preferences.hapticFeedbackEnabled) {
                           HapticFeedback.lightImpact();
                         }
                         ShareCardSheet.show(context, item);
                       },
-                      visualDensity: VisualDensity.compact,
                     ),
                   ],
                 ),

@@ -174,69 +174,7 @@ class _DiscoverViewState extends State<DiscoverView> {
               ),
             ),
           ],
-          const SizedBox(height: 16),
-          // Topic Quick Jump Pills
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: [
-                _buildQuickTopicPill('hardship_and_hope', 'Hardship & Hope', Icons.healing_rounded),
-                const SizedBox(width: 8),
-                _buildQuickTopicPill('patience', 'Patience (Sabr)', Icons.self_improvement_rounded),
-                const SizedBox(width: 8),
-                _buildQuickTopicPill('gratitude', 'Gratitude (Shukr)', Icons.spa_rounded),
-                const SizedBox(width: 8),
-                _buildQuickTopicPill('repentance_and_mercy', 'Repentance', Icons.favorite_rounded),
-              ],
-            ),
-          ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildQuickTopicPill(String catId, String title, IconData icon) {
-    final isSelected = _activeCategoryFilterId == catId;
-    return InkWell(
-      borderRadius: BorderRadius.circular(16),
-      onTap: () {
-        setState(() {
-          _activeCategoryFilterId = isSelected ? null : catId;
-        });
-      },
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-        decoration: BoxDecoration(
-          color: isSelected
-              ? const Color(0xFFC5A059)
-              : Colors.white.withValues(alpha: 0.12),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: isSelected
-                ? Colors.white
-                : Colors.white.withValues(alpha: 0.20),
-            width: 1,
-          ),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              icon,
-              size: 14,
-              color: isSelected ? Colors.black87 : Colors.white,
-            ),
-            const SizedBox(width: 6),
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: 11.5,
-                fontWeight: FontWeight.w600,
-                color: isSelected ? Colors.black87 : Colors.white,
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -387,6 +325,7 @@ class _DiscoverViewState extends State<DiscoverView> {
 
   Widget _buildFilterChips(AppScope scope) {
     final currentFilter = scope.preferences.contentTypeFilter;
+    final theme = Theme.of(context);
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
@@ -395,8 +334,9 @@ class _DiscoverViewState extends State<DiscoverView> {
         children: [
           FilterChip(
             label: const Text('All'),
-            selected: currentFilter == null,
+            selected: currentFilter == null && _activeCategoryFilterId == null,
             onSelected: (_) {
+              setState(() => _activeCategoryFilterId = null);
               scope.updatePreferences(scope.preferences.copyWith(
                 contentTypeFilter: () => null,
               ));
@@ -404,6 +344,7 @@ class _DiscoverViewState extends State<DiscoverView> {
           ),
           const SizedBox(width: 8),
           FilterChip(
+            avatar: const Icon(Icons.auto_stories_outlined, size: 15),
             label: const Text('Quran'),
             selected: currentFilter == ContentType.quran,
             onSelected: (_) {
@@ -414,6 +355,7 @@ class _DiscoverViewState extends State<DiscoverView> {
           ),
           const SizedBox(width: 8),
           FilterChip(
+            avatar: const Icon(Icons.menu_book_outlined, size: 15),
             label: const Text('Hadith'),
             selected: currentFilter == ContentType.hadith,
             onSelected: (_) {
@@ -423,9 +365,24 @@ class _DiscoverViewState extends State<DiscoverView> {
             },
           ),
           const SizedBox(width: 8),
+          Container(
+            height: 22,
+            width: 1,
+            margin: const EdgeInsets.symmetric(horizontal: 2),
+            color: theme.colorScheme.outlineVariant.withValues(alpha: 0.5),
+          ),
+          const SizedBox(width: 8),
+          _buildTopicChip('hardship_and_hope', 'Hardship & Hope', Icons.healing_rounded),
+          const SizedBox(width: 8),
+          _buildTopicChip('patience', 'Patience (Sabr)', Icons.self_improvement_rounded),
+          const SizedBox(width: 8),
+          _buildTopicChip('gratitude', 'Gratitude (Shukr)', Icons.spa_rounded),
+          const SizedBox(width: 8),
+          _buildTopicChip('repentance_and_mercy', 'Repentance', Icons.favorite_rounded),
+          const SizedBox(width: 8),
           ActionChip(
-            avatar: const Icon(Icons.tune_rounded, size: 16),
-            label: const Text('Topics'),
+            avatar: const Icon(Icons.grid_view_rounded, size: 15),
+            label: const Text('All Topics'),
             onPressed: () {
               CategoryExplorerSheet.show(
                 context,
@@ -437,6 +394,20 @@ class _DiscoverViewState extends State<DiscoverView> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildTopicChip(String catId, String title, IconData icon) {
+    final isSelected = _activeCategoryFilterId == catId;
+    return FilterChip(
+      avatar: Icon(icon, size: 15),
+      label: Text(title),
+      selected: isSelected,
+      onSelected: (_) {
+        setState(() {
+          _activeCategoryFilterId = isSelected ? null : catId;
+        });
+      },
     );
   }
 }

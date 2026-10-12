@@ -110,6 +110,7 @@ class AppTheme {
         ),
       ),
       navigationBarTheme: NavigationBarThemeData(
+        height: 62,
         elevation: 4,
         backgroundColor: surfaceColor,
         indicatorColor: primary.withValues(alpha: 0.14),
@@ -190,6 +191,7 @@ class AppTheme {
         ),
       ),
       navigationBarTheme: NavigationBarThemeData(
+        height: 62,
         elevation: 4,
         backgroundColor: pureBlack ? const Color(0xFF050505) : darkSurf,
         indicatorColor: accent.withValues(alpha: 0.22),

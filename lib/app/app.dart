@@ -96,6 +96,7 @@ class _MainNavigationScaffoldState extends State<MainNavigationScaffold> {
         children: pages,
       ),
       bottomNavigationBar: NavigationBar(
+        height: 62,
         selectedIndex: _currentIndex,
         onDestinationSelected: (index) => setState(() => _currentIndex = index),
         destinations: const [
