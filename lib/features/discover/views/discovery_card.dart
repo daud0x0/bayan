@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../../app/bootstrap.dart';
 import '../../../core/typography/app_typography.dart';
+import '../../../domain/models/bookmark_model.dart';
 import '../../../domain/models/content_item.dart';
 import '../../../domain/use_cases/feed_algorithm.dart';
-import '../../../visual_engine/generator/seeded_generator.dart';
-import '../../../visual_engine/rendering/procedural_background.dart';
 import '../../share_cards/views/share_card_sheet.dart';
 
 /// Single discovery card in the feed displaying Quran or Hadith teaching.
@@ -114,257 +113,278 @@ class DiscoveryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scope = AppScope.of(context);
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final isDark = theme.brightness == Brightness.dark;
     final isBookmarked = scope.isBookmarked(item.id);
+    final isQuran = item.contentType == ContentType.quran;
+    final isPlain = scope.preferences.plainReadingMode;
 
-    final params = SeededVisualGenerator.generate(
-      contentId: item.id,
-      preset: scope.preferences.visualPreset,
-      isDarkMode: isDark,
-      intensity: scope.preferences.visualIntensity,
-      isPlainMode: scope.preferences.plainReadingMode,
-    );
+    // Harmonious luxury styling reflecting global theme palette
+    final primaryBadgeColor = isQuran ? colorScheme.primary : const Color(0xFFC5A059);
+    final textColor = colorScheme.onSurface;
+    final secondaryTextColor = colorScheme.onSurfaceVariant;
+    final outlineColor = colorScheme.outlineVariant;
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      child: ProceduralBackground(
-        params: params,
-        borderRadius: 22,
-        child: Padding(
-          padding: const EdgeInsets.all(22.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // Header Row: Content Type Badge + Topics + Why icon
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: params.primaryTextColor.withValues(alpha: 0.12),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: params.primaryTextColor.withValues(alpha: 0.22),
-                        width: 0.8,
-                      ),
-                    ),
-                    child: Text(
-                      item.contentType.displayName.toUpperCase(),
-                      style: AppTypography.badge(color: params.primaryTextColor),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  if (item.categoryIds.isNotEmpty)
-                    Expanded(
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: params.secondaryTextColor.withValues(alpha: 0.08),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Text(
-                          item.categoryIds.first.replaceAll('_', ' ').toUpperCase(),
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: 10.5,
-                            fontWeight: FontWeight.w600,
-                            color: params.secondaryTextColor,
-                            letterSpacing: 0.4,
-                          ),
-                        ),
-                      ),
-                    ),
-                  IconButton(
-                    icon: Icon(
-                      Icons.help_outline_rounded,
-                      size: 18,
-                      color: params.secondaryTextColor,
-                    ),
-                    tooltip: 'Why am I seeing this?',
-                    onPressed: () => _showWhyModal(context, scope),
-                    visualDensity: VisualDensity.compact,
-                  ),
-                ],
-              ),
-              const SizedBox(height: 18),
-
-              // Arabic Text inside an illuminated sacred container
-              if (item.arabicText.isNotEmpty) ...[
+      decoration: BoxDecoration(
+        color: isPlain
+            ? colorScheme.surface
+            : isDark
+                ? colorScheme.surfaceContainer
+                : colorScheme.surface,
+        borderRadius: BorderRadius.circular(22),
+        border: Border.all(
+          color: isPlain
+              ? Colors.transparent
+              : outlineColor.withValues(alpha: isDark ? 0.35 : 0.60),
+          width: 1.0,
+        ),
+        boxShadow: isPlain
+            ? null
+            : [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: isDark ? 0.20 : 0.04),
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(22.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Header Row: Content Type Badge + Topics + Why icon
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
-                    color: params.primaryTextColor.withValues(alpha: 0.04),
-                    borderRadius: BorderRadius.circular(18),
+                    color: primaryBadgeColor.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: params.primaryTextColor.withValues(alpha: 0.10),
+                      color: primaryBadgeColor.withValues(alpha: 0.28),
                       width: 0.8,
                     ),
                   ),
                   child: Text(
-                    item.arabicText,
-                    textAlign: TextAlign.right,
-                    textDirection: TextDirection.rtl,
-                    style: AppTypography.arabic(
-                      fontSize: scope.preferences.arabicFontSize,
-                      color: params.primaryTextColor,
-                    ),
+                    item.contentType.displayName.toUpperCase(),
+                    style: AppTypography.badge(color: primaryBadgeColor),
                   ),
                 ),
-                const SizedBox(height: 16),
-              ],
-
-              // English Translation
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                child: Text(
-                  item.englishTranslation,
-                  textAlign: TextAlign.left,
-                  style: AppTypography.translation(
-                    fontSize: scope.preferences.translationFontSize,
-                    color: params.primaryTextColor.withValues(alpha: 0.95),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 18),
-
-              // Source Reference & Attribution
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.auto_stories_rounded,
-                          size: 15,
-                          color: params.primaryTextColor.withValues(alpha: 0.8),
+                const SizedBox(width: 8),
+                if (item.categoryIds.isNotEmpty)
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.45),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Text(
+                        item.categoryIds.first.replaceAll('_', ' ').toUpperCase(),
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 10.5,
+                          fontWeight: FontWeight.w600,
+                          color: secondaryTextColor,
+                          letterSpacing: 0.4,
                         ),
-                        const SizedBox(width: 6),
-                        Expanded(
-                          child: Text(
-                            item.reference,
-                            style: AppTypography.reference(
-                              color: params.primaryTextColor,
-                              fontSize: 13,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 3),
-                    Text(
-                      item.attribution,
-                      style: TextStyle(
-                        fontSize: 11,
-                        color: params.secondaryTextColor,
                       ),
                     ),
-                  ],
+                  ),
+                IconButton(
+                  icon: Icon(
+                    Icons.help_outline_rounded,
+                    size: 18,
+                    color: colorScheme.outline,
+                  ),
+                  tooltip: 'Why am I seeing this?',
+                  onPressed: () => _showWhyModal(context, scope),
+                  visualDensity: VisualDensity.compact,
+                ),
+              ],
+            ),
+            const SizedBox(height: 18),
+
+            // Arabic Text inside an illuminated sacred container
+            if (item.arabicText.isNotEmpty) ...[
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                decoration: BoxDecoration(
+                  color: primaryBadgeColor.withValues(alpha: isDark ? 0.08 : 0.04),
+                  borderRadius: BorderRadius.circular(18),
+                  border: Border.all(
+                    color: primaryBadgeColor.withValues(alpha: isDark ? 0.22 : 0.12),
+                    width: 0.8,
+                  ),
+                ),
+                child: Text(
+                  item.arabicText,
+                  textAlign: TextAlign.right,
+                  textDirection: TextDirection.rtl,
+                  style: AppTypography.arabic(
+                    fontSize: scope.preferences.arabicFontSize,
+                    color: textColor,
+                  ),
                 ),
               ),
               const SizedBox(height: 16),
+            ],
 
-              // Divider
-              Container(
-                height: 1,
-                color: params.primaryTextColor.withValues(alpha: 0.12),
+            // English Translation
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4.0),
+              child: Text(
+                item.englishTranslation,
+                textAlign: TextAlign.left,
+                style: AppTypography.translation(
+                  fontSize: scope.preferences.translationFontSize,
+                  color: textColor.withValues(alpha: 0.95),
+                ),
               ),
-              const SizedBox(height: 12),
+            ),
+            const SizedBox(height: 18),
 
-              // Action Buttons Row
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            // Source Reference & Attribution
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Read in context button
-                  FilledButton.tonalIcon(
-                    onPressed: onOpenContext,
-                    icon: Icon(
-                      Icons.menu_book_rounded,
-                      size: 16,
-                      color: params.primaryTextColor,
-                    ),
-                    label: Text(
-                      'Read in Context',
-                      style: TextStyle(
-                        fontSize: 12.5,
-                        fontWeight: FontWeight.bold,
-                        color: params.primaryTextColor,
-                      ),
-                    ),
-                    style: FilledButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                      visualDensity: VisualDensity.compact,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                    ),
-                  ),
-
-                  // Actions: Copy, Bookmark & Share Card
                   Row(
                     children: [
-                      IconButton(
-                        icon: Icon(
-                          Icons.copy_rounded,
-                          size: 19,
-                          color: params.primaryTextColor,
-                        ),
-                        tooltip: 'Copy Text',
-                        onPressed: () {
-                          if (scope.preferences.hapticFeedbackEnabled) {
-                            HapticFeedback.lightImpact();
-                          }
-                          Clipboard.setData(ClipboardData(
-                            text: '${item.arabicText}\n\n${item.englishTranslation}\n— ${item.reference}',
-                          ));
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Copied verse and citation to clipboard'),
-                              behavior: SnackBarBehavior.floating,
-                              duration: Duration(seconds: 2),
-                            ),
-                          );
-                        },
-                        visualDensity: VisualDensity.compact,
+                      Icon(
+                        Icons.auto_stories_rounded,
+                        size: 15,
+                        color: primaryBadgeColor,
                       ),
-                      IconButton(
-                        icon: Icon(
-                          isBookmarked ? Icons.bookmark_rounded : Icons.bookmark_border_rounded,
-                          size: 21,
-                          color: isBookmarked ? const Color(0xFFC5A059) : params.primaryTextColor,
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: Text(
+                          item.reference,
+                          style: AppTypography.reference(
+                            color: primaryBadgeColor,
+                            fontSize: 13,
+                          ),
                         ),
-                        tooltip: isBookmarked ? 'Remove Bookmark' : 'Save Bookmark',
-                        onPressed: () {
-                          if (scope.preferences.hapticFeedbackEnabled) {
-                            HapticFeedback.mediumImpact();
-                          }
-                          scope.toggleBookmark(item);
-                        },
-                        visualDensity: VisualDensity.compact,
-                      ),
-                      IconButton(
-                        icon: Icon(
-                          Icons.share_outlined,
-                          size: 20,
-                          color: params.primaryTextColor,
-                        ),
-                        tooltip: 'Share Card',
-                        onPressed: () {
-                          if (scope.preferences.hapticFeedbackEnabled) {
-                            HapticFeedback.lightImpact();
-                          }
-                          ShareCardSheet.show(context, item);
-                        },
-                        visualDensity: VisualDensity.compact,
                       ),
                     ],
                   ),
+                  const SizedBox(height: 3),
+                  Text(
+                    item.attribution,
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: secondaryTextColor,
+                    ),
+                  ),
                 ],
               ),
-            ],
-          ),
+            ),
+            const SizedBox(height: 16),
+
+            // Divider
+            Divider(
+              height: 1,
+              color: outlineColor.withValues(alpha: 0.35),
+            ),
+            const SizedBox(height: 12),
+
+            // Action Buttons Row
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // Read in context button
+                FilledButton.tonalIcon(
+                  onPressed: onOpenContext,
+                  icon: Icon(
+                    Icons.menu_book_rounded,
+                    size: 16,
+                    color: primaryBadgeColor,
+                  ),
+                  label: Text(
+                    'Read in Context',
+                    style: TextStyle(
+                      fontSize: 12.5,
+                      fontWeight: FontWeight.bold,
+                      color: primaryBadgeColor,
+                    ),
+                  ),
+                  style: FilledButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                    visualDensity: VisualDensity.compact,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                  ),
+                ),
+
+                // Actions: Copy, Bookmark & Share Card
+                Row(
+                  children: [
+                    IconButton(
+                      icon: Icon(
+                        Icons.copy_rounded,
+                        size: 19,
+                        color: secondaryTextColor,
+                      ),
+                      tooltip: 'Copy Text',
+                      onPressed: () {
+                        if (scope.preferences.hapticFeedbackEnabled) {
+                          HapticFeedback.lightImpact();
+                        }
+                        Clipboard.setData(ClipboardData(
+                          text: '${item.arabicText}\n\n${item.englishTranslation}\n— ${item.reference}',
+                        ));
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Copied verse and citation to clipboard'),
+                            behavior: SnackBarBehavior.floating,
+                            duration: Duration(seconds: 2),
+                          ),
+                        );
+                      },
+                      visualDensity: VisualDensity.compact,
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        isBookmarked ? Icons.bookmark_rounded : Icons.bookmark_border_rounded,
+                        size: 21,
+                        color: isBookmarked ? const Color(0xFFC5A059) : secondaryTextColor,
+                      ),
+                      tooltip: isBookmarked ? 'Remove Bookmark' : 'Save Bookmark',
+                      onPressed: () {
+                        if (scope.preferences.hapticFeedbackEnabled) {
+                          HapticFeedback.mediumImpact();
+                        }
+                        scope.toggleBookmark(item);
+                      },
+                      visualDensity: VisualDensity.compact,
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        Icons.share_outlined,
+                        size: 20,
+                        color: secondaryTextColor,
+                      ),
+                      tooltip: 'Share Card',
+                      onPressed: () {
+                        if (scope.preferences.hapticFeedbackEnabled) {
+                          HapticFeedback.lightImpact();
+                        }
+                        ShareCardSheet.show(context, item);
+                      },
+                      visualDensity: VisualDensity.compact,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );

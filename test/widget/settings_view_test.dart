@@ -43,7 +43,6 @@ void main() {
 
     // Section headers are uppercase text via _sectionHeader helper
     expect(find.textContaining('APPEARANCE'), findsOneWidget);
-    expect(find.textContaining('VISUAL ENGINE'), findsOneWidget);
     expect(find.textContaining('TYPOGRAPHY'), findsOneWidget);
     expect(find.textContaining('CONTENT'), findsOneWidget);
     expect(find.textContaining('PRIVACY'), findsOneWidget);

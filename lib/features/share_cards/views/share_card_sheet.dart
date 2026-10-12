@@ -1,15 +1,14 @@
-import 'dart:io';
+import 'dart:io' hide ContentType;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../../app/bootstrap.dart';
 import '../../../core/typography/app_typography.dart';
+import '../../../domain/models/bookmark_model.dart';
 import '../../../domain/models/content_item.dart';
 import '../../../domain/models/user_preferences.dart';
 import '../../../visual_engine/export/card_exporter.dart';
-import '../../../visual_engine/generator/seeded_generator.dart';
-import '../../../visual_engine/rendering/procedural_background.dart';
 
 /// Interactive modal sheet to customize and export shareable wallpaper cards.
 /// Complies with Section 13 of the Product Plan.
@@ -51,7 +50,7 @@ enum ContentDisplayMode {
 
 class _ShareCardSheetState extends State<ShareCardSheet> {
   final GlobalKey _cardKey = GlobalKey();
-  late VisualPreset _selectedPreset;
+  late AppThemePalette _selectedPalette;
   CardAspectRatio _aspectRatio = CardAspectRatio.standard;
   ContentDisplayMode _displayMode = ContentDisplayMode.both;
   bool _isExporting = false;
@@ -63,7 +62,7 @@ class _ShareCardSheetState extends State<ShareCardSheet> {
     super.didChangeDependencies();
     if (!_initialized) {
       final scope = AppScope.of(context);
-      _selectedPreset = scope.preferences.visualPreset;
+      _selectedPalette = scope.preferences.themePalette;
       _initialized = true;
     }
   }
@@ -133,16 +132,17 @@ class _ShareCardSheetState extends State<ShareCardSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final scope = AppScope.of(context);
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    final params = SeededVisualGenerator.generate(
-      contentId: widget.item.id,
-      preset: _selectedPreset,
-      isDarkMode: isDark,
-      intensity: scope.preferences.visualIntensity,
-      isPlainMode: scope.preferences.plainReadingMode,
-    );
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final isQuran = widget.item.contentType == ContentType.quran;
+    final primaryColor = _selectedPalette.primaryColor;
+    final accentColor = _selectedPalette.accentColor;
+    final badgeColor = isQuran ? primaryColor : const Color(0xFFC5A059);
+    final cardBg = isDark
+        ? Color.lerp(primaryColor, const Color(0xFF101413), 0.85)!
+        : Color.lerp(primaryColor, const Color(0xFFFCFAF7), 0.94)!;
+    final textColor = isDark ? const Color(0xFFF3F4F6) : const Color(0xFF1E2822);
+    final secondaryTextColor = isDark ? const Color(0xFF9CA3AF) : const Color(0xFF5B6B63);
 
     return DraggableScrollableSheet(
       initialChildSize: 0.90,
@@ -198,9 +198,37 @@ class _ShareCardSheetState extends State<ShareCardSheet> {
                                 : _aspectRatio == CardAspectRatio.wallpaper
                                     ? 9 / 16
                                     : 4 / 5,
-                            child: ProceduralBackground(
-                              params: params,
-                              borderRadius: 24,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: cardBg,
+                                gradient: LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: isDark
+                                      ? [
+                                          primaryColor.withValues(alpha: 0.28),
+                                          cardBg,
+                                          accentColor.withValues(alpha: 0.15),
+                                        ]
+                                      : [
+                                          primaryColor.withValues(alpha: 0.08),
+                                          cardBg,
+                                          accentColor.withValues(alpha: 0.12),
+                                        ],
+                                ),
+                                borderRadius: BorderRadius.circular(24),
+                                border: Border.all(
+                                  color: accentColor.withValues(alpha: isDark ? 0.35 : 0.45),
+                                  width: 1.2,
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: isDark ? 0.40 : 0.08),
+                                    blurRadius: 18,
+                                    offset: const Offset(0, 6),
+                                  ),
+                                ],
+                              ),
                               child: Padding(
                                 padding: const EdgeInsets.all(24.0),
                                 child: Center(
@@ -218,35 +246,50 @@ class _ShareCardSheetState extends State<ShareCardSheet> {
                                               padding: const EdgeInsets.symmetric(
                                                   horizontal: 10, vertical: 4),
                                               decoration: BoxDecoration(
-                                                color: params.primaryTextColor.withValues(alpha: 0.12),
+                                                color: badgeColor.withValues(alpha: 0.15),
                                                 borderRadius: BorderRadius.circular(12),
+                                                border: Border.all(
+                                                  color: badgeColor.withValues(alpha: 0.35),
+                                                  width: 0.8,
+                                                ),
                                               ),
                                               child: Text(
                                                 widget.item.contentType.displayName.toUpperCase(),
                                                 style: AppTypography.badge(
-                                                  color: params.primaryTextColor,
+                                                  color: badgeColor,
                                                 ),
                                               ),
                                             ),
-                                            const Icon(
-                                              Icons.auto_awesome_outlined,
+                                            Icon(
+                                              Icons.auto_awesome_rounded,
                                               size: 18,
-                                              color: Colors.white70,
+                                              color: accentColor.withValues(alpha: 0.8),
                                             ),
                                           ],
                                         ),
                                         const SizedBox(height: 18),
 
-                                        // Arabic text
+                                        // Arabic text in sacred container
                                         if (_displayMode != ContentDisplayMode.englishOnly &&
                                             widget.item.arabicText.isNotEmpty) ...[
-                                          Text(
-                                            widget.item.arabicText,
-                                            textAlign: TextAlign.center,
-                                            textDirection: TextDirection.rtl,
-                                            style: AppTypography.arabic(
-                                              fontSize: _aspectRatio == CardAspectRatio.wallpaper ? 22 : 20,
-                                              color: params.primaryTextColor,
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                                            decoration: BoxDecoration(
+                                              color: primaryColor.withValues(alpha: isDark ? 0.10 : 0.05),
+                                              borderRadius: BorderRadius.circular(18),
+                                              border: Border.all(
+                                                color: primaryColor.withValues(alpha: isDark ? 0.25 : 0.15),
+                                                width: 0.8,
+                                              ),
+                                            ),
+                                            child: Text(
+                                              widget.item.arabicText,
+                                              textAlign: TextAlign.center,
+                                              textDirection: TextDirection.rtl,
+                                              style: AppTypography.arabic(
+                                                fontSize: _aspectRatio == CardAspectRatio.wallpaper ? 22 : 20,
+                                                color: textColor,
+                                              ),
                                             ),
                                           ),
                                           const SizedBox(height: 14),
@@ -254,21 +297,24 @@ class _ShareCardSheetState extends State<ShareCardSheet> {
 
                                         // Translation text
                                         if (_displayMode != ContentDisplayMode.arabicOnly) ...[
-                                          Text(
-                                            widget.item.englishTranslation,
-                                            textAlign: TextAlign.center,
-                                            style: AppTypography.translation(
-                                              fontSize: _aspectRatio == CardAspectRatio.wallpaper ? 14.5 : 14,
-                                              color: params.primaryTextColor.withValues(alpha: 0.95),
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(horizontal: 6),
+                                            child: Text(
+                                              widget.item.englishTranslation,
+                                              textAlign: TextAlign.center,
+                                              style: AppTypography.translation(
+                                                fontSize: _aspectRatio == CardAspectRatio.wallpaper ? 14.5 : 14,
+                                                color: textColor.withValues(alpha: 0.95),
+                                              ),
                                             ),
                                           ),
                                           const SizedBox(height: 18),
                                         ],
 
                                         // Divider
-                                        Container(
+                                        Divider(
                                           height: 1,
-                                          color: params.primaryTextColor.withValues(alpha: 0.15),
+                                          color: accentColor.withValues(alpha: 0.25),
                                         ),
                                         const SizedBox(height: 10),
 
@@ -277,7 +323,7 @@ class _ShareCardSheetState extends State<ShareCardSheet> {
                                           widget.item.reference,
                                           textAlign: TextAlign.center,
                                           style: AppTypography.reference(
-                                            color: params.primaryTextColor,
+                                            color: badgeColor,
                                             fontSize: 12.5,
                                           ),
                                         ),
@@ -287,7 +333,7 @@ class _ShareCardSheetState extends State<ShareCardSheet> {
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                             fontSize: 10,
-                                            color: params.secondaryTextColor,
+                                            color: secondaryTextColor,
                                           ),
                                         ),
                                       ],
@@ -358,7 +404,7 @@ class _ShareCardSheetState extends State<ShareCardSheet> {
 
                     // Palette Preset Selector
                     Text(
-                      'Visual Palette',
+                      'Theme Palette',
                       style: Theme.of(context).textTheme.titleSmall?.copyWith(
                             fontWeight: FontWeight.bold,
                           ),
@@ -367,15 +413,23 @@ class _ShareCardSheetState extends State<ShareCardSheet> {
                     SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       child: Row(
-                        children: VisualPreset.values.map((preset) {
-                          final isSelected = preset == _selectedPreset;
+                        children: AppThemePalette.values.map((palette) {
+                          final isSelected = palette == _selectedPalette;
                           return Padding(
                             padding: const EdgeInsets.only(right: 8.0),
                             child: ChoiceChip(
-                              label: Text(preset.label),
+                              avatar: Container(
+                                width: 12,
+                                height: 12,
+                                decoration: BoxDecoration(
+                                  color: palette.primaryColor,
+                                  shape: BoxShape.circle,
+                                ),
+                              ),
+                              label: Text(palette.label),
                               selected: isSelected,
                               onSelected: (val) {
-                                if (val) setState(() => _selectedPreset = preset);
+                                if (val) setState(() => _selectedPalette = palette);
                               },
                             ),
                           );
