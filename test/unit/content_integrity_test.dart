@@ -21,7 +21,7 @@ void main() {
       expect(surahs.last['name_en'], 'An-Nas');
 
       final ayahs = data['ayahs'] as List<dynamic>;
-      expect(ayahs, isNotEmpty);
+      expect(ayahs.length, 6236);
       for (final ayah in ayahs) {
         expect(ayah['ar'], isNotEmpty);
         expect(ayah['en'], isNotEmpty);
@@ -43,7 +43,7 @@ void main() {
       expect(colIds, containsAll(['bukhari', 'muslim']));
 
       final hadiths = data['hadiths'] as List<dynamic>;
-      expect(hadiths, isNotEmpty);
+      expect(hadiths.length, greaterThanOrEqualTo(14000));
       for (final h in hadiths) {
         expect(h['ar'], isNotEmpty);
         expect(h['en'], isNotEmpty);

@@ -4,6 +4,7 @@ import '../data/repositories/bookmark_repository.dart';
 import '../data/repositories/content_repository.dart';
 import '../data/repositories/preferences_repository.dart';
 import '../data/repositories/reading_progress_repository.dart';
+import '../data/repositories/reflection_notes_repository.dart';
 import '../domain/models/bookmark_model.dart';
 import '../domain/models/content_item.dart';
 import '../domain/models/reading_progress_model.dart';
@@ -18,13 +19,16 @@ class AppScope extends ChangeNotifier {
     required this.bookmarkRepository,
     required this.readingProgressRepository,
     required this.preferencesRepository,
+    ReflectionNotesRepository? reflectionNotesRepository,
     required UserPreferences initialPreferences,
-  }) : _preferences = initialPreferences;
+  })  : reflectionNotesRepository = reflectionNotesRepository ?? ReflectionNotesRepository(),
+        _preferences = initialPreferences;
 
   final ContentRepository contentRepository;
   final BookmarkRepository bookmarkRepository;
   final ReadingProgressRepository readingProgressRepository;
   final PreferencesRepository preferencesRepository;
+  final ReflectionNotesRepository reflectionNotesRepository;
 
   UserPreferences _preferences;
   UserPreferences get preferences => _preferences;

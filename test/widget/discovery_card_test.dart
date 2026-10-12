@@ -50,4 +50,89 @@ void main() {
     expect(find.text('For indeed, with hardship will be ease.'), findsOneWidget);
     expect(find.text('Read in Context'), findsOneWidget);
   });
+
+  testWidgets('DiscoveryCard triggers onOpenContext when Read in Context is pressed', (tester) async {
+    bool opened = false;
+    final item = ContentItem(
+      id: 'quran_94_5',
+      contentType: ContentType.quran,
+      reference: 'Surah Ash-Sharh [94:5-6]',
+      arabicText: 'فَإِنَّ مَعَ الْعُسْرِ يُسْرًا',
+      englishTranslation: 'For indeed, with hardship will be ease.',
+      attribution: 'The Quran: English Meanings by Saheeh International',
+      categoryIds: ['hardship_and_hope'],
+    );
+
+    final scope = AppScope(
+      contentRepository: ContentRepository(),
+      bookmarkRepository: BookmarkRepository(),
+      readingProgressRepository: ReadingProgressRepository(),
+      preferencesRepository: PreferencesRepository(),
+      initialPreferences: const UserPreferences(),
+    );
+
+    await tester.pumpWidget(
+      AppScopeProvider(
+        scope: scope,
+        child: MaterialApp(
+          home: Scaffold(
+            body: DiscoveryCard(
+              item: item,
+              onOpenContext: () => opened = true,
+            ),
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(find.text('Read in Context'));
+    expect(opened, isTrue);
+  });
+
+  testWidgets('DiscoveryCard opens Why am I seeing this modal with ranking breakdown', (tester) async {
+    final item = ContentItem(
+      id: 'quran_94_5',
+      contentType: ContentType.quran,
+      reference: 'Surah Ash-Sharh [94:5-6]',
+      arabicText: 'فَإِنَّ مَعَ الْعُسْرِ يُسْرًا',
+      englishTranslation: 'For indeed, with hardship will be ease.',
+      attribution: 'The Quran: English Meanings by Saheeh International',
+      categoryIds: ['hardship_and_hope'],
+    );
+
+    final scope = AppScope(
+      contentRepository: ContentRepository(),
+      bookmarkRepository: BookmarkRepository(),
+      readingProgressRepository: ReadingProgressRepository(),
+      preferencesRepository: PreferencesRepository(),
+      initialPreferences: const UserPreferences(),
+    );
+
+    await tester.pumpWidget(
+      AppScopeProvider(
+        scope: scope,
+        child: MaterialApp(
+          home: Scaffold(
+            body: DiscoveryCard(
+              item: item,
+              onOpenContext: () {},
+            ),
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(find.byIcon(Icons.help_outline_rounded));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Why am I seeing this?'), findsOneWidget);
+    expect(find.textContaining('Deterministic Local Score'), findsOneWidget);
+    expect(find.textContaining('No remote analytics or profiling are used'), findsOneWidget);
+
+    await tester.tap(find.text('Close'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Why am I seeing this?'), findsNothing);
+  });
 }
+

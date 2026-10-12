@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../../app/bootstrap.dart';
 import '../../../core/typography/app_typography.dart';
+import '../../../core/widgets/islamic_decorations.dart';
 import '../../../domain/models/bookmark_model.dart';
 import '../../../domain/models/content_item.dart';
 import '../../../domain/models/hadith_models.dart';
 import '../../../domain/models/reading_progress_model.dart';
+import '../../../domain/models/user_preferences.dart';
 import '../../share_cards/views/share_card_sheet.dart';
 
 /// Hadith reader displaying Arabic, English translation, narrator, grading, and attribution.
-/// Complies with Section 4.2 and 12 of the Product Plan.
+/// Complies with Section 4.2 and 12 of the Product Plan with illuminated manuscript styling.
 class HadithReaderView extends StatefulWidget {
   const HadithReaderView({super.key, required this.hadith});
 
@@ -97,57 +100,138 @@ class _HadithReaderViewState extends State<HadithReaderView> {
       builder: (ctx) {
         return StatefulBuilder(
           builder: (context, setSheetState) {
-            return Padding(
-              padding: const EdgeInsets.fromLTRB(20, 20, 20, 32),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Reading & Typography Settings',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                  ),
-                  const SizedBox(height: 16),
+            return SafeArea(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Reading & Typography Settings',
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                    const SizedBox(height: 16),
 
-                  // Arabic Slider
-                  Text('Arabic Font Size: ${prefs.arabicFontSize.toInt()} pt'),
-                  Slider(
-                    value: prefs.arabicFontSize,
-                    min: 18.0,
-                    max: 36.0,
-                    divisions: 6,
-                    onChanged: (val) {
-                      setSheetState(() {});
-                      scope.updatePreferences(prefs.copyWith(arabicFontSize: val));
-                    },
-                  ),
-                  const SizedBox(height: 12),
+                    // Display Mode SegmentedButton
+                    const Text('Display Mode', style: TextStyle(fontWeight: FontWeight.w600)),
+                    const SizedBox(height: 6),
+                    SizedBox(
+                      width: double.infinity,
+                      child: SegmentedButton<ReadingDisplayMode>(
+                        style: const ButtonStyle(
+                          visualDensity: VisualDensity.compact,
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        ),
+                        segments: const [
+                          ButtonSegment(value: ReadingDisplayMode.dual, label: Text('Dual')),
+                          ButtonSegment(value: ReadingDisplayMode.arabicOnly, label: Text('Arabic')),
+                          ButtonSegment(value: ReadingDisplayMode.translationOnly, label: Text('English')),
+                        ],
+                        selected: {prefs.readingDisplayMode},
+                        onSelectionChanged: (set) {
+                          setSheetState(() {});
+                          scope.updatePreferences(prefs.copyWith(readingDisplayMode: set.first));
+                        },
+                      ),
+                    ),
+                    const SizedBox(height: 14),
 
-                  // English Slider
-                  Text('Translation Font Size: ${prefs.translationFontSize.toInt()} pt'),
-                  Slider(
-                    value: prefs.translationFontSize,
-                    min: 12.0,
-                    max: 24.0,
-                    divisions: 6,
-                    onChanged: (val) {
-                      setSheetState(() {});
-                      scope.updatePreferences(prefs.copyWith(translationFontSize: val));
-                    },
-                  ),
-                  const SizedBox(height: 12),
+                    // Script Style Selector
+                    Row(
+                      children: [
+                        const Expanded(
+                          child: Text('Script Style', style: TextStyle(fontWeight: FontWeight.w600)),
+                        ),
+                        DropdownButton<ArabicScriptStyle>(
+                          value: prefs.arabicScriptStyle,
+                          underline: const SizedBox(),
+                          isDense: true,
+                          items: ArabicScriptStyle.values.map((s) {
+                            return DropdownMenuItem(value: s, child: Text(s.label));
+                          }).toList(),
+                          onChanged: (s) {
+                            if (s != null) {
+                              setSheetState(() {});
+                              scope.updatePreferences(prefs.copyWith(arabicScriptStyle: s));
+                            }
+                          },
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
 
-                  // Plain Mode Switch
-                  SwitchListTile(
-                    title: const Text('Plain Reading Mode'),
-                    subtitle: const Text('Minimal, high-contrast display without gradients'),
-                    value: prefs.plainReadingMode,
-                    onChanged: (val) {
-                      setSheetState(() {});
-                      scope.updatePreferences(prefs.copyWith(plainReadingMode: val));
-                    },
-                  ),
-                ],
+                    // Arabic Slider
+                    if (prefs.readingDisplayMode != ReadingDisplayMode.translationOnly) ...[
+                      Text('Arabic Font Size: ${prefs.arabicFontSize.toInt()} pt'),
+                      Slider(
+                        value: prefs.arabicFontSize,
+                        min: 18.0,
+                        max: 36.0,
+                        divisions: 6,
+                        onChanged: (val) {
+                          setSheetState(() {});
+                          scope.updatePreferences(prefs.copyWith(arabicFontSize: val));
+                        },
+                      ),
+                      const SizedBox(height: 12),
+                    ],
+
+                    // English Slider
+                    if (prefs.readingDisplayMode != ReadingDisplayMode.arabicOnly) ...[
+                      Text('Translation Font Size: ${prefs.translationFontSize.toInt()} pt'),
+                      Slider(
+                        value: prefs.translationFontSize,
+                        min: 12.0,
+                        max: 24.0,
+                        divisions: 6,
+                        onChanged: (val) {
+                          setSheetState(() {});
+                          scope.updatePreferences(prefs.copyWith(translationFontSize: val));
+                        },
+                      ),
+                      const SizedBox(height: 12),
+                    ],
+
+                    // Line Spacing Slider
+                    Text('Line Spacing: ${prefs.lineSpacing.toStringAsFixed(1)}x'),
+                    Slider(
+                      value: prefs.lineSpacing,
+                      min: 1.4,
+                      max: 2.6,
+                      divisions: 6,
+                      onChanged: (val) {
+                        setSheetState(() {});
+                        scope.updatePreferences(prefs.copyWith(lineSpacing: val));
+                      },
+                    ),
+                    const SizedBox(height: 6),
+
+                    // Plain Mode Switch
+                    SwitchListTile(
+                      title: const Text('Plain Reading Mode'),
+                      subtitle: const Text('Minimal, high-contrast display without gradients'),
+                      value: prefs.plainReadingMode,
+                      contentPadding: EdgeInsets.zero,
+                      onChanged: (val) {
+                        setSheetState(() {});
+                        scope.updatePreferences(prefs.copyWith(plainReadingMode: val));
+                      },
+                    ),
+
+                    // Eye Comfort Sepia Switch
+                    SwitchListTile(
+                      title: const Text('Eye-Comfort Warm Sepia'),
+                      subtitle: const Text('Soothing parchment tint for long reading sessions'),
+                      value: prefs.eyeComfortSepia,
+                      contentPadding: EdgeInsets.zero,
+                      onChanged: (val) {
+                        setSheetState(() {});
+                        scope.updatePreferences(prefs.copyWith(eyeComfortSepia: val));
+                      },
+                    ),
+                  ],
+                ),
               ),
             );
           },
@@ -212,6 +296,7 @@ class _HadithReaderViewState extends State<HadithReaderView> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final scope = AppScope.of(context);
     final prefs = scope.preferences;
     final isBookmarked = scope.isBookmarked('hadith_${_currentHadith.id}');
@@ -243,7 +328,7 @@ class _HadithReaderViewState extends State<HadithReaderView> {
         titleSpacing: 0,
         title: Text(
           _currentHadith.reference,
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
@@ -260,36 +345,82 @@ class _HadithReaderViewState extends State<HadithReaderView> {
           ),
           IconButton(
             icon: Icon(
-              isBookmarked ? Icons.bookmark : Icons.bookmark_border,
-              color: isBookmarked ? Colors.amber : null,
+              isBookmarked ? Icons.bookmark_rounded : Icons.bookmark_border_rounded,
+              color: isBookmarked ? const Color(0xFFC5A059) : null,
             ),
             tooltip: 'Bookmark Hadith',
-            onPressed: () => scope.toggleBookmark(contentItem),
+            onPressed: () {
+              if (prefs.hapticFeedbackEnabled) {
+                HapticFeedback.mediumImpact();
+              }
+              scope.toggleBookmark(contentItem);
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.copy_rounded, size: 20),
+            tooltip: 'Copy Hadith',
+            onPressed: () {
+              if (prefs.hapticFeedbackEnabled) {
+                HapticFeedback.lightImpact();
+              }
+              Clipboard.setData(ClipboardData(
+                text: '${_currentHadith.arabicText}\n\n${_currentHadith.englishTranslation}\n— ${_currentHadith.reference}',
+              ));
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Copied Hadith to clipboard'),
+                  behavior: SnackBarBehavior.floating,
+                  duration: Duration(seconds: 2),
+                ),
+              );
+            },
           ),
           IconButton(
             icon: const Icon(Icons.share_outlined),
             tooltip: 'Share Card',
-            onPressed: () => ShareCardSheet.show(context, contentItem),
+            onPressed: () {
+              if (prefs.hapticFeedbackEnabled) {
+                HapticFeedback.lightImpact();
+              }
+              ShareCardSheet.show(context, contentItem);
+            },
           ),
         ],
       ),
       body: ListView(
         controller: _scrollController,
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
         children: [
-          // Metadata card: Book and Chapter info
+          // Illuminated Metadata Frame: Book, Chapter, Narrator & Grading
           Container(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(18),
             decoration: BoxDecoration(
-              color: isPlain
-                  ? Theme.of(context).cardColor
-                  : Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.4),
-              borderRadius: BorderRadius.circular(16),
+              gradient: isPlain
+                  ? null
+                  : LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: isDark
+                          ? const [Color(0xFF0F261E), Color(0xFF0A1913)]
+                          : const [Color(0xFFF9F5ED), Color(0xFFEFE8DB)],
+                    ),
+              color: isPlain ? Theme.of(context).cardColor : null,
+              borderRadius: BorderRadius.circular(20),
               border: Border.all(
                 color: isPlain
                     ? Theme.of(context).dividerColor
-                    : Theme.of(context).dividerColor.withValues(alpha: 0.2),
+                    : const Color(0xFFC5A059).withValues(alpha: isDark ? 0.35 : 0.30),
+                width: 1.2,
               ),
+              boxShadow: isPlain
+                  ? null
+                  : [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: isDark ? 0.25 : 0.04),
+                        blurRadius: 8,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -297,39 +428,70 @@ class _HadithReaderViewState extends State<HadithReaderView> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    RubElHizbBadge(
+                      number: _currentHadith.hadithNumber,
+                      size: 36,
+                    ),
+                    const SizedBox(width: 10),
                     Expanded(
-                      child: Text(
-                        _currentHadith.bookNameEnglish,
-                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            _currentHadith.bookNameEnglish,
+                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14.5),
+                          ),
+                          if (_currentHadith.bookNameArabic.isNotEmpty)
+                            Text(
+                              _currentHadith.bookNameArabic,
+                              style: AppTypography.arabic(
+                                fontSize: 13,
+                                color: const Color(0xFFC5A059),
+                              ),
+                            ),
+                        ],
                       ),
                     ),
                     const SizedBox(width: 8),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3.5),
                       decoration: BoxDecoration(
                         color: isPlain
                             ? Theme.of(context).colorScheme.surfaceContainerHighest
                             : Colors.green.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(8),
-                        border: isPlain
-                            ? Border.all(color: Theme.of(context).dividerColor)
-                            : null,
-                      ),
-                      child: Text(
-                        _currentHadith.grading.toUpperCase(),
-                        style: TextStyle(
-                          fontSize: 10.5,
-                          fontWeight: FontWeight.bold,
+                        border: Border.all(
                           color: isPlain
-                              ? Theme.of(context).colorScheme.onSurface
-                              : Colors.green,
+                              ? Theme.of(context).dividerColor
+                              : Colors.green.withValues(alpha: 0.4),
+                          width: 0.8,
                         ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (!isPlain) ...[
+                            const Icon(Icons.verified_rounded, size: 12, color: Colors.green),
+                            const SizedBox(width: 3),
+                          ],
+                          Text(
+                            _currentHadith.grading.toUpperCase(),
+                            style: TextStyle(
+                              fontSize: 10.5,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 0.5,
+                              color: isPlain
+                                  ? Theme.of(context).colorScheme.onSurface
+                                  : Colors.green,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
                 ),
                 if (_currentHadith.chapterName.isNotEmpty) ...[
-                  const SizedBox(height: 6),
+                  const SizedBox(height: 10),
                   Text(
                     'Chapter: ${_currentHadith.chapterName}',
                     style: TextStyle(
@@ -342,8 +504,9 @@ class _HadithReaderViewState extends State<HadithReaderView> {
                 Text(
                   'Narrated by ${_currentHadith.narrator}',
                   style: TextStyle(
-                    fontSize: 12.5,
+                    fontSize: 13,
                     fontStyle: FontStyle.italic,
+                    fontWeight: FontWeight.w500,
                     color: isPlain
                         ? Theme.of(context).colorScheme.onSurface
                         : Theme.of(context).colorScheme.primary,
@@ -352,52 +515,119 @@ class _HadithReaderViewState extends State<HadithReaderView> {
               ],
             ),
           ),
-          const SizedBox(height: 24),
-
-          // Arabic Matn
-          Text(
-            _currentHadith.arabicText,
-            textAlign: TextAlign.right,
-            textDirection: TextDirection.rtl,
-            style: AppTypography.arabic(
-              fontSize: prefs.arabicFontSize,
-            ),
-          ),
           const SizedBox(height: 20),
 
-          // English Translation
-          Text(
-            _currentHadith.englishTranslation,
-            style: AppTypography.translation(
-              fontSize: prefs.translationFontSize,
+          // Illuminated Sacred Arabic Matn Container
+          if (prefs.readingDisplayMode != ReadingDisplayMode.translationOnly) ...[
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 22),
+              decoration: BoxDecoration(
+                color: isPlain
+                    ? null
+                    : (isDark
+                        ? const Color(0xFF0F1E19)
+                        : const Color(0xFFFBF8F2)),
+                borderRadius: BorderRadius.circular(20),
+                border: isPlain
+                    ? null
+                    : Border.all(
+                        color: const Color(0xFFC5A059).withValues(alpha: 0.25),
+                        width: 1.0,
+                      ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  if (!isPlain) ...[
+                    const IslamicOrnamentalDivider(height: 16),
+                    const SizedBox(height: 14),
+                  ],
+                  Text(
+                    _currentHadith.arabicText,
+                    textAlign: TextAlign.right,
+                    textDirection: TextDirection.rtl,
+                    style: AppTypography.arabic(
+                      fontSize: prefs.arabicFontSize,
+                      scriptStyle: prefs.arabicScriptStyle,
+                      height: prefs.lineSpacing,
+                    ),
+                  ),
+                  if (!isPlain) ...[
+                    const SizedBox(height: 14),
+                    const IslamicOrnamentalDivider(height: 16),
+                  ],
+                ],
+              ),
             ),
-          ),
-          const SizedBox(height: 28),
+          ],
+          if (prefs.readingDisplayMode == ReadingDisplayMode.dual)
+            const SizedBox(height: 20),
 
-          // Attribution and source details
+          // English Translation
+          if (prefs.readingDisplayMode != ReadingDisplayMode.arabicOnly) ...[
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4.0),
+              child: Text(
+                _currentHadith.englishTranslation,
+                style: AppTypography.translation(
+                  fontSize: prefs.translationFontSize,
+                  height: (prefs.lineSpacing * 0.88).clamp(1.4, 2.2),
+                ),
+              ),
+            ),
+          ],
+          const SizedBox(height: 24),
+
+          // Attribution and source verification card
           Container(
-            padding: const EdgeInsets.all(14),
+            padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: Theme.of(context).cardColor,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: Theme.of(context).dividerColor.withValues(alpha: 0.3)),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: const Color(0xFFC5A059).withValues(alpha: 0.20),
+                width: 1.0,
+              ),
             ),
-            child: Column(
+            child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Source Attribution & Verification',
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFC5A059).withValues(alpha: 0.12),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.verified_user_outlined,
+                    size: 16,
+                    color: Color(0xFFC5A059),
+                  ),
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  _currentHadith.attribution,
-                  style: TextStyle(fontSize: 11, color: Theme.of(context).colorScheme.outline),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Source Attribution & Verification',
+                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 3),
+                      Text(
+                        _currentHadith.attribution,
+                        style: TextStyle(
+                          fontSize: 11.5,
+                          color: Theme.of(context).colorScheme.outline,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 20),
 
           // Chapter & Adjacent Hadith Navigation
           if (_collectionHadiths.isNotEmpty)
@@ -410,6 +640,14 @@ class _HadithReaderViewState extends State<HadithReaderView> {
                       onPressed: () => _navigateToHadith(previousHadith),
                       icon: const Icon(Icons.arrow_back_rounded, size: 16),
                       label: Text('Hadith ${previousHadith.hadithNumber}'),
+                      style: OutlinedButton.styleFrom(
+                        side: BorderSide(
+                          color: const Color(0xFFC5A059).withValues(alpha: 0.4),
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                      ),
                     ),
                   const Spacer(),
                   if (hasNext && nextHadith != null)
@@ -417,6 +655,11 @@ class _HadithReaderViewState extends State<HadithReaderView> {
                       onPressed: () => _navigateToHadith(nextHadith),
                       icon: const Icon(Icons.arrow_forward_rounded, size: 16),
                       label: Text('Hadith ${nextHadith.hadithNumber}'),
+                      style: FilledButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                      ),
                     ),
                 ],
               ),

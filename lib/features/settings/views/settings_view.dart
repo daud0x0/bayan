@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../../app/bootstrap.dart';
 import '../../../core/typography/app_typography.dart';
 import '../../../domain/models/user_preferences.dart';
-import '../../categories/category_explorer_sheet.dart';
+import 'topic_preferences_view.dart';
 
 /// Settings screen for typography, visual themes, privacy, content rights, and donations.
 /// Complies with Section 4.4, 6, 11, and 14 of the Product Plan.
@@ -63,7 +64,7 @@ class SettingsView extends StatelessWidget {
           children: [
             Icon(Icons.volunteer_activism_outlined, size: 22),
             SizedBox(width: 8),
-            Text('Support This Project'),
+            Expanded(child: Text('Support This Project')),
           ],
         ),
         content: const Column(
@@ -108,22 +109,168 @@ class SettingsView extends StatelessWidget {
   }
 
   void _showReportCorrectionDialog(BuildContext context) {
-    showDialog(
+    // Inline stateful dialog via StatefulBuilder — no additional file needed.
+    const correctionTypes = [
+      'Typographic / diacritic error',
+      'Translation discrepancy',
+      'Hadith number mismatch',
+      'Missing attribution / edition info',
+      'Category mapping concern',
+      'Other',
+    ];
+    String selectedType = correctionTypes.first;
+    final refController = TextEditingController();
+    final descController = TextEditingController();
+
+    showDialog<void>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Report Content Correction'),
-        content: const Text(
-          'Religious text integrity is paramount. If you observe any typographic inconsistency, diacritic discrepancy, or translation nuance, please reach out with the exact citation and edition comparison.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('Close'),
-          ),
-        ],
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setDialogState) {
+          return AlertDialog(
+            title: const Row(
+              children: [
+                Icon(Icons.spellcheck_rounded, size: 22),
+                SizedBox(width: 8),
+                Expanded(
+                  child: Text('Report a Correction'),
+                ),
+              ],
+            ),
+            content: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Religious text integrity is paramount. Describe the issue precisely. '
+                    'Your report will be copied to the clipboard so you can forward it '
+                    'to the project maintainers.',
+                    style: TextStyle(
+                      fontSize: 12.5,
+                      color: Theme.of(ctx).colorScheme.outline,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Correction type selector
+                  const Text(
+                    'Issue type',
+                    style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
+                  ),
+                  const SizedBox(height: 6),
+                  DropdownButtonFormField<String>(
+                    initialValue: selectedType,
+                    isDense: true,
+                    isExpanded: true,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      contentPadding:
+                          const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                    ),
+                    items: correctionTypes.map((t) {
+                      return DropdownMenuItem(
+                        value: t,
+                        child: Text(
+                          t,
+                          style: const TextStyle(fontSize: 13.5),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      );
+                    }).toList(),
+                    onChanged: (v) {
+                      if (v != null) setDialogState(() => selectedType = v);
+                    },
+                  ),
+                  const SizedBox(height: 14),
+
+                  // Exact reference
+                  const Text(
+                    'Exact citation / reference',
+                    style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
+                  ),
+                  const SizedBox(height: 6),
+                  TextField(
+                    controller: refController,
+                    decoration: InputDecoration(
+                      hintText: 'e.g. Sahih al-Bukhari 6294, or Surah Al-Baqarah [2:255]',
+                      hintStyle: const TextStyle(fontSize: 12.5),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      contentPadding:
+                          const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                    ),
+                    style: const TextStyle(fontSize: 13.5),
+                    textInputAction: TextInputAction.next,
+                  ),
+                  const SizedBox(height: 14),
+
+                  // Description
+                  const Text(
+                    'Description',
+                    style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
+                  ),
+                  const SizedBox(height: 6),
+                  TextField(
+                    controller: descController,
+                    minLines: 3,
+                    maxLines: 5,
+                    decoration: InputDecoration(
+                      hintText:
+                          'Describe the error and, if possible, the correct text or edition source.',
+                      hintStyle: const TextStyle(fontSize: 12.5),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      contentPadding:
+                          const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                    ),
+                    style: const TextStyle(fontSize: 13.5),
+                    textInputAction: TextInputAction.done,
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(ctx).pop(),
+                child: const Text('Cancel'),
+              ),
+              FilledButton.icon(
+                icon: const Icon(Icons.copy_rounded, size: 16),
+                label: const Text('Copy Report'),
+                onPressed: () async {
+                  final ref = refController.text.trim();
+                  final desc = descController.text.trim();
+                  final report = StringBuffer()
+                    ..writeln('[Quran & Hadith Discovery — Content Correction Report]')
+                    ..writeln('Issue type : $selectedType')
+                    ..writeln('Reference  : ${ref.isEmpty ? '(not provided)' : ref}')
+                    ..writeln('Description: ${desc.isEmpty ? '(not provided)' : desc}');
+
+                  await Clipboard.setData(ClipboardData(text: report.toString()));
+                  if (ctx.mounted) Navigator.of(ctx).pop();
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          'Report copied to clipboard. Please send it to the project maintainers.',
+                        ),
+                        behavior: SnackBarBehavior.floating,
+                      ),
+                    );
+                  }
+                },
+              ),
+            ],
+          );
+        },
       ),
     );
   }
+
 
   void _confirmResetData(BuildContext context, AppScope scope) {
     showDialog(
@@ -159,6 +306,73 @@ class SettingsView extends StatelessWidget {
     );
   }
 
+  Widget _buildPalettePicker(BuildContext context, AppScope scope, UserPreferences prefs) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Color Palette',
+            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
+          ),
+          const SizedBox(height: 10),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: AppThemePalette.values.map((palette) {
+              final isSelected = prefs.themePalette == palette;
+              return InkWell(
+                borderRadius: BorderRadius.circular(16),
+                onTap: () {
+                  scope.updatePreferences(prefs.copyWith(themePalette: palette));
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: isSelected
+                        ? palette.primaryColor.withValues(alpha: 0.12)
+                        : Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: isSelected
+                          ? palette.primaryColor
+                          : Theme.of(context).colorScheme.outlineVariant,
+                      width: isSelected ? 2.0 : 1.0,
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        width: 14,
+                        height: 14,
+                        decoration: BoxDecoration(
+                          color: palette.primaryColor,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: palette.accentColor, width: 1.8),
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        palette.label,
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                          color: isSelected ? palette.primaryColor : null,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final scope = AppScope.of(context);
@@ -172,10 +386,20 @@ class SettingsView extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         children: [
           // Section: Appearance & Themes
-          _sectionHeader(context, 'Appearance & Theme'),
+          _sectionHeader(context, 'Appearance & Theme', Icons.palette_outlined),
           Card(
+            elevation: 0,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+              side: BorderSide(
+                color: Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.4),
+              ),
+            ),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                _buildPalettePicker(context, scope, prefs),
+                Divider(height: 1, indent: 16, endIndent: 16, color: Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.3)),
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
@@ -207,8 +431,29 @@ class SettingsView extends StatelessWidget {
                     ],
                   ),
                 ),
-                const Divider(height: 1),
+                Divider(height: 1, indent: 16, endIndent: 16, color: Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.3)),
                 SwitchListTile(
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+                  title: const Text('Eye-Comfort Warm Sepia'),
+                  subtitle: const Text('Soothing parchment canvas optimized for long reading sessions'),
+                  value: prefs.eyeComfortSepia,
+                  onChanged: (val) {
+                    scope.updatePreferences(prefs.copyWith(eyeComfortSepia: val));
+                  },
+                ),
+                Divider(height: 1, indent: 16, endIndent: 16, color: Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.3)),
+                SwitchListTile(
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+                  title: const Text('OLED Pure Black Dark Theme'),
+                  subtitle: const Text('True black background in dark mode for maximum contrast and battery saving'),
+                  value: prefs.pureBlackDark,
+                  onChanged: (val) {
+                    scope.updatePreferences(prefs.copyWith(pureBlackDark: val));
+                  },
+                ),
+                Divider(height: 1, indent: 16, endIndent: 16, color: Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.3)),
+                SwitchListTile(
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
                   title: const Text('Plain Reading Mode'),
                   subtitle: const Text('Solid background for maximum legibility and distraction-free reading'),
                   value: prefs.plainReadingMode,
@@ -222,61 +467,67 @@ class SettingsView extends StatelessWidget {
           const SizedBox(height: 18),
 
           // Section: Visual Engine Settings
-          _sectionHeader(context, 'Procedural Visual Engine'),
+          _sectionHeader(context, 'Procedural Visual Engine', Icons.auto_awesome_outlined),
           Card(
+            elevation: 0,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+              side: BorderSide(
+                color: Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.4),
+              ),
+            ),
             child: Column(
               children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                  child: Row(
-                    children: [
-                      const Expanded(
-                        child: Text(
-                          'Palette Preset',
-                          style: TextStyle(fontWeight: FontWeight.w600),
-                        ),
-                      ),
-                      DropdownButton<VisualPreset>(
-                        value: prefs.visualPreset,
-                        underline: const SizedBox(),
-                        isDense: true,
-                        items: VisualPreset.values.map((p) {
-                          return DropdownMenuItem(value: p, child: Text(p.label));
-                        }).toList(),
-                        onChanged: (p) {
-                          if (p != null) {
-                            scope.updatePreferences(prefs.copyWith(visualPreset: p));
-                          }
-                        },
-                      ),
-                    ],
+                ListTile(
+                  leading: Icon(Icons.palette_outlined, size: 20, color: Theme.of(context).colorScheme.outline),
+                  title: const Text('Palette Preset', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13.5)),
+                  subtitle: Text(prefs.visualPreset.description, style: const TextStyle(fontSize: 12)),
+                  trailing: DropdownButton<VisualPreset>(
+                    value: prefs.visualPreset,
+                    underline: const SizedBox(),
+                    items: VisualPreset.values.map((p) {
+                      return DropdownMenuItem(value: p, child: Text(p.label, style: const TextStyle(fontSize: 13)));
+                    }).toList(),
+                    onChanged: (p) {
+                      if (p != null) {
+                        scope.updatePreferences(prefs.copyWith(visualPreset: p));
+                      }
+                    },
                   ),
                 ),
-                const Divider(height: 1),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                  child: Row(
-                    children: [
-                      const Expanded(
+                Divider(height: 1, indent: 16, endIndent: 16, color: Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.3)),
+                ListTile(
+                  leading: Icon(Icons.tune_rounded, size: 20, color: Theme.of(context).colorScheme.outline),
+                  title: const Text('Visual Intensity', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13.5)),
+                  subtitle: Text(
+                    prefs.visualIntensity == VisualIntensity.subtle
+                        ? 'Subtle background patterns'
+                        : prefs.visualIntensity == VisualIntensity.standard
+                            ? 'Balanced geometric accents'
+                            : 'Vibrant expressive patterns',
+                    style: const TextStyle(fontSize: 12),
+                  ),
+                  trailing: DropdownButton<VisualIntensity>(
+                    value: prefs.visualIntensity,
+                    underline: const SizedBox(),
+                    items: VisualIntensity.values.map((i) {
+                      return DropdownMenuItem(
+                        value: i,
                         child: Text(
-                          'Visual Intensity',
-                          style: TextStyle(fontWeight: FontWeight.w600),
+                          i == VisualIntensity.subtle
+                              ? 'Subtle'
+                              : i == VisualIntensity.standard
+                                  ? 'Balanced'
+                                  : 'Vibrant',
+                          style: const TextStyle(fontSize: 13),
                         ),
-                      ),
-                      DropdownButton<VisualIntensity>(
-                        value: prefs.visualIntensity,
-                        underline: const SizedBox(),
-                        isDense: true,
-                        items: VisualIntensity.values.map((i) {
-                          return DropdownMenuItem(value: i, child: Text(i.label));
-                        }).toList(),
-                        onChanged: (i) {
-                          if (i != null) {
-                            scope.updatePreferences(prefs.copyWith(visualIntensity: i));
-                          }
-                        },
-                      ),
-                    ],
+                      );
+                    }).toList(),
+                    onChanged: (i) {
+                      if (i != null) {
+                        scope.updatePreferences(prefs.copyWith(visualIntensity: i));
+                      }
+                    },
                   ),
                 ),
               ],
@@ -285,19 +536,82 @@ class SettingsView extends StatelessWidget {
           const SizedBox(height: 18),
 
           // Section: Typography & Text Sizing
-          _sectionHeader(context, 'Typography'),
+          _sectionHeader(context, 'Typography', Icons.text_fields_rounded),
           Card(
+            elevation: 0,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+              side: BorderSide(
+                color: Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.4),
+              ),
+            ),
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  const Text('Reading Display Mode', style: TextStyle(fontWeight: FontWeight.w600)),
+                  const SizedBox(height: 8),
+                  SizedBox(
+                    width: double.infinity,
+                    child: SegmentedButton<ReadingDisplayMode>(
+                      style: const ButtonStyle(
+                        visualDensity: VisualDensity.compact,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                      segments: const [
+                        ButtonSegment(value: ReadingDisplayMode.dual, label: Text('Dual')),
+                        ButtonSegment(value: ReadingDisplayMode.arabicOnly, label: Text('Arabic Only')),
+                        ButtonSegment(value: ReadingDisplayMode.translationOnly, label: Text('Translation Only')),
+                      ],
+                      selected: {prefs.readingDisplayMode},
+                      onSelectionChanged: (set) {
+                        scope.updatePreferences(prefs.copyWith(readingDisplayMode: set.first));
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+                  Row(
+                    children: [
+                      Icon(Icons.font_download_outlined, size: 20, color: Theme.of(context).colorScheme.outline),
+                      const SizedBox(width: 10),
+                      const Expanded(
+                        child: Text(
+                          'Arabic Script Style',
+                          style: TextStyle(fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                      DropdownButton<ArabicScriptStyle>(
+                        value: prefs.arabicScriptStyle,
+                        underline: const SizedBox(),
+                        isDense: true,
+                        items: ArabicScriptStyle.values.map((s) {
+                          return DropdownMenuItem(value: s, child: Text(s.label));
+                        }).toList(),
+                        onChanged: (s) {
+                          if (s != null) {
+                            scope.updatePreferences(prefs.copyWith(arabicScriptStyle: s));
+                          }
+                        },
+                      ),
+                    ],
+                  ),
+                  Divider(height: 24, color: Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.3)),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('Arabic Font Size'),
-                      Text('${prefs.arabicFontSize.toInt()} pt',
-                          style: const TextStyle(fontWeight: FontWeight.bold)),
+                      const Text('Arabic Font Size', style: TextStyle(fontWeight: FontWeight.w500)),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Text(
+                          '${prefs.arabicFontSize.toInt()} pt',
+                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: Theme.of(context).colorScheme.primary),
+                        ),
+                      ),
                     ],
                   ),
                   Slider(
@@ -309,13 +623,22 @@ class SettingsView extends StatelessWidget {
                       scope.updatePreferences(prefs.copyWith(arabicFontSize: val));
                     },
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 6),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('Translation Font Size'),
-                      Text('${prefs.translationFontSize.toInt()} pt',
-                          style: const TextStyle(fontWeight: FontWeight.bold)),
+                      const Text('Translation Font Size', style: TextStyle(fontWeight: FontWeight.w500)),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Text(
+                          '${prefs.translationFontSize.toInt()} pt',
+                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: Theme.of(context).colorScheme.primary),
+                        ),
+                      ),
                     ],
                   ),
                   Slider(
@@ -327,30 +650,100 @@ class SettingsView extends StatelessWidget {
                       scope.updatePreferences(prefs.copyWith(translationFontSize: val));
                     },
                   ),
+                  const SizedBox(height: 6),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text('Line Spacing', style: TextStyle(fontWeight: FontWeight.w500)),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Text(
+                          '${prefs.lineSpacing.toStringAsFixed(1)}x',
+                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: Theme.of(context).colorScheme.primary),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Slider(
+                    value: prefs.lineSpacing,
+                    min: 1.4,
+                    max: 2.6,
+                    divisions: 6,
+                    onChanged: (val) {
+                      scope.updatePreferences(prefs.copyWith(lineSpacing: val));
+                    },
+                  ),
                   const SizedBox(height: 12),
                   // Live Typography Preview Box
                   Container(
                     width: double.infinity,
-                    padding: const EdgeInsets.all(14),
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                     decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
-                      borderRadius: BorderRadius.circular(12),
+                      color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.25),
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(
+                        color: const Color(0xFFC5A059).withValues(alpha: 0.3),
+                        width: 1.0,
+                      ),
                     ),
                     child: Column(
                       children: [
                         Text(
                           'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ',
                           textAlign: TextAlign.center,
-                          style: AppTypography.arabic(fontSize: prefs.arabicFontSize),
+                          textDirection: TextDirection.rtl,
+                          style: AppTypography.arabic(
+                            fontSize: prefs.arabicFontSize,
+                            scriptStyle: prefs.arabicScriptStyle,
+                            height: prefs.lineSpacing,
+                            color: const Color(0xFFC5A059),
+                          ),
                         ),
-                        const SizedBox(height: 6),
+                        const SizedBox(height: 8),
                         Text(
                           'In the name of Allah, the Entirely Merciful, the Especially Merciful.',
                           textAlign: TextAlign.center,
-                          style: AppTypography.translation(fontSize: prefs.translationFontSize),
+                          style: AppTypography.translation(
+                            fontSize: prefs.translationFontSize,
+                            height: (prefs.lineSpacing * 0.88).clamp(1.4, 2.2),
+                          ),
                         ),
                       ],
                     ),
+                  ),
+                  Divider(height: 24, color: Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.3)),
+                  SwitchListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: const Text('Phonetic Transliteration'),
+                    subtitle: const Text('Display phonetic Latin pronunciation guides'),
+                    value: prefs.showTransliteration,
+                    onChanged: (val) {
+                      scope.updatePreferences(prefs.copyWith(showTransliteration: val));
+                    },
+                  ),
+                  Divider(height: 1, color: Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.3)),
+                  SwitchListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: const Text('Haptic Touch Feedback'),
+                    subtitle: const Text('Gentle tactile sensations during reading interactions'),
+                    value: prefs.hapticFeedbackEnabled,
+                    onChanged: (val) {
+                      scope.updatePreferences(prefs.copyWith(hapticFeedbackEnabled: val));
+                    },
+                  ),
+                  Divider(height: 1, color: Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.3)),
+                  SwitchListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: const Text('Keep Screen Awake'),
+                    subtitle: const Text('Prevent display from sleeping during reading sessions'),
+                    value: prefs.keepScreenAwake,
+                    onChanged: (val) {
+                      scope.updatePreferences(prefs.copyWith(keepScreenAwake: val));
+                    },
                   ),
                 ],
               ),
@@ -359,8 +752,15 @@ class SettingsView extends StatelessWidget {
           const SizedBox(height: 18),
 
           // Section: Content & Discovery
-          _sectionHeader(context, 'Content & Taxonomy'),
+          _sectionHeader(context, 'Content & Taxonomy', Icons.auto_stories_outlined),
           Card(
+            elevation: 0,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+              side: BorderSide(
+                color: Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.4),
+              ),
+            ),
             child: Column(
               children: [
                 ListTile(
@@ -369,14 +769,18 @@ class SettingsView extends StatelessWidget {
                   subtitle: Text(
                     prefs.selectedCategoryIds.isEmpty
                         ? 'All 15 editorial categories active'
-                        : '${prefs.selectedCategoryIds.length} categories selected',
+                        : '${prefs.selectedCategoryIds.length} categories prioritised',
                   ),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () {
-                    CategoryExplorerSheet.show(context, onSelectCategory: (_) {});
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => const TopicPreferencesView(),
+                      ),
+                    );
                   },
                 ),
-                const Divider(height: 1),
+                Divider(height: 1, indent: 16, endIndent: 16, color: Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.3)),
                 ListTile(
                   leading: const Icon(Icons.verified_outlined),
                   title: const Text('Content Rights & Editions'),
@@ -384,7 +788,7 @@ class SettingsView extends StatelessWidget {
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () => _showRightsProvenanceDialog(context),
                 ),
-                const Divider(height: 1),
+                Divider(height: 1, indent: 16, endIndent: 16, color: Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.3)),
                 ListTile(
                   leading: const Icon(Icons.spellcheck_rounded),
                   title: const Text('Report Content Issue / Correction'),
@@ -398,18 +802,25 @@ class SettingsView extends StatelessWidget {
           const SizedBox(height: 18),
 
           // Section: Privacy & Funding
-          _sectionHeader(context, 'Privacy & Funding'),
+          _sectionHeader(context, 'Privacy & Funding', Icons.shield_outlined),
           Card(
+            elevation: 0,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+              side: BorderSide(
+                color: Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.4),
+              ),
+            ),
             child: Column(
               children: [
                 const ListTile(
-                  leading: Icon(Icons.security_outlined),
+                  leading: Icon(Icons.security_outlined, color: Colors.teal),
                   title: Text('Offline-First Privacy Guarantee'),
                   subtitle: Text(
                     'No accounts. No user tracking. Reading history is stored strictly on your device.',
                   ),
                 ),
-                const Divider(height: 1),
+                Divider(height: 1, indent: 16, endIndent: 16, color: Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.3)),
                 ListTile(
                   leading: const Icon(Icons.volunteer_activism_outlined),
                   title: const Text('Support & Donations'),
@@ -417,7 +828,7 @@ class SettingsView extends StatelessWidget {
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () => _showDonationDialog(context),
                 ),
-                const Divider(height: 1),
+                Divider(height: 1, indent: 16, endIndent: 16, color: Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.3)),
                 ListTile(
                   leading: const Icon(Icons.delete_forever_outlined, color: Colors.red),
                   title: const Text('Reset All Local Data', style: TextStyle(color: Colors.red)),
@@ -441,17 +852,25 @@ class SettingsView extends StatelessWidget {
     );
   }
 
-  Widget _sectionHeader(BuildContext context, String title) {
+  Widget _sectionHeader(BuildContext context, String title, [IconData? icon]) {
     return Padding(
       padding: const EdgeInsets.only(left: 4, bottom: 8),
-      child: Text(
-        title.toUpperCase(),
-        style: TextStyle(
-          fontSize: 11,
-          fontWeight: FontWeight.bold,
-          letterSpacing: 0.8,
-          color: Theme.of(context).colorScheme.primary,
-        ),
+      child: Row(
+        children: [
+          if (icon != null) ...[
+            Icon(icon, size: 15, color: Theme.of(context).colorScheme.primary),
+            const SizedBox(width: 6),
+          ],
+          Text(
+            title.toUpperCase(),
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 0.8,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+          ),
+        ],
       ),
     );
   }

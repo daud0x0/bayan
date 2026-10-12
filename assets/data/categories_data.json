@@ -85,6 +85,20 @@
           "reference": "Sahih Muslim 2999",
           "relationship": "thematic",
           "rationale": "Points out that giving thanks during pleasant times is inherently good and rewarded."
+        },
+        {
+          "content_type": "quran",
+          "content_id": "55_13",
+          "reference": "Surah Ar-Rahman [55:13]",
+          "relationship": "direct",
+          "rationale": "The recurring divine reminder: 'So which of the favors of your Lord would you deny?'"
+        },
+        {
+          "content_type": "quran",
+          "content_id": "108_1",
+          "reference": "Surah Al-Kawthar [108:1-2]",
+          "relationship": "direct",
+          "rationale": "Gratitude for divine abundance manifested through prayer and devotion."
         }
       ]
     },
@@ -136,6 +150,20 @@
           "reference": "Surah Ali 'Imran [3:159]",
           "relationship": "direct",
           "rationale": "Praising the Prophet's softness of heart and enjoining mutual pardon and consultation."
+        },
+        {
+          "content_type": "quran",
+          "content_id": "55_1",
+          "reference": "Surah Ar-Rahman [55:1-4]",
+          "relationship": "direct",
+          "rationale": "Proclamation of The Entirely Merciful who taught the Quran and created mankind."
+        },
+        {
+          "content_type": "quran",
+          "content_id": "110_3",
+          "reference": "Surah An-Nasr [110:3]",
+          "relationship": "direct",
+          "rationale": "Exalting the Lord with praise and seeking His pardon, as He is ever Accepting of repentance."
         }
       ]
     },
@@ -158,6 +186,13 @@
           "reference": "Surah Ali 'Imran [3:159]",
           "relationship": "direct",
           "rationale": "Command to take resolute decisions and rely completely upon Allah's love."
+        },
+        {
+          "content_type": "quran",
+          "content_id": "2_285",
+          "reference": "Surah Al-Baqarah [2:285]",
+          "relationship": "thematic",
+          "rationale": "Steadfast submission and faith: 'We hear and we obey. We seek Your forgiveness, our Lord.'"
         }
       ]
     },
@@ -182,11 +217,25 @@
           "rationale": "Two phrases light on the tongue and heavy in the scales of divine remembrance."
         },
         {
+          "content_type": "hadith",
+          "content_id": "muslim_223",
+          "reference": "Sahih Muslim 223",
+          "relationship": "direct",
+          "rationale": "Affirms that praising Allah fills the scale and prayer serves as illuminating guidance."
+        },
+        {
           "content_type": "quran",
           "content_id": "40_60",
           "reference": "Surah Ghafir [40:60]",
           "relationship": "direct",
           "rationale": "Divine injunction promising an answer to those who supplicate."
+        },
+        {
+          "content_type": "quran",
+          "content_id": "97_3",
+          "reference": "Surah Al-Qadr [97:3]",
+          "relationship": "thematic",
+          "rationale": "The night of divine destiny and worship, better than a thousand months."
         }
       ]
     },
@@ -205,6 +254,20 @@
         },
         {
           "content_type": "quran",
+          "content_id": "2_2",
+          "reference": "Surah Al-Baqarah [2:2]",
+          "relationship": "direct",
+          "rationale": "Declares the Quran as a guidance free of doubt for those mindful of Allah."
+        },
+        {
+          "content_type": "quran",
+          "content_id": "18_10",
+          "reference": "Surah Al-Kahf [18:10]",
+          "relationship": "direct",
+          "rationale": "Supplication of the cave youths pleading for mercy and right guidance in their affair."
+        },
+        {
+          "content_type": "quran",
           "content_id": "24_35",
           "reference": "Surah An-Nur [24:35]",
           "relationship": "contextual",
@@ -220,10 +283,31 @@
       "content_links": [
         {
           "content_type": "hadith",
+          "content_id": "bukhari_6021",
+          "reference": "Sahih al-Bukhari 6021",
+          "relationship": "direct",
+          "rationale": "Declares that every good and righteous deed is considered charity."
+        },
+        {
+          "content_type": "hadith",
           "content_id": "bukhari_13",
           "reference": "Sahih al-Bukhari 13",
           "relationship": "thematic",
           "rationale": "The foundation of fraternal empathy—wanting for one's brother what one loves for oneself."
+        },
+        {
+          "content_type": "hadith",
+          "content_id": "muslim_223",
+          "reference": "Sahih Muslim 223",
+          "relationship": "thematic",
+          "rationale": "Charity serves as clear evidence (burhan) of sincere conviction."
+        },
+        {
+          "content_type": "quran",
+          "content_id": "2_3",
+          "reference": "Surah Al-Baqarah [2:3]",
+          "relationship": "direct",
+          "rationale": "The hallmark of the righteous: spending selflessly out of the sustenance provided to them."
         }
       ]
     },
@@ -261,6 +345,20 @@
           "reference": "Sahih al-Bukhari 1",
           "relationship": "direct",
           "rationale": "The cornerstone of Islamic conduct: every act is judged by its inner intention."
+        },
+        {
+          "content_type": "hadith",
+          "content_id": "bukhari_6035",
+          "reference": "Sahih al-Bukhari 6035",
+          "relationship": "direct",
+          "rationale": "Enjoining upright speech or silence, and generous hospitality to neighbor and guest."
+        },
+        {
+          "content_type": "hadith",
+          "content_id": "bukhari_2442",
+          "reference": "Sahih al-Bukhari 2442",
+          "relationship": "direct",
+          "rationale": "The golden standard of mutual brotherhood, mutual assistance, and relieving distress."
         },
         {
           "content_type": "hadith",

@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../../app/bootstrap.dart';
 import '../../../core/typography/app_typography.dart';
+import '../../../core/widgets/islamic_decorations.dart';
 import '../../../domain/models/bookmark_model.dart';
 import '../../../domain/models/content_item.dart';
 import '../../../domain/models/quran_models.dart';
 import '../../../domain/models/reading_progress_model.dart';
+import '../../../domain/models/user_preferences.dart';
 import '../../share_cards/views/share_card_sheet.dart';
 
 /// Full Surah reader supporting adjustable typography, bookmarking, and progress persistence.
@@ -28,6 +31,7 @@ class _QuranReaderViewState extends State<QuranReaderView> {
   List<QuranAyah> _ayahs = [];
   bool _isLoading = true;
   bool _initialized = false;
+  int? _activeReadingAyah;
 
   @override
   void didChangeDependencies() {
@@ -43,9 +47,16 @@ class _QuranReaderViewState extends State<QuranReaderView> {
     final ayahs = await scope.contentRepository.getAyahs(widget.surah.number);
     if (!mounted) return;
 
+    final initialAyah = widget.initialAyahNumber ??
+        (scope.lastQuranProgress?.targetId == widget.surah.number.toString()
+            ? scope.lastQuranProgress?.itemNumber
+            : 1) ??
+        1;
+
     setState(() {
       _ayahs = ayahs;
       _isLoading = false;
+      _activeReadingAyah = initialAyah;
     });
 
     if (widget.initialAyahNumber != null && widget.initialAyahNumber! > 1) {
@@ -59,10 +70,38 @@ class _QuranReaderViewState extends State<QuranReaderView> {
       ReadingProgress(
         contentType: ContentType.quran,
         targetId: widget.surah.number.toString(),
-        itemNumber: widget.initialAyahNumber ?? 1,
+        itemNumber: initialAyah,
         title: 'Surah ${widget.surah.nameEnglish}',
-        subtitle: 'Verse ${widget.initialAyahNumber ?? 1} • ${widget.surah.nameArabic}',
+        subtitle: 'Verse $initialAyah • ${widget.surah.nameArabic}',
         updatedAt: DateTime.now(),
+      ),
+    );
+  }
+
+  Future<void> _setReadingPosition(QuranAyah ayah) async {
+    final scope = AppScope.of(context);
+    if (scope.preferences.hapticFeedbackEnabled) {
+      HapticFeedback.mediumImpact();
+    }
+    setState(() {
+      _activeReadingAyah = ayah.ayahNumber;
+    });
+    await scope.recordProgress(
+      ReadingProgress(
+        contentType: ContentType.quran,
+        targetId: widget.surah.number.toString(),
+        itemNumber: ayah.ayahNumber,
+        title: 'Surah ${widget.surah.nameEnglish}',
+        subtitle: 'Verse ${ayah.ayahNumber} • ${widget.surah.nameArabic}',
+        updatedAt: DateTime.now(),
+      ),
+    );
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Reading position saved: Verse ${ayah.ayahNumber}'),
+        duration: const Duration(seconds: 2),
+        behavior: SnackBarBehavior.floating,
       ),
     );
   }
@@ -144,71 +183,150 @@ class _QuranReaderViewState extends State<QuranReaderView> {
           builder: (ctx, setSheetState) {
             final prefs = scope.preferences;
 
-            return Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Typography & Display',
-                        style: Theme.of(ctx).textTheme.titleLarge?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
+            return SafeArea(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Typography & Display',
+                          style: Theme.of(ctx).textTheme.titleLarge?.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.close),
+                          onPressed: () => Navigator.of(ctx).pop(),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+
+                    // Reading Display Mode
+                    const Text('Display Mode', style: TextStyle(fontWeight: FontWeight.w600)),
+                    const SizedBox(height: 6),
+                    SizedBox(
+                      width: double.infinity,
+                      child: SegmentedButton<ReadingDisplayMode>(
+                        style: const ButtonStyle(
+                          visualDensity: VisualDensity.compact,
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        ),
+                        segments: const [
+                          ButtonSegment(value: ReadingDisplayMode.dual, label: Text('Dual')),
+                          ButtonSegment(value: ReadingDisplayMode.arabicOnly, label: Text('Arabic')),
+                          ButtonSegment(value: ReadingDisplayMode.translationOnly, label: Text('English')),
+                        ],
+                        selected: {prefs.readingDisplayMode},
+                        onSelectionChanged: (set) {
+                          setSheetState(() {});
+                          scope.updatePreferences(prefs.copyWith(readingDisplayMode: set.first));
+                        },
                       ),
-                      IconButton(
-                        icon: const Icon(Icons.close),
-                        onPressed: () => Navigator.of(ctx).pop(),
+                    ),
+                    const SizedBox(height: 14),
+
+                    // Script Style Selector
+                    Row(
+                      children: [
+                        const Expanded(
+                          child: Text('Script Style', style: TextStyle(fontWeight: FontWeight.w600)),
+                        ),
+                        DropdownButton<ArabicScriptStyle>(
+                          value: prefs.arabicScriptStyle,
+                          underline: const SizedBox(),
+                          isDense: true,
+                          items: ArabicScriptStyle.values.map((s) {
+                            return DropdownMenuItem(value: s, child: Text(s.label));
+                          }).toList(),
+                          onChanged: (s) {
+                            if (s != null) {
+                              setSheetState(() {});
+                              scope.updatePreferences(prefs.copyWith(arabicScriptStyle: s));
+                            }
+                          },
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+
+                    // Arabic Size Slider
+                    if (prefs.readingDisplayMode != ReadingDisplayMode.translationOnly) ...[
+                      Text('Arabic Font Size: ${prefs.arabicFontSize.toInt()} pt'),
+                      Slider(
+                        value: prefs.arabicFontSize,
+                        min: 18.0,
+                        max: 36.0,
+                        divisions: 9,
+                        onChanged: (val) {
+                          setSheetState(() {});
+                          scope.updatePreferences(prefs.copyWith(arabicFontSize: val));
+                        },
                       ),
+                      const SizedBox(height: 12),
                     ],
-                  ),
-                  const SizedBox(height: 16),
 
-                  // Arabic Size Slider
-                  Text('Arabic Font Size: ${prefs.arabicFontSize.toInt()} pt'),
-                  Slider(
-                    value: prefs.arabicFontSize,
-                    min: 18.0,
-                    max: 36.0,
-                    divisions: 9,
-                    onChanged: (val) {
-                      setSheetState(() {});
-                      scope.updatePreferences(prefs.copyWith(arabicFontSize: val));
-                    },
-                  ),
-                  const SizedBox(height: 12),
+                    // Translation Size Slider
+                    if (prefs.readingDisplayMode != ReadingDisplayMode.arabicOnly) ...[
+                      Text('Translation Font Size: ${prefs.translationFontSize.toInt()} pt'),
+                      Slider(
+                        value: prefs.translationFontSize,
+                        min: 12.0,
+                        max: 24.0,
+                        divisions: 6,
+                        onChanged: (val) {
+                          setSheetState(() {});
+                          scope.updatePreferences(prefs.copyWith(translationFontSize: val));
+                        },
+                      ),
+                      const SizedBox(height: 12),
+                    ],
 
-                  // Translation Size Slider
-                  Text('Translation Font Size: ${prefs.translationFontSize.toInt()} pt'),
-                  Slider(
-                    value: prefs.translationFontSize,
-                    min: 12.0,
-                    max: 24.0,
-                    divisions: 6,
-                    onChanged: (val) {
-                      setSheetState(() {});
-                      scope.updatePreferences(prefs.copyWith(translationFontSize: val));
-                    },
-                  ),
-                  const SizedBox(height: 12),
+                    // Line Spacing Slider
+                    Text('Line Spacing: ${prefs.lineSpacing.toStringAsFixed(1)}x'),
+                    Slider(
+                      value: prefs.lineSpacing,
+                      min: 1.4,
+                      max: 2.6,
+                      divisions: 6,
+                      onChanged: (val) {
+                        setSheetState(() {});
+                        scope.updatePreferences(prefs.copyWith(lineSpacing: val));
+                      },
+                    ),
+                    const SizedBox(height: 6),
 
-                  // Plain Mode Switch
-                  SwitchListTile(
-                    title: const Text('Plain Reading Mode'),
-                    subtitle: const Text('Minimal, high-contrast display without gradients'),
-                    value: prefs.plainReadingMode,
-                    onChanged: (val) {
-                      setSheetState(() {});
-                      scope.updatePreferences(prefs.copyWith(plainReadingMode: val));
-                    },
-                  ),
+                    // Plain Mode Switch
+                    SwitchListTile(
+                      title: const Text('Plain Reading Mode'),
+                      subtitle: const Text('Minimal, high-contrast display without gradients'),
+                      value: prefs.plainReadingMode,
+                      onChanged: (val) {
+                        setSheetState(() {});
+                        scope.updatePreferences(prefs.copyWith(plainReadingMode: val));
+                      },
+                    ),
+
+                    // Eye Comfort Sepia Switch
+                    SwitchListTile(
+                      title: const Text('Eye-Comfort Warm Sepia'),
+                      subtitle: const Text('Soothing parchment tint for long reading sessions'),
+                      value: prefs.eyeComfortSepia,
+                      onChanged: (val) {
+                        setSheetState(() {});
+                        scope.updatePreferences(prefs.copyWith(eyeComfortSepia: val));
+                      },
+                    ),
                 ],
               ),
-            );
-          },
+            ),
+          );
+        },
         );
       },
     );
@@ -218,6 +336,9 @@ class _QuranReaderViewState extends State<QuranReaderView> {
   Widget build(BuildContext context) {
     final scope = AppScope.of(context);
     final prefs = scope.preferences;
+
+    final contentCount = _ayahs.isEmpty ? 1 : _ayahs.length;
+    final totalItemCount = 1 + contentCount + 2; // header + (empty state or ayahs) + navigation + footer
 
     return Scaffold(
       appBar: AppBar(
@@ -252,203 +373,336 @@ class _QuranReaderViewState extends State<QuranReaderView> {
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
-          : ListView(
+          : ListView.builder(
               controller: _scrollController,
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              children: [
-                // Surah Header Banner
-                Container(
-                  padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
-                  margin: const EdgeInsets.only(bottom: 16),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Column(
-                    children: [
-                      Text(
-                        widget.surah.nameArabic,
-                        style: AppTypography.arabic(fontSize: 28, fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(height: 6),
-                      Text(
-                        '${widget.surah.revelationType} • ${widget.surah.ayahCount} Verses',
-                        style: TextStyle(
-                          fontSize: 12.5,
-                          color: Theme.of(context).colorScheme.outline,
-                        ),
-                      ),
-                      if (widget.surah.number != 1 && widget.surah.number != 9) ...[
-                        const SizedBox(height: 14),
-                        const Divider(indent: 40, endIndent: 40),
-                        const SizedBox(height: 8),
-                        Text(
-                          'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ',
-                          style: AppTypography.arabic(fontSize: 20),
-                        ),
-                      ],
-                    ],
-                  ),
-                ),
-
-                // Ayahs List
-                if (_ayahs.isEmpty)
-                  Padding(
-                    padding: const EdgeInsets.all(32.0),
-                    child: Center(
-                      child: Text(
-                        'Verses for Surah ${widget.surah.nameEnglish} are indexed.\nOffline sync ready.',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(color: Theme.of(context).colorScheme.outline),
-                      ),
-                    ),
-                  )
-                else
-                  ..._ayahs.map((ayah) {
-                    final isBookmarked = scope.isBookmarked('quran_${ayah.id}');
-                    final isHighlighted = widget.initialAyahNumber == ayah.ayahNumber;
-
-                    final contentItem = ContentItem(
-                      id: 'quran_${ayah.id}',
-                      contentType: ContentType.quran,
-                      reference: 'Surah ${widget.surah.nameEnglish} [${ayah.surahNumber}:${ayah.ayahNumber}]',
-                      arabicText: ayah.arabicText,
-                      englishTranslation: ayah.englishTranslation,
-                      attribution: 'The Quran: English Meanings by ${ayah.translationAttribution}',
-                      surahNumber: ayah.surahNumber,
-                      ayahNumber: ayah.ayahNumber,
-                    );
-
-                    return Container(
-                      margin: const EdgeInsets.only(bottom: 14),
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: isHighlighted
-                            ? Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.25)
-                            : Theme.of(context).colorScheme.surface,
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(
-                          color: isHighlighted
-                              ? Theme.of(context).colorScheme.primary
-                              : Theme.of(context).dividerColor.withValues(alpha: 0.3),
-                        ),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          // Ayah Number and Actions row
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              CircleAvatar(
-                                radius: 14,
-                                backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.15),
-                                child: Text(
-                                  ayah.ayahNumber.toString(),
-                                  style: TextStyle(
-                                    fontSize: 11,
-                                    fontWeight: FontWeight.bold,
-                                    color: Theme.of(context).colorScheme.primary,
-                                  ),
-                                ),
-                              ),
-                              Row(
-                                children: [
-                                  IconButton(
-                                    icon: Icon(
-                                      isBookmarked ? Icons.bookmark : Icons.bookmark_border,
-                                      size: 19,
-                                      color: isBookmarked ? Colors.amber : null,
-                                    ),
-                                    tooltip: 'Bookmark Verse',
-                                    onPressed: () => scope.toggleBookmark(contentItem),
-                                    visualDensity: VisualDensity.compact,
-                                  ),
-                                  IconButton(
-                                    icon: const Icon(Icons.share_outlined, size: 19),
-                                    tooltip: 'Share Card',
-                                    onPressed: () => ShareCardSheet.show(context, contentItem),
-                                    visualDensity: VisualDensity.compact,
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 12),
-
-                          // Arabic Text
-                          Text(
-                            ayah.arabicText,
-                            textAlign: TextAlign.right,
-                            textDirection: TextDirection.rtl,
-                            style: AppTypography.arabic(
-                              fontSize: prefs.arabicFontSize,
-                            ),
-                          ),
-                          const SizedBox(height: 12),
-
-                          // English Translation
-                          Text(
-                            ayah.englishTranslation,
-                            style: AppTypography.translation(
-                              fontSize: prefs.translationFontSize,
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  }),
-
-                // Chapter Navigation: Previous and Next Surah
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 20),
-                  child: Row(
-                    children: [
-                      if (widget.surah.number > 1)
-                        Expanded(
-                          child: OutlinedButton.icon(
-                            onPressed: () => _navigateToSurah(widget.surah.number - 1),
-                            icon: const Icon(Icons.arrow_back_rounded, size: 16),
-                            label: Text(
-                              'Surah ${widget.surah.number - 1}',
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        )
-                      else
-                        const Spacer(),
-                      const SizedBox(width: 12),
-                      if (widget.surah.number < 114)
-                        Expanded(
-                          child: FilledButton.tonalIcon(
-                            onPressed: () => _navigateToSurah(widget.surah.number + 1),
-                            label: Text(
-                              'Surah ${widget.surah.number + 1}',
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            icon: const Icon(Icons.arrow_forward_rounded, size: 16),
-                          ),
-                        )
-                      else
-                        const Spacer(),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(height: 12),
-                Center(
-                  child: Text(
-                    'Translation: Saheeh International\nMedina Mushaf (Hafs an Asim) Standard Edition',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 11,
-                      color: Theme.of(context).colorScheme.outline,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 32),
-              ],
+              itemCount: totalItemCount,
+              itemBuilder: (context, index) {
+                if (index == 0) {
+                  return _buildHeader(context);
+                }
+                if (index <= contentCount) {
+                  if (_ayahs.isEmpty) {
+                    return _buildEmptyState(context);
+                  }
+                  final ayah = _ayahs[index - 1];
+                  return _buildAyahCard(context, ayah, scope, prefs);
+                }
+                if (index == contentCount + 1) {
+                  return _buildNavigationRow(context);
+                }
+                return _buildFooterAttribution(context);
+              },
             ),
+    );
+  }
+
+  Widget _buildHeader(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+      margin: const EdgeInsets.only(bottom: 18),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            Theme.of(context).colorScheme.primary.withValues(alpha: 0.12),
+            const Color(0xFFC5A059).withValues(alpha: 0.10),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(22),
+        border: Border.all(
+          color: const Color(0xFFC5A059).withValues(alpha: 0.35),
+          width: 1.4,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 14,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          const IslamicOrnamentalDivider(height: 16),
+          const SizedBox(height: 6),
+          Text(
+            widget.surah.nameArabic,
+            style: AppTypography.arabic(
+              fontSize: 32,
+              fontWeight: FontWeight.bold,
+              color: const Color(0xFFC5A059),
+            ),
+          ),
+          const SizedBox(height: 6),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surface,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: const Color(0xFFC5A059).withValues(alpha: 0.25),
+              ),
+            ),
+            child: Text(
+              '${widget.surah.revelationType} • ${widget.surah.ayahCount} Verses',
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            ),
+          ),
+          if (widget.surah.number != 1 && widget.surah.number != 9) ...[
+            const SizedBox(height: 16),
+            const BismillahBanner(),
+          ] else ...[
+            const SizedBox(height: 10),
+            const IslamicOrnamentalDivider(height: 16),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildEmptyState(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(32.0),
+      child: Center(
+        child: Text(
+          'Verses for Surah ${widget.surah.nameEnglish} are indexed.\nOffline sync ready.',
+          textAlign: TextAlign.center,
+          style: TextStyle(color: Theme.of(context).colorScheme.outline),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAyahCard(
+    BuildContext context,
+    QuranAyah ayah,
+    AppScope scope,
+    UserPreferences prefs,
+  ) {
+    final isBookmarked = scope.isBookmarked('quran_${ayah.id}');
+    final isHighlighted = widget.initialAyahNumber == ayah.ayahNumber;
+    final isReadingPosition = _activeReadingAyah == ayah.ayahNumber;
+
+    final contentItem = ContentItem(
+      id: 'quran_${ayah.id}',
+      contentType: ContentType.quran,
+      reference: 'Surah ${widget.surah.nameEnglish} [${ayah.surahNumber}:${ayah.ayahNumber}]',
+      arabicText: ayah.arabicText,
+      englishTranslation: ayah.englishTranslation,
+      attribution: 'The Quran: English Meanings by ${ayah.translationAttribution}',
+      surahNumber: ayah.surahNumber,
+      ayahNumber: ayah.ayahNumber,
+    );
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 14),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: isHighlighted
+            ? Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.25)
+            : Theme.of(context).colorScheme.surface,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: isHighlighted || isReadingPosition
+              ? Theme.of(context).colorScheme.primary
+              : const Color(0xFFC5A059).withValues(alpha: 0.22),
+          width: isHighlighted || isReadingPosition ? 1.6 : 1.0,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.03),
+            blurRadius: 10,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Ayah Number and Actions row
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  RubElHizbBadge(
+                    number: ayah.ayahNumber,
+                    size: 36,
+                    accentColor: isReadingPosition
+                        ? Theme.of(context).colorScheme.primary
+                        : const Color(0xFFC5A059),
+                  ),
+                  if (isReadingPosition) ...[
+                    const SizedBox(width: 8),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Text(
+                        'LAST READ',
+                        style: TextStyle(
+                          fontSize: 9,
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+              Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.copy_rounded, size: 18),
+                    tooltip: 'Copy Verse',
+                    onPressed: () {
+                      if (prefs.hapticFeedbackEnabled) {
+                        HapticFeedback.lightImpact();
+                      }
+                      Clipboard.setData(ClipboardData(
+                        text: '${ayah.arabicText}\n\n${ayah.englishTranslation}\n— Surah ${widget.surah.nameEnglish} [${ayah.surahNumber}:${ayah.ayahNumber}]',
+                      ));
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Copied verse ${ayah.ayahNumber} to clipboard'),
+                          behavior: SnackBarBehavior.floating,
+                          duration: const Duration(seconds: 2),
+                        ),
+                      );
+                    },
+                    visualDensity: VisualDensity.compact,
+                  ),
+                  IconButton(
+                    icon: Icon(
+                      isReadingPosition ? Icons.bookmark_added : Icons.bookmark_add_outlined,
+                      size: 19,
+                      color: isReadingPosition ? Theme.of(context).colorScheme.primary : null,
+                    ),
+                    tooltip: isReadingPosition ? 'Active reading position' : 'Mark as reading position',
+                    onPressed: () => _setReadingPosition(ayah),
+                    visualDensity: VisualDensity.compact,
+                  ),
+                  IconButton(
+                    icon: Icon(
+                      isBookmarked ? Icons.bookmark : Icons.bookmark_border,
+                      size: 19,
+                      color: isBookmarked ? const Color(0xFFC5A059) : null,
+                    ),
+                    tooltip: 'Bookmark Verse',
+                    onPressed: () {
+                      if (prefs.hapticFeedbackEnabled) {
+                        HapticFeedback.mediumImpact();
+                      }
+                      scope.toggleBookmark(contentItem);
+                    },
+                    visualDensity: VisualDensity.compact,
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.share_outlined, size: 19),
+                    tooltip: 'Share Card',
+                    onPressed: () {
+                      if (prefs.hapticFeedbackEnabled) {
+                        HapticFeedback.lightImpact();
+                      }
+                      ShareCardSheet.show(context, contentItem);
+                    },
+                    visualDensity: VisualDensity.compact,
+                  ),
+                ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+
+          // Arabic Text
+          if (prefs.readingDisplayMode != ReadingDisplayMode.translationOnly) ...[
+            Text(
+              ayah.arabicText,
+              textAlign: TextAlign.right,
+              textDirection: TextDirection.rtl,
+              style: AppTypography.arabic(
+                fontSize: prefs.arabicFontSize,
+                scriptStyle: prefs.arabicScriptStyle,
+                height: prefs.lineSpacing,
+              ),
+            ),
+          ],
+          if (prefs.readingDisplayMode == ReadingDisplayMode.dual)
+            const SizedBox(height: 12),
+
+          // English Translation
+          if (prefs.readingDisplayMode != ReadingDisplayMode.arabicOnly) ...[
+            Text(
+              ayah.englishTranslation,
+              style: AppTypography.translation(
+                fontSize: prefs.translationFontSize,
+                height: (prefs.lineSpacing * 0.88).clamp(1.4, 2.2),
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNavigationRow(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 20),
+      child: Row(
+        children: [
+          if (widget.surah.number > 1)
+            Expanded(
+              child: OutlinedButton.icon(
+                onPressed: () => _navigateToSurah(widget.surah.number - 1),
+                icon: const Icon(Icons.arrow_back_rounded, size: 16),
+                label: Text(
+                  'Surah ${widget.surah.number - 1}',
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            )
+          else
+            const Spacer(),
+          const SizedBox(width: 12),
+          if (widget.surah.number < 114)
+            Expanded(
+              child: FilledButton.tonalIcon(
+                onPressed: () => _navigateToSurah(widget.surah.number + 1),
+                label: Text(
+                  'Surah ${widget.surah.number + 1}',
+                  overflow: TextOverflow.ellipsis,
+                ),
+                icon: const Icon(Icons.arrow_forward_rounded, size: 16),
+              ),
+            )
+          else
+            const Spacer(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFooterAttribution(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 32),
+      child: Center(
+        child: Text(
+          'Translation: Saheeh International\nMedina Mushaf (Hafs an Asim) Standard Edition',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 11,
+            color: Theme.of(context).colorScheme.outline,
+          ),
+        ),
+      ),
     );
   }
 }

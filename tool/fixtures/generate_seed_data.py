@@ -141,12 +141,18 @@ AYAHS = [
     {"surah": 1, "ayah": 7, "ar": "صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ", "en": "The path of those upon whom You have bestowed favor, not of those who have evoked [Your] anger or of those who are astray."},
 
     # Al-Baqarah selections
+    {"surah": 2, "ayah": 1, "ar": "الم", "en": "Alif, Lam, Meem."},
+    {"surah": 2, "ayah": 2, "ar": "ذَٰلِكَ الْكِتَابُ لَا رَيْبَ ۛ فِيهِ ۛ هُدًى لِّلْمُتَّقِينَ", "en": "This is the Book about which there is no doubt, a guidance for those conscious of Allah -"},
+    {"surah": 2, "ayah": 3, "ar": "الَّذِينَ يُؤْمِنُونَ بِالْغَيْبِ وَيُقِيمُونَ الصَّلَاةَ وَمِمَّا رَزَقْنَاهُمْ يُنفِقُونَ", "en": "Who believe in the unseen, establish prayer, and spend out of what We have provided for them,"},
+    {"surah": 2, "ayah": 4, "ar": "وَالَّذِينَ يُؤْمِنُونَ بِمَا أُنزِلَ إِلَيْكَ وَمَا أُنزِلَ مِن قَبْلِكَ وَبِالْآخِرَةِ هُمْ يُوقِنُونَ", "en": "And who believe in what has been revealed to you, [O Muhammad], and what was revealed before you, and of the Hereafter they are certain [in faith]."},
+    {"surah": 2, "ayah": 5, "ar": "أُولَٰئِكَ عَلَىٰ هُدًى مِّن رَّبِّهِمْ ۖ وَأُولَٰئِكَ هُمُ الْمُفْلِحُونَ", "en": "Those are upon [right] guidance from their Lord, and it is those who are the successful."},
     {"surah": 2, "ayah": 45, "ar": "وَاسْتَعِينُوا بِالصَّبْرِ وَالصَّلَاةِ ۚ وَإِنَّهَا لَكَبِيرَةٌ إِلَّا عَلَى الْخَاشِعِينَ", "en": "And seek help through patience and prayer, and indeed, it is difficult except for the humbly submissive [to Allah]."},
     {"surah": 2, "ayah": 152, "ar": "فَاذْكُرُونِي أَذْكُرْكُمْ وَاشْكُرُوا لِي وَلَا تَكْفُرُونِ", "en": "So remember Me; I will remember you. And be grateful to Me and do not deny Me."},
     {"surah": 2, "ayah": 153, "ar": "يَا أَيُّهَا الَّذِينَ آمَنُوا اسْتَعِينُوا بِالصَّبْرِ وَالصَّلَاةِ ۚ إِنَّ اللَّهَ مَعَ الصَّابِرِينَ", "en": "O you who have believed, seek help through patience and prayer. Indeed, Allah is with the patient."},
     {"surah": 2, "ayah": 155, "ar": "وَلَنَبْلُوَنَّكُم بِشَيْءٍ مِّنَ الْخَوْفِ وَالْجُوعِ وَنَقْصٍ مِّنَ الْأَمْوَالِ وَالْأَنفُسِ وَالثَّمَرَاتِ ۗ وَبَشِّرِ الصَّابِرِينَ", "en": "And We will surely test you with something of fear and hunger and a loss of wealth and lives and fruits, but give good tidings to the patient,"},
     {"surah": 2, "ayah": 186, "ar": "وَإِذَا سَأَلَكَ عِبَادِي عَنِّي فَإِنِّي قَرِيبٌ ۖ أُجِيبُ دَعْوَةَ الدَّاعِ إِذَا دَعَانِ ۖ فَلْيَسْتَجِيبُوا لِي وَلْيُؤْمِنُوا بِي لَعَلَّهُمْ يَرْشُدُونَ", "en": "And when My servants ask you concerning Me, indeed I am near. I respond to the invocation of the supplicant when he calls upon Me. So let them respond to Me and believe in Me that they may be [rightly] guided."},
     {"surah": 2, "ayah": 255, "ar": "اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ ۚ لَّهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ ۗ مَن ذَا الَّذِي يَشْفَعُ عِندَهُ إِلَّا بِإِذْنِهِ ۚ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ ۖ وَلَا يُحِيطُونَ بِشَيْءٍ مِّنْ عِلْمِهِ إِلَّا بِمَا شَاءَ ۚ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ ۖ وَلَا يَئُودُهُ حِفْظُهُمَا ۚ وَهُوَ الْعَلِيُّ الْعَظِيمُ", "en": "Allah - there is no deity except Him, the Ever-Living, the Sustainer of [all] existence. Neither drowsiness overtakes Him nor sleep. To Him belongs whatever is in the heavens and whatever is on the earth. Who is it that can intercede with Him except by His permission? He knows what is before them and what will be after them, and they encompass not a thing of His knowledge except for what He wills. His Kursi extends over the heavens and the earth, and their preservation tires Him not. And He is the Most High, the Most Great."},
+    {"surah": 2, "ayah": 285, "ar": "آمَنَ الرَّسُولُ بِمَا أُنزِلَ إِلَيْهِ مِن رَّبِّهِ وَالْمُؤْمِنُونَ ۚ كُلٌّ آمَنَ بِاللَّهِ وَمَلَائِكَتِهِ وَكُتُبِهِ وَرُسُلِهِ لَا نُفَرِّقُ بَيْنَ أَحَدٍ مِّن رُّسُلِهِ ۚ وَقَالُوا سَمِعْنَا وَأَطَعْنَا ۖ غُفْرَانَكَ رَبَّنَا وَإِلَيْكَ الْمَصِيرُ", "en": "The Messenger has believed in what was revealed to him from his Lord, and [so have] the believers. All of them have believed in Allah and His angels and His books and His messengers, [saying], 'We make no distinction between any of His messengers.' And they say, 'We hear and we obey. [We seek] Your forgiveness, our Lord, and to You is the [final] destination.'"},
     {"surah": 2, "ayah": 286, "ar": "لَا يُكَلِّفُ اللَّهُ نَفْسًا إِلَّا وُسْعَهَا ۚ لَهَا مَا كَسَبَتْ وَعَلَيْهَا مَا اكْتَسَبَتْ ۗ رَبَّنَا لَا تُؤَاخِذْنَا إِن نَّسِينَا أَوْ أَخْطَأْنَا", "en": "Allah does not charge a soul except [with that within] its capacity. It will have [the consequence of] what [good] it has gained, and it will bear [the consequence of] what [evil] it has earned. 'Our Lord, do not impose blame upon us if we have forgotten or erred.'"},
 
     # Ali 'Imran
@@ -159,11 +165,22 @@ AYAHS = [
     # Al-Isra
     {"surah": 17, "ayah": 23, "ar": "وَقَضَىٰ رَبُّكَ أَلَّا تَعْبُدُوا إِلَّا إِيَّاهُ وَبِالْوَالِدَيْنِ إِحْسَانًا ۚ إِمَّا يَبْلُغَنَّ عِندَكَ الْكِبَرَ أَحَدُهُمَا أَوْ كِلَاهُمَا فَلَا تَقُل لَّهُمَا أُفٍّ وَلَا تَنْهَرْهُمَا وَقُل لَّهُمَا قَوْلًا كَرِيمًا", "en": "And your Lord has decreed that you not worship except Him, and to parents, good treatment. Whether one or both of them reach old age [while] with you, say not to them [so much as], 'uff,' and do not repel them but speak to them a noble word."},
 
+    # Al-Kahf
+    {"surah": 18, "ayah": 1, "ar": "الْحَمْدُ لِلَّهِ الَّذِي أَنزَلَ عَلَىٰ عَبْدِهِ الْكِتَابَ وَلَمْ يَجْعَل لَّهُ عِوَجًا", "en": "All praise is due to Allah, who has sent down upon His Servant the Book and has not made therein any deviance."},
+    {"surah": 18, "ayah": 10, "ar": "إِذْ أَوَى الْفِتْيَةُ إِلَى الْكَهْفِ فَقَالُوا رَبَّنَا آتِنَا مِن لَّدُنكَ رَحْمَةً وَهَيِّئْ لَنَا مِنْ أَمْرِنَا رَشَدًا", "en": "When the youths retreated to the cave and said, 'Our Lord, grant us from Yourself mercy and prepare for us from our affair right guidance.'"},
+    {"surah": 18, "ayah": 110, "ar": "قُلْ إِنَّمَا أَنَا بَشَرٌ مِّثْلُكُمْ يُوحَىٰ إِلَيَّ أَنَّمَا إِلَٰهُكُمْ إِلَٰهٌ وَاحِدٌ ۖ فَمَن كَانَ يَرْجُو لِقَاءَ رَبِّهِ فَلْيَعْمَلْ عَمَلًا صَالِحًا وَلَا يُشْرِكْ بِعِبَادَةِ رَبِّهِ أَحَدًا", "en": "Say, 'I am only a man like you, to whom has been revealed that your god is one God. So whoever would hope for the meeting with his Lord - let him do righteous work and not associate in the worship of his Lord anyone.'"},
+
     # Ta-Ha
     {"surah": 20, "ayah": 114, "ar": "فَتَعَالَى اللَّهُ الْمَلِكُ الْحَقُّ ۗ وَلَا تَعْجَلْ بِالْقُرْآنِ مِن قَبْلِ أَن يُقْضَىٰ إِلَيْكَ وَحْيُهُ ۖ وَقُل رَّبِّ زِدْنِي عِلْمًا", "en": "So high [above all] is Allah, the Sovereign, the Truth. And do not hasten with [recitation of] the Qur'an before its revelation is completed to you, and say, 'My Lord, increase me in knowledge.'"},
 
     # An-Nur
     {"surah": 24, "ayah": 35, "ar": "اللَّهُ نُورُ السَّمَاوَاتِ وَالْأَرْضِ ۚ مَثَلُ نُورِهِ كَمِشْكَاةٍ فِيهَا مِصْبَاحٌ ۖ الْمِصْبَاحُ فِي زُجَاجَةٍ ۖ الزُّجَاجَةُ كَأَنَّهَا كَوْكَبٌ دُرِّيٌّ", "en": "Allah is the Light of the heavens and the earth. The example of His light is like a niche within which is a lamp, the lamp is within glass, the glass as if it were a pearly [white] star..."},
+
+    # Ya-Sin
+    {"surah": 36, "ayah": 1, "ar": "يس", "en": "Ya, Seen."},
+    {"surah": 36, "ayah": 2, "ar": "وَالْقُرْآنِ الْحَكِيمِ", "en": "By the wise Qur'an."},
+    {"surah": 36, "ayah": 3, "ar": "إِنَّكَ لَمِنَ الْمُرْسَلِينَ", "en": "Indeed you, [O Muhammad], are from among the messengers,"},
+    {"surah": 36, "ayah": 4, "ar": "عَلَىٰ صِرَاطٍ مُّسْتَقِيمٍ", "en": "On a straight path."},
 
     # Az-Zumar
     {"surah": 39, "ayah": 53, "ar": "قُلْ يَا عِبَادِيَ الَّذِينَ أَسْرَفُوا عَلَىٰ أَنفُسِهِمْ لَا تَقْنَطُوا مِن رَّحْمَةِ اللَّهِ ۚ إِنَّ اللَّهَ يَغْفِرُ الذُّنُوبَ جَمِيعًا ۚ إِنَّهُ هُوَ الْغَفُورُ الرَّحِيمُ", "en": "Say, 'O My servants who have transgressed against themselves [by sinning], do not despair of the mercy of Allah. Indeed, Allah forgives all sins. Indeed, it is He who is the Forgiving, the Merciful.'"},
@@ -175,8 +192,15 @@ AYAHS = [
     {"surah": 49, "ayah": 10, "ar": "إِنَّمَا الْمُؤْمِنُونَ إِخْوَةٌ فَأَصْلِحُوا بَيْنَ أَخَوَيْكُمْ ۚ وَاتَّقُوا اللَّهَ لَعَلَّكُمْ تُرْحَمُونَ", "en": "The believers are but brothers, so make settlement between your brothers. And fear Allah that you may receive mercy."},
     {"surah": 49, "ayah": 13, "ar": "يَا أَيُّهَا النَّاسُ إِنَّا خَلَقْنَاكُم مِّن ذَكَرٍ وَأُنثَىٰ وَجَعَلْنَاكُمْ شُعُوبًا وَقَبَائِلَ لِتَعَارَفُوا ۚ إِنَّ أَكْرَمَكُمْ عِندَ اللَّهِ أَتْقَاكُمْ ۚ إِنَّ اللَّهَ عَلِيمٌ خَبِيرٌ", "en": "O mankind, indeed We have created you from male and female and made you peoples and tribes that you may know one another. Indeed, the most noble of you in the sight of Allah is the most righteous of you. Indeed, Allah is Knowing and Acquainted."},
 
+    # Ar-Rahman
+    {"surah": 55, "ayah": 1, "ar": "الرَّحْمَٰنُ", "en": "The Entirely Merciful"},
+    {"surah": 55, "ayah": 2, "ar": "عَلَّمَ الْقُرْآنَ", "en": "Taught the Qur'an,"},
+    {"surah": 55, "ayah": 3, "ar": "خَلَقَ الْإِنسَانَ", "en": "Created man,"},
+    {"surah": 55, "ayah": 4, "ar": "عَلَّمَهُ الْبَيَانَ", "en": "Taught him eloquent speech."},
+    {"surah": 55, "ayah": 13, "ar": "فَبِأَيِّ آلَاءِ رَبِّكُمَا تُكَذِّبَانِ", "en": "So which of the favors of your Lord would you deny?"},
+
     # Al-Hadid
-    {"surah": 57, "ayah": 4, "ar": "هُوَ الَّذِي خَلَقَ السَّمَاوَاتِ وَالْأَرْضَ فِي سِتَّةِ أَيَّامٍ ثُمَّ اسْتَوَىٰ عَلَى الْعَرْشِ ۚ يَعْلَمُ مَا يَلِجُ فِي الْأَرْضِ وَمَا يَخْرُجُ مِنْهَا وَمَا يَنزِلُ مِنَ السَّمَاءِ وَمَا يَعْرُجُ فِيهَا ۖ وَهُوَ مَعَكُمْ أَيْنَ مَا كُنتُمْ ۚ وَاللَّهُ بِمَا تَعْمَلُونَ بَصِيرٌ", "en": "It is He who created the heavens and earth in six days and then established Himself above the Throne. He knows what penetrates into the earth and what comes forth from it and what descends from the heaven and what ascends therein. And He is with you wherever you are. And Allah, of what you do, is Seeing."},
+    {"surah": 57, "ayah": 4, "ar": "هُوَ الَّذِي خَلَقَ السَّمَاوَاتِ وَالْأَرْضِ فِي سِتَّةِ أَيَّامٍ ثُمَّ اسْتَوَىٰ عَلَى الْعَرْشِ ۚ يَعْلَمُ مَا يَلِجُ فِي الْأَرْضِ وَمَا يَخْرُجُ مِنْهَا وَمَا يَنزِلُ مِنَ السَّمَاءِ وَمَا يَعْرُجُ فِيهَا ۖ وَهُوَ مَعَكُمْ أَيْنَ مَا كُنتُمْ ۚ وَاللَّهُ بِمَا تَعْمَلُونَ بَصِيرٌ", "en": "It is He who created the heavens and earth in six days and then established Himself above the Throne. He knows what penetrates into the earth and what comes forth from it and what descends from the heaven and what ascends therein. And He is with you wherever you are. And Allah, of what you do, is Seeing."},
 
     # At-Talaq
     {"surah": 65, "ayah": 2, "ar": "وَمَن يَتَّقِ اللَّهَ يَجْعَل لَّهُ مَخْرَجًا", "en": "And whoever fears Allah - He will make for him a way out."},
@@ -185,6 +209,8 @@ AYAHS = [
     # Al-Mulk
     {"surah": 67, "ayah": 1, "ar": "تَبَارَكَ الَّذِي بِيَدِهِ الْمُلْكُ وَهُوَ عَلَىٰ كُلِّ شَيْءٍ قَدِيرٌ", "en": "Blessed is He in whose hand is dominion, and He is over all things competent -"},
     {"surah": 67, "ayah": 2, "ar": "الَّذِي خَلَقَ الْمَوْتَ وَالْحَيَاةَ لِيَبْلُوَكُمْ أَيُّكُمْ أَحْسَنُ عَمَلًا ۚ وَهُوَ الْعَزِيزُ الْغَفُورُ", "en": "[He] who created death and life to test you [as to] which of you is best in deed - and He is the Exalted in Might, the Forgiving -"},
+    {"surah": 67, "ayah": 3, "ar": "الَّذِي خَلَقَ سَبْعَ سَمَاوَاتٍ طِبَاقًا ۖ مَّا تَرَىٰ فِي خَلْقِ الرَّحْمَٰنِ مِن تَفَاوُتٍ ۖ فَارْجِعِ الْبَصَرَ هَلْ تَرَىٰ مِن فُطُورٍ", "en": "[And] who created seven heavens in layers. You see no flaw in the creation of the Most Merciful. So turn your vision again; can you see any break?"},
+    {"surah": 67, "ayah": 4, "ar": "ثُمَّ ارْجِعِ الْبَصَرَ كَرَّتَيْنِ يَنقَلِبْ إِلَيْكَ الْبَصَرُ خَاسِئًا وَهُوَ حَسِيرٌ", "en": "Then return your vision twice again, and your sight will return to you humbled while it is fatigued."},
 
     # Ad-Duha
     {"surah": 93, "ayah": 1, "ar": "وَالضُّحَىٰ", "en": "By the morning brightness"},
@@ -203,10 +229,42 @@ AYAHS = [
     {"surah": 94, "ayah": 7, "ar": "فَإِذَا فَرَغْتَ فَانصَبْ", "en": "So when you have finished [your duties], then stand up [for worship]."},
     {"surah": 94, "ayah": 8, "ar": "وَإِلَىٰ رَبِّكَ فَارْغَب", "en": "And to your Lord direct [your] longing."},
 
+    # Al-Qadr
+    {"surah": 97, "ayah": 1, "ar": "إِنَّا أَنزَلْنَاهُ فِي لَيْلَةِ الْقَدْرِ", "en": "Indeed, We sent the Qur'an down during the Night of Decree."},
+    {"surah": 97, "ayah": 2, "ar": "وَمَا أَدْرَاكَ مَا لَيْلَةُ الْقَدْرِ", "en": "And what can make you know what is the Night of Decree?"},
+    {"surah": 97, "ayah": 3, "ar": "لَيْلَةُ الْقَدْرِ خَيْرٌ مِّنْ أَلْفِ شَهْرٍ", "en": "The Night of Decree is better than a thousand months."},
+    {"surah": 97, "ayah": 4, "ar": "تَنَزَّلُ الْمَلَائِكَةُ وَالرُّوحُ فِيهَا بِإِذْنِ رَبِّهِم مِّن كُلِّ أَمْرٍ", "en": "The angels and the Spirit descend therein by permission of their Lord for every matter."},
+    {"surah": 97, "ayah": 5, "ar": "سَلَامٌ هِيَ حَتَّىٰ مَطْلَعِ الْفَجْرِ", "en": "Peace it is until the emergence of dawn."},
+
     # Al-Asr
     {"surah": 103, "ayah": 1, "ar": "وَالْعَصْرِ", "en": "By time,"},
     {"surah": 103, "ayah": 2, "ar": "إِنَّ الْإِنسَانَ لَفِي خُسْرٍ", "en": "Indeed, mankind is in loss,"},
     {"surah": 103, "ayah": 3, "ar": "إِلَّا الَّذِينَ آمَنُوا وَعَمِلُوا الصَّالِحَاتِ وَتَوَاصَوْا بِالْحَقِّ وَتَوَاصَوْا بِالصَّبْرِ", "en": "Except for those who have believed and done righteous deeds and advised each other to truth and advised each other to patience."},
+
+    # Al-Kawthar
+    {"surah": 108, "ayah": 1, "ar": "إِنَّا أَعْطَيْنَاكَ الْكَوْثَرَ", "en": "Indeed, We have granted you, [O Muhammad], al-Kawthar."},
+    {"surah": 108, "ayah": 2, "ar": "فَصَلِّ لِرَبِّكَ وَانْحَرْ", "en": "So pray to your Lord and sacrifice [to Him alone]."},
+    {"surah": 108, "ayah": 3, "ar": "إِنَّ شَانِئَكَ هُوَ الْأَبْتَرُ", "en": "Indeed, your enemy is the one cut off."},
+
+    # Al-Kafirun
+    {"surah": 109, "ayah": 1, "ar": "قُلْ يَا أَيُّهَا الْكَافِرُونَ", "en": "Say, 'O disbelievers,"},
+    {"surah": 109, "ayah": 2, "ar": "لَا أَعْبُدُ مَا تَعْبُدُونَ", "en": "I do not worship what you worship."},
+    {"surah": 109, "ayah": 3, "ar": "وَلَا أَنتُمْ عَابِدُونَ مَا أَعْبُدُ", "en": "Nor are you worshipers of what I worship."},
+    {"surah": 109, "ayah": 4, "ar": "وَلَا أَنَا عَابِدٌ مَّا عَبَدتُّمْ", "en": "Nor will I be a worshiper of what you worship."},
+    {"surah": 109, "ayah": 5, "ar": "وَلَا أَنتُمْ عَابِدُونَ مَا أَعْبُدُ", "en": "Nor will you be worshipers of what I worship."},
+    {"surah": 109, "ayah": 6, "ar": "لَكُمْ دِينُكُمْ وَلِيَ دِينِ", "en": "For you is your religion, and for me is my religion.'"},
+
+    # An-Nasr
+    {"surah": 110, "ayah": 1, "ar": "إِذَا جَاءَ نَصْرُ اللَّهِ وَالْفَتْحُ", "en": "When the victory of Allah has come and the conquest,"},
+    {"surah": 110, "ayah": 2, "ar": "وَرَأَيْتَ النَّاسَ يَدْخُلُونَ فِي دِينِ اللَّهِ أَفْوَاجًا", "en": "And you see the people entering into the religion of Allah in multitudes,"},
+    {"surah": 110, "ayah": 3, "ar": "فَسَبِّحْ بِحَمْدِ رَبِّكَ وَاسْتَغْفِرْهُ ۚ إِنَّهُ كَانَ تَوَّابًا", "en": "Then exalt [Him] with praise of your Lord and ask forgiveness of Him. Indeed, He is ever Accepting of repentance."},
+
+    # Al-Masad
+    {"surah": 111, "ayah": 1, "ar": "تَبَّتْ يَدَا أَبِي لَهَبٍ وَتَبَّ", "en": "May the hands of Abu Lahab be ruined, and ruined is he."},
+    {"surah": 111, "ayah": 2, "ar": "مَا أَغْنَىٰ عَنْهُ مَالُهُ وَمَا كَسَبَ", "en": "His wealth will not avail him or that which he gained."},
+    {"surah": 111, "ayah": 3, "ar": "سَيَصْلَىٰ نَارًا ذَاتَ لَهَبٍ", "en": "He will [enter to] burn in a Fire of [blazing] flame"},
+    {"surah": 111, "ayah": 4, "ar": "وَامْرَأَتُهُ حَمَّالَةَ الْحَطَبِ", "en": "And his wife [as well] - the carrier of firewood."},
+    {"surah": 111, "ayah": 5, "ar": "فِي جِيدِهَا حَبْلٌ مِّن مَّسَدٍ", "en": "Around her neck is a rope of [twisted] fiber."},
 
     # Al-Ikhlas
     {"surah": 112, "ayah": 1, "ar": "قُلْ هُوَ اللَّهُ أَحَدٌ", "en": "Say, 'He is Allah, [who is] One,"},
@@ -385,6 +443,62 @@ HADITHS = [
         "en": "O Allah, we ask You in this journey of ours for righteousness and piety, and for deeds that please You. O Allah, make this journey easy for us and shorten its distance. O Allah, You are our Companion in travel and the One Who looks after the family left behind.",
         "grading": "Sahih",
         "attribution": "Sahih Muslim 1342 • In-book reference: Book 15, Hadith 553"
+    },
+    {
+        "id": "bukhari_2442",
+        "collection_id": "bukhari",
+        "hadith_number": 2442,
+        "book_number": 46,
+        "book_name_en": "Oppressions (Al-Mazalim)",
+        "book_name_ar": "كتاب المظالم",
+        "chapter_name": "A Muslim does not oppress a Muslim",
+        "narrator": "Abdullah ibn Umar",
+        "ar": "الْمُسْلِمُ أَخُو الْمُسْلِمِ لاَ يَظْلِمُهُ وَلاَ يُسْلِمُهُ، وَمَنْ كَانَ فِي حَاجَةِ أَخِيهِ كَانَ اللَّهُ فِي حَاجَتِهِ، وَمَنْ فَرَّجَ عَنْ مُسْلِمٍ كُرْبَةً فَرَّجَ اللَّهُ عَنْهُ كُرْبَةً مِنْ كُرُبَاتِ يَوْمِ الْقِيَامَةِ، وَمَنْ سَتَرَ مُسْلِمًا سَتَرَهُ اللَّهُ يَوْمَ الْقِيَامَةِ",
+        "en": "A Muslim is the brother of a Muslim: he does not oppress him, nor does he hand him over to an oppressor. Whoever fulfills the needs of his brother, Allah will fulfill his needs; whoever relieves a Muslim of a distress, Allah will relieve him of a distress from the distresses of the Day of Resurrection; and whoever covers the fault of a Muslim, Allah will cover him on the Day of Resurrection.",
+        "grading": "Sahih",
+        "attribution": "Sahih al-Bukhari 2442 • In-book reference: Book 46, Hadith 3"
+    },
+    {
+        "id": "bukhari_6021",
+        "collection_id": "bukhari",
+        "hadith_number": 6021,
+        "book_number": 78,
+        "book_name_en": "Good Manners (Al-Adab)",
+        "book_name_ar": "كتاب الأدب",
+        "chapter_name": "Every good deed is charity",
+        "narrator": "Jabir ibn Abdullah",
+        "ar": "كُلُّ مَعْرُوفٍ صَدَقَةٌ",
+        "en": "Every good deed is charity.",
+        "grading": "Sahih",
+        "attribution": "Sahih al-Bukhari 6021 • In-book reference: Book 78, Hadith 52"
+    },
+    {
+        "id": "bukhari_6035",
+        "collection_id": "bukhari",
+        "hadith_number": 6035,
+        "book_number": 78,
+        "book_name_en": "Good Manners (Al-Adab)",
+        "book_name_ar": "كتاب الأدب",
+        "chapter_name": "Whoever believes in Allah and the Last Day, let him speak good or remain silent",
+        "narrator": "Abu Hurairah",
+        "ar": "مَنْ كَانَ يُؤْمِنُ بِاللَّهِ وَالْيَوْمِ الآخِرِ فَلْيَقُلْ خَيْرًا أَوْ لِيَصْمُتْ، وَمَنْ كَانَ يُؤْمِنُ بِاللَّهِ وَالْيَوْمِ الآخِرِ فَلْيُكْرِمْ جَارَهُ، وَمَنْ كَانَ يُؤْمِنُ بِاللَّهِ وَالْيَوْمِ الآخِرِ فَلْيُكْرِمْ ضَيْفَهُ",
+        "en": "Whoever believes in Allah and the Last Day should speak good or remain silent; and whoever believes in Allah and the Last Day should be hospitable to his neighbor; and whoever believes in Allah and the Last Day should be hospitable to his guest.",
+        "grading": "Sahih",
+        "attribution": "Sahih al-Bukhari 6018 / 6035 • In-book reference: Book 78, Hadith 48"
+    },
+    {
+        "id": "muslim_223",
+        "collection_id": "muslim",
+        "hadith_number": 223,
+        "book_number": 2,
+        "book_name_en": "The Book of Purification (Kitab At-Taharah)",
+        "book_name_ar": "كتاب الطهارة",
+        "chapter_name": "The virtue of Wudu",
+        "narrator": "Abu Malik al-Ash'ari",
+        "ar": "الطُّهُورُ شَطْرُ الإِيمَانِ، وَالْحَمْدُ لِلَّهِ تَمْلأُ الْمِيزَانَ، وَسُبْحَانَ اللَّهِ وَالْحَمْدُ لِلَّهِ تَمْلآنِ - أَوْ تَمْلأُ - مَا بَيْنَ السَّمَاوَاتِ وَالأَرْضِ، وَالصَّلاَةُ نُورٌ، وَالصَّدَقَةُ بُرْهَانٌ، وَالصَّبْرُ ضِيَاءٌ، وَالْقُرْآنُ حُجَّةٌ لَكَ أَوْ عَلَيْكَ",
+        "en": "Purity is half of faith, and 'Alhamdulillah' (Praise be to Allah) fills the scale, and 'Subhan Allah and Alhamdulillah' fill up what is between the heavens and the earth, and prayer is a light, and charity is proof, and patience is illumination, and the Qur'an is a proof for you or against you.",
+        "grading": "Sahih",
+        "attribution": "Sahih Muslim 223 • In-book reference: Book 2, Hadith 1"
     }
 ]
 
@@ -474,6 +588,20 @@ CATEGORIES = [
                 "reference": "Sahih Muslim 2999",
                 "relationship": "thematic",
                 "rationale": "Points out that giving thanks during pleasant times is inherently good and rewarded."
+            },
+            {
+                "content_type": "quran",
+                "content_id": "55_13",
+                "reference": "Surah Ar-Rahman [55:13]",
+                "relationship": "direct",
+                "rationale": "The recurring divine reminder: 'So which of the favors of your Lord would you deny?'"
+            },
+            {
+                "content_type": "quran",
+                "content_id": "108_1",
+                "reference": "Surah Al-Kawthar [108:1-2]",
+                "relationship": "direct",
+                "rationale": "Gratitude for divine abundance manifested through prayer and devotion."
             }
         ]
     },
@@ -525,6 +653,20 @@ CATEGORIES = [
                 "reference": "Surah Ali 'Imran [3:159]",
                 "relationship": "direct",
                 "rationale": "Praising the Prophet's softness of heart and enjoining mutual pardon and consultation."
+            },
+            {
+                "content_type": "quran",
+                "content_id": "55_1",
+                "reference": "Surah Ar-Rahman [55:1-4]",
+                "relationship": "direct",
+                "rationale": "Proclamation of The Entirely Merciful who taught the Quran and created mankind."
+            },
+            {
+                "content_type": "quran",
+                "content_id": "110_3",
+                "reference": "Surah An-Nasr [110:3]",
+                "relationship": "direct",
+                "rationale": "Exalting the Lord with praise and seeking His pardon, as He is ever Accepting of repentance."
             }
         ]
     },
@@ -547,6 +689,13 @@ CATEGORIES = [
                 "reference": "Surah Ali 'Imran [3:159]",
                 "relationship": "direct",
                 "rationale": "Command to take resolute decisions and rely completely upon Allah's love."
+            },
+            {
+                "content_type": "quran",
+                "content_id": "2_285",
+                "reference": "Surah Al-Baqarah [2:285]",
+                "relationship": "thematic",
+                "rationale": "Steadfast submission and faith: 'We hear and we obey. We seek Your forgiveness, our Lord.'"
             }
         ]
     },
@@ -571,11 +720,25 @@ CATEGORIES = [
                 "rationale": "Two phrases light on the tongue and heavy in the scales of divine remembrance."
             },
             {
+                "content_type": "hadith",
+                "content_id": "muslim_223",
+                "reference": "Sahih Muslim 223",
+                "relationship": "direct",
+                "rationale": "Affirms that praising Allah fills the scale and prayer serves as illuminating guidance."
+            },
+            {
                 "content_type": "quran",
                 "content_id": "40_60",
                 "reference": "Surah Ghafir [40:60]",
                 "relationship": "direct",
                 "rationale": "Divine injunction promising an answer to those who supplicate."
+            },
+            {
+                "content_type": "quran",
+                "content_id": "97_3",
+                "reference": "Surah Al-Qadr [97:3]",
+                "relationship": "thematic",
+                "rationale": "The night of divine destiny and worship, better than a thousand months."
             }
         ]
     },
@@ -594,6 +757,20 @@ CATEGORIES = [
             },
             {
                 "content_type": "quran",
+                "content_id": "2_2",
+                "reference": "Surah Al-Baqarah [2:2]",
+                "relationship": "direct",
+                "rationale": "Declares the Quran as a guidance free of doubt for those mindful of Allah."
+            },
+            {
+                "content_type": "quran",
+                "content_id": "18_10",
+                "reference": "Surah Al-Kahf [18:10]",
+                "relationship": "direct",
+                "rationale": "Supplication of the cave youths pleading for mercy and right guidance in their affair."
+            },
+            {
+                "content_type": "quran",
                 "content_id": "24_35",
                 "reference": "Surah An-Nur [24:35]",
                 "relationship": "contextual",
@@ -609,10 +786,31 @@ CATEGORIES = [
         "content_links": [
             {
                 "content_type": "hadith",
+                "content_id": "bukhari_6021",
+                "reference": "Sahih al-Bukhari 6021",
+                "relationship": "direct",
+                "rationale": "Declares that every good and righteous deed is considered charity."
+            },
+            {
+                "content_type": "hadith",
                 "content_id": "bukhari_13",
                 "reference": "Sahih al-Bukhari 13",
                 "relationship": "thematic",
                 "rationale": "The foundation of fraternal empathy—wanting for one's brother what one loves for oneself."
+            },
+            {
+                "content_type": "hadith",
+                "content_id": "muslim_223",
+                "reference": "Sahih Muslim 223",
+                "relationship": "thematic",
+                "rationale": "Charity serves as clear evidence (burhan) of sincere conviction."
+            },
+            {
+                "content_type": "quran",
+                "content_id": "2_3",
+                "reference": "Surah Al-Baqarah [2:3]",
+                "relationship": "direct",
+                "rationale": "The hallmark of the righteous: spending selflessly out of the sustenance provided to them."
             }
         ]
     },
@@ -650,6 +848,20 @@ CATEGORIES = [
                 "reference": "Sahih al-Bukhari 1",
                 "relationship": "direct",
                 "rationale": "The cornerstone of Islamic conduct: every act is judged by its inner intention."
+            },
+            {
+                "content_type": "hadith",
+                "content_id": "bukhari_6035",
+                "reference": "Sahih al-Bukhari 6035",
+                "relationship": "direct",
+                "rationale": "Enjoining upright speech or silence, and generous hospitality to neighbor and guest."
+            },
+            {
+                "content_type": "hadith",
+                "content_id": "bukhari_2442",
+                "reference": "Sahih al-Bukhari 2442",
+                "relationship": "direct",
+                "rationale": "The golden standard of mutual brotherhood, mutual assistance, and relieving distress."
             },
             {
                 "content_type": "hadith",

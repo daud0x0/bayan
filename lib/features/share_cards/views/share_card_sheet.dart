@@ -1,5 +1,8 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 import '../../../app/bootstrap.dart';
 import '../../../core/typography/app_typography.dart';
 import '../../../domain/models/content_item.dart';
@@ -73,12 +76,30 @@ class _ShareCardSheetState extends State<ShareCardSheet> {
     if (!mounted) return;
 
     if (bytes != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Card image generated (${bytes.lengthInBytes ~/ 1024} KB). Ready to share!'),
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
+      try {
+        final tempDir = await getTemporaryDirectory();
+        final timestamp = DateTime.now().millisecondsSinceEpoch;
+        final filePath = '${tempDir.path}/card_${widget.item.id}_${_aspectRatio.name}_$timestamp.png';
+        final file = File(filePath);
+        await file.writeAsBytes(bytes);
+
+        final caption = '${widget.item.reference}\n${widget.item.englishTranslation}\n\n${widget.item.attribution}';
+        await SharePlus.instance.share(
+          ShareParams(
+            files: [XFile(file.path, mimeType: 'image/png')],
+            text: caption,
+            subject: widget.item.reference,
+          ),
+        );
+      } catch (e) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Card image generated (${bytes.lengthInBytes ~/ 1024} KB). Ready to share!'),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -96,6 +117,16 @@ class _ShareCardSheetState extends State<ShareCardSheet> {
       const SnackBar(
         content: Text('Source text and reference copied to clipboard.'),
         behavior: SnackBarBehavior.floating,
+      ),
+    );
+  }
+
+  Future<void> _sharePlainText() async {
+    final text = CardExporter.formatPlainText(widget.item);
+    await SharePlus.instance.share(
+      ShareParams(
+        text: text,
+        subject: widget.item.reference,
       ),
     );
   }
@@ -353,45 +384,77 @@ class _ShareCardSheetState extends State<ShareCardSheet> {
                     ),
                     const SizedBox(height: 24),
 
-                    // Actions
-                    Row(
-                      children: [
-                        Expanded(
-                          child: OutlinedButton.icon(
-                            onPressed: _copyPlainText,
-                            icon: const Icon(Icons.copy_rounded, size: 18),
-                            label: const Text('Copy Plain Text'),
-                            style: OutlinedButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(vertical: 14),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(14),
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: FilledButton.icon(
-                            onPressed: _isExporting ? null : _exportImage,
-                            icon: _isExporting
-                                ? const SizedBox(
-                                    width: 18,
-                                    height: 18,
-                                    child: CircularProgressIndicator(strokeWidth: 2),
-                                  )
-                                : const Icon(Icons.share_rounded, size: 18),
-                            label: Text(_isExporting ? 'Exporting...' : 'Export Card'),
-                            style: FilledButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(vertical: 14),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(14),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
                     const SizedBox(height: 16),
+                  ],
+                ),
+              ),
+
+              // Pinned Bottom Action Bar
+              Container(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  border: Border(
+                    top: BorderSide(
+                      color: Theme.of(context).dividerColor.withValues(alpha: 0.15),
+                    ),
+                  ),
+                ),
+                padding: EdgeInsets.fromLTRB(
+                  20,
+                  12,
+                  20,
+                  12 + MediaQuery.of(context).padding.bottom,
+                ),
+                child: Row(
+                  children: [
+                    IconButton.outlined(
+                      onPressed: _copyPlainText,
+                      icon: const Icon(Icons.copy_rounded, size: 18),
+                      tooltip: 'Copy Plain Text',
+                      style: IconButton.styleFrom(
+                        padding: const EdgeInsets.all(12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        onPressed: _sharePlainText,
+                        icon: const Icon(Icons.text_snippet_outlined, size: 17),
+                        label: const Text('Share Text', overflow: TextOverflow.ellipsis),
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: FilledButton.icon(
+                        onPressed: _isExporting ? null : _exportImage,
+                        icon: _isExporting
+                            ? const SizedBox(
+                                width: 18,
+                                height: 18,
+                                child: CircularProgressIndicator(strokeWidth: 2),
+                              )
+                            : const Icon(Icons.image_outlined, size: 17),
+                        label: Text(
+                          _isExporting ? 'Exporting...' : 'Share Image',
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        style: FilledButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),

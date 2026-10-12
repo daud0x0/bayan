@@ -18,11 +18,11 @@ class QuranSurah {
 
   factory QuranSurah.fromJson(Map<String, dynamic> json) {
     return QuranSurah(
-      number: json['number'] as int,
+      number: (json['number'] as num).toInt(),
       nameArabic: json['name_ar'] as String,
       nameEnglish: json['name_en'] as String,
       nameTranslation: json['name_translation'] as String,
-      ayahCount: json['ayah_count'] as int,
+      ayahCount: (json['ayah_count'] as num).toInt(),
       revelationType: json['revelation_type'] as String,
     );
   }
@@ -60,8 +60,8 @@ class QuranAyah {
 
   factory QuranAyah.fromJson(Map<String, dynamic> json) {
     return QuranAyah(
-      surahNumber: json['surah'] as int,
-      ayahNumber: json['ayah'] as int,
+      surahNumber: (json['surah'] as num).toInt(),
+      ayahNumber: (json['ayah'] as num).toInt(),
       arabicText: json['ar'] as String,
       englishTranslation: json['en'] as String,
       translationAttribution: (json['translation_attribution'] as String?) ?? 'Saheeh International',

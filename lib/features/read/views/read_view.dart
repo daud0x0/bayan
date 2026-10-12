@@ -41,16 +41,22 @@ class _ReadViewState extends State<ReadView> with SingleTickerProviderStateMixin
           controller: _tabController,
           indicatorSize: TabBarIndicatorSize.tab,
           tabs: const [
-            Tab(text: 'Holy Quran'),
-            Tab(text: 'Hadith Collections'),
+            Tab(
+              icon: Icon(Icons.menu_book_rounded, size: 20),
+              text: 'Holy Quran',
+            ),
+            Tab(
+              icon: Icon(Icons.auto_stories_rounded, size: 20),
+              text: 'Hadith Collections',
+            ),
           ],
         ),
       ),
       body: TabBarView(
         controller: _tabController,
         children: const [
-          QuranIndexView(),
-          HadithIndexView(),
+          QuranIndexView(showAppBar: false),
+          HadithIndexView(showAppBar: false),
         ],
       ),
     );

@@ -7,9 +7,11 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 /// Local SQLite Database manager.
 /// Complies with Section 9 of the Product Plan.
 class AppDatabase {
-  AppDatabase._();
+  AppDatabase._({this.isInMemory = false});
   static final AppDatabase instance = AppDatabase._();
+  factory AppDatabase.inMemory() => AppDatabase._(isInMemory: true);
 
+  final bool isInMemory;
   Database? _db;
 
   Future<Database> get database async {
@@ -19,6 +21,18 @@ class AppDatabase {
   }
 
   Future<Database> _initDatabase() async {
+    if (isInMemory) {
+      sqfliteFfiInit();
+      databaseFactory = databaseFactoryFfi;
+      return await openDatabase(
+        inMemoryDatabasePath,
+        version: 1,
+        onCreate: (db, version) async {
+          await _createTables(db);
+        },
+      );
+    }
+
     // If running on Desktop or during tests, configure FFI databaseFactory
     if (!kIsWeb && (Platform.isLinux || Platform.isWindows || Platform.isMacOS)) {
       sqfliteFfiInit();
@@ -36,12 +50,14 @@ class AppDatabase {
 
     return await openDatabase(
       dbPath,
-      version: 1,
+      version: 2,
       onCreate: (db, version) async {
         await _createTables(db);
       },
       onUpgrade: (db, oldVersion, newVersion) async {
-        // Migration hooks for future versions
+        if (oldVersion < 2) {
+          await _createReflectionNotesTable(db);
+        }
       },
     );
   }
@@ -73,13 +89,34 @@ class AppDatabase {
       )
     ''');
 
+    // Reflection notes table
+    await _createReflectionNotesTable(db);
+
     // Create indexes for fast lookup
     await db.execute('CREATE INDEX idx_bookmarks_content_id ON bookmarks(content_id);');
+  }
+
+  Future<void> _createReflectionNotesTable(Database db) async {
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS reflection_notes (
+        id TEXT PRIMARY KEY,
+        content_id TEXT NOT NULL,
+        content_type TEXT NOT NULL,
+        reference TEXT NOT NULL,
+        arabic_excerpt TEXT,
+        translation_excerpt TEXT,
+        note_text TEXT NOT NULL,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL
+      )
+    ''');
+    await db.execute('CREATE INDEX IF NOT EXISTS idx_notes_content_id ON reflection_notes(content_id);');
   }
 
   Future<void> clearAllUserData() async {
     final db = await database;
     await db.delete('bookmarks');
     await db.delete('reading_progress');
+    await db.delete('reflection_notes');
   }
 }

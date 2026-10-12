@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../../app/bootstrap.dart';
 import '../../../core/typography/app_typography.dart';
 import '../../../domain/models/content_item.dart';
@@ -143,6 +144,10 @@ class DiscoveryCard extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: params.primaryTextColor.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: params.primaryTextColor.withValues(alpha: 0.22),
+                        width: 0.8,
+                      ),
                     ),
                     child: Text(
                       item.contentType.displayName.toUpperCase(),
@@ -152,14 +157,21 @@ class DiscoveryCard extends StatelessWidget {
                   const SizedBox(width: 8),
                   if (item.categoryIds.isNotEmpty)
                     Expanded(
-                      child: Text(
-                        item.categoryIds.first.replaceAll('_', ' ').toUpperCase(),
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 10.5,
-                          fontWeight: FontWeight.w600,
-                          color: params.secondaryTextColor,
-                          letterSpacing: 0.4,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: params.secondaryTextColor.withValues(alpha: 0.08),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Text(
+                          item.categoryIds.first.replaceAll('_', ' ').toUpperCase(),
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 10.5,
+                            fontWeight: FontWeight.w600,
+                            color: params.secondaryTextColor,
+                            letterSpacing: 0.4,
+                          ),
                         ),
                       ),
                     ),
@@ -175,95 +187,161 @@ class DiscoveryCard extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 18),
 
-              // Arabic Text
+              // Arabic Text inside an illuminated sacred container
               if (item.arabicText.isNotEmpty) ...[
-                Text(
-                  item.arabicText,
-                  textAlign: TextAlign.right,
-                  textDirection: TextDirection.rtl,
-                  style: AppTypography.arabic(
-                    fontSize: scope.preferences.arabicFontSize,
-                    color: params.primaryTextColor,
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  decoration: BoxDecoration(
+                    color: params.primaryTextColor.withValues(alpha: 0.04),
+                    borderRadius: BorderRadius.circular(18),
+                    border: Border.all(
+                      color: params.primaryTextColor.withValues(alpha: 0.10),
+                      width: 0.8,
+                    ),
+                  ),
+                  child: Text(
+                    item.arabicText,
+                    textAlign: TextAlign.right,
+                    textDirection: TextDirection.rtl,
+                    style: AppTypography.arabic(
+                      fontSize: scope.preferences.arabicFontSize,
+                      color: params.primaryTextColor,
+                    ),
                   ),
                 ),
-                const SizedBox(height: 14),
+                const SizedBox(height: 16),
               ],
 
               // English Translation
-              Text(
-                item.englishTranslation,
-                textAlign: TextAlign.left,
-                style: AppTypography.translation(
-                  fontSize: scope.preferences.translationFontSize,
-                  color: params.primaryTextColor.withValues(alpha: 0.95),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                child: Text(
+                  item.englishTranslation,
+                  textAlign: TextAlign.left,
+                  style: AppTypography.translation(
+                    fontSize: scope.preferences.translationFontSize,
+                    color: params.primaryTextColor.withValues(alpha: 0.95),
+                  ),
                 ),
               ),
               const SizedBox(height: 18),
 
               // Source Reference & Attribution
-              Text(
-                item.reference,
-                style: AppTypography.reference(
-                  color: params.primaryTextColor,
-                  fontSize: 13,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.auto_stories_rounded,
+                          size: 15,
+                          color: params.primaryTextColor.withValues(alpha: 0.8),
+                        ),
+                        const SizedBox(width: 6),
+                        Expanded(
+                          child: Text(
+                            item.reference,
+                            style: AppTypography.reference(
+                              color: params.primaryTextColor,
+                              fontSize: 13,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 3),
+                    Text(
+                      item.attribution,
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: params.secondaryTextColor,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(height: 3),
-              Text(
-                item.attribution,
-                style: TextStyle(
-                  fontSize: 11,
-                  color: params.secondaryTextColor,
-                ),
-              ),
-              const SizedBox(height: 18),
+              const SizedBox(height: 16),
 
               // Divider
               Container(
                 height: 1,
                 color: params.primaryTextColor.withValues(alpha: 0.12),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 12),
 
               // Action Buttons Row
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   // Read in context button
-                  TextButton.icon(
+                  FilledButton.tonalIcon(
                     onPressed: onOpenContext,
                     icon: Icon(
                       Icons.menu_book_rounded,
-                      size: 17,
+                      size: 16,
                       color: params.primaryTextColor,
                     ),
                     label: Text(
                       'Read in Context',
                       style: TextStyle(
                         fontSize: 12.5,
-                        fontWeight: FontWeight.w600,
+                        fontWeight: FontWeight.bold,
                         color: params.primaryTextColor,
                       ),
                     ),
-                    style: TextButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    style: FilledButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                       visualDensity: VisualDensity.compact,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
                     ),
                   ),
 
-                  // Actions: Bookmark & Share Card
+                  // Actions: Copy, Bookmark & Share Card
                   Row(
                     children: [
                       IconButton(
                         icon: Icon(
+                          Icons.copy_rounded,
+                          size: 19,
+                          color: params.primaryTextColor,
+                        ),
+                        tooltip: 'Copy Text',
+                        onPressed: () {
+                          if (scope.preferences.hapticFeedbackEnabled) {
+                            HapticFeedback.lightImpact();
+                          }
+                          Clipboard.setData(ClipboardData(
+                            text: '${item.arabicText}\n\n${item.englishTranslation}\n— ${item.reference}',
+                          ));
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Copied verse and citation to clipboard'),
+                              behavior: SnackBarBehavior.floating,
+                              duration: Duration(seconds: 2),
+                            ),
+                          );
+                        },
+                        visualDensity: VisualDensity.compact,
+                      ),
+                      IconButton(
+                        icon: Icon(
                           isBookmarked ? Icons.bookmark_rounded : Icons.bookmark_border_rounded,
                           size: 21,
-                          color: isBookmarked ? Colors.amber : params.primaryTextColor,
+                          color: isBookmarked ? const Color(0xFFC5A059) : params.primaryTextColor,
                         ),
                         tooltip: isBookmarked ? 'Remove Bookmark' : 'Save Bookmark',
-                        onPressed: () => scope.toggleBookmark(item),
+                        onPressed: () {
+                          if (scope.preferences.hapticFeedbackEnabled) {
+                            HapticFeedback.mediumImpact();
+                          }
+                          scope.toggleBookmark(item);
+                        },
                         visualDensity: VisualDensity.compact,
                       ),
                       IconButton(
@@ -273,7 +351,12 @@ class DiscoveryCard extends StatelessWidget {
                           color: params.primaryTextColor,
                         ),
                         tooltip: 'Share Card',
-                        onPressed: () => ShareCardSheet.show(context, item),
+                        onPressed: () {
+                          if (scope.preferences.hapticFeedbackEnabled) {
+                            HapticFeedback.lightImpact();
+                          }
+                          ShareCardSheet.show(context, item);
+                        },
                         visualDensity: VisualDensity.compact,
                       ),
                     ],

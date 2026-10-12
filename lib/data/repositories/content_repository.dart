@@ -202,6 +202,38 @@ class ContentRepository {
     return list;
   }
 
+  Future<List<HadithBook>> getHadithBooks(String collectionId) async {
+    await _loadHadithData();
+    final hadiths = (_cachedHadiths ?? [])
+        .where((h) => h.collectionId == collectionId)
+        .toList();
+
+    final Map<int, List<HadithItem>> grouped = {};
+    for (final h in hadiths) {
+      grouped.putIfAbsent(h.bookNumber, () => []).add(h);
+    }
+
+    final books = <HadithBook>[];
+    final sortedKeys = grouped.keys.toList()..sort();
+    for (final bNum in sortedKeys) {
+      final list = grouped[bNum]!;
+      final first = list.first;
+      final last = list.last;
+      books.add(
+        HadithBook(
+          collectionId: collectionId,
+          bookNumber: bNum,
+          nameEnglish: first.bookNameEnglish.isNotEmpty ? first.bookNameEnglish : 'Book $bNum',
+          nameArabic: first.bookNameArabic,
+          hadithCount: list.length,
+          firstHadithNumber: first.hadithNumber,
+          lastHadithNumber: last.hadithNumber,
+        ),
+      );
+    }
+    return books;
+  }
+
   Future<HadithItem?> getHadith(String id) async {
     await _loadHadithData();
     try {

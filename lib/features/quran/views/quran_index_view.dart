@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import '../../../app/bootstrap.dart';
 import '../../../core/typography/app_typography.dart';
+import '../../../core/widgets/islamic_decorations.dart';
 import '../../../domain/models/quran_models.dart';
 import 'quran_reader_view.dart';
 
 /// Surah index listing all 114 Surahs with search and resume progress.
 /// Complies with Section 4.2 of the Product Plan.
 class QuranIndexView extends StatefulWidget {
-  const QuranIndexView({super.key});
+  const QuranIndexView({super.key, this.showAppBar = false});
+
+  final bool showAppBar;
 
   @override
   State<QuranIndexView> createState() => _QuranIndexViewState();
@@ -60,6 +63,7 @@ class _QuranIndexViewState extends State<QuranIndexView> {
   }
 
   void _openSurah(QuranSurah surah, {int? ayahNumber}) {
+    FocusScope.of(context).unfocus();
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => QuranReaderView(surah: surah, initialAyahNumber: ayahNumber),
@@ -72,156 +76,236 @@ class _QuranIndexViewState extends State<QuranIndexView> {
     final scope = AppScope.of(context);
     final lastProgress = scope.lastQuranProgress;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Holy Quran', style: TextStyle(fontWeight: FontWeight.bold)),
-      ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : Column(
-              children: [
-                // Quick resume banner if progress exists
-                if (lastProgress != null)
-                  Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.35),
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(
-                        color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
-                      ),
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(Icons.auto_stories_rounded,
-                            color: Theme.of(context).colorScheme.primary),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Continue Reading',
-                                style: TextStyle(
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.bold,
-                                  color: Theme.of(context).colorScheme.primary,
-                                ),
-                              ),
-                              Text(
-                                '${lastProgress.title} • ${lastProgress.subtitle}',
-                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13.5),
-                              ),
-                            ],
-                          ),
-                        ),
-                        TextButton(
-                          onPressed: () async {
-                            final surahNum = int.tryParse(lastProgress.targetId) ?? 1;
-                            final surah = await scope.contentRepository.getSurah(surahNum);
-                            if (surah != null && context.mounted) {
-                              _openSurah(surah, ayahNumber: lastProgress.itemNumber);
-                            }
-                          },
-                          child: const Text('Resume'),
-                        ),
+    Widget body = _isLoading
+        ? const Center(child: CircularProgressIndicator())
+        : Column(
+            children: [
+              // Quick resume banner if progress exists
+              if (lastProgress != null)
+                Container(
+                  margin: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Theme.of(context).colorScheme.primary.withValues(alpha: 0.12),
+                        const Color(0xFFC5A059).withValues(alpha: 0.10),
                       ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: const Color(0xFFC5A059).withValues(alpha: 0.30),
+                      width: 1.0,
                     ),
                   ),
-
-                // Search Surahs Bar
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                  child: TextField(
-                    controller: _searchController,
-                    decoration: InputDecoration(
-                      hintText: 'Search Surah by name or number...',
-                      prefixIcon: const Icon(Icons.search, size: 20),
-                      filled: true,
-                      fillColor: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.4),
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(14),
-                        borderSide: BorderSide.none,
+                  child: Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.14),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.auto_stories_rounded,
+                          color: Theme.of(context).colorScheme.primary,
+                          size: 18,
+                        ),
                       ),
-                    ),
-                    onChanged: _filter,
-                  ),
-                ),
-
-                // Surahs List
-                Expanded(
-                  child: ListView.separated(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    itemCount: _filteredSurahs.length,
-                    separatorBuilder: (context, index) => const SizedBox(height: 6),
-                    itemBuilder: (context, index) {
-                      final surah = _filteredSurahs[index];
-
-                      return Card(
-                        child: ListTile(
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                          leading: Container(
-                            width: 38,
-                            height: 38,
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Text(
-                              surah.number.toString(),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'CONTINUE READING',
                               style: TextStyle(
+                                fontSize: 9.5,
                                 fontWeight: FontWeight.bold,
+                                letterSpacing: 0.7,
                                 color: Theme.of(context).colorScheme.primary,
                               ),
                             ),
-                          ),
-                          title: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                surah.nameEnglish,
-                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-                              ),
-                              Text(
-                                surah.nameArabic,
-                                style: AppTypography.arabic(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  height: 1.5,
-                                ),
-                              ),
-                            ],
-                          ),
-                          subtitle: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                surah.nameTranslation,
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Theme.of(context).colorScheme.outline,
-                                ),
-                              ),
-                              Text(
-                                '${surah.revelationType} • ${surah.ayahCount} verses',
-                                style: TextStyle(
-                                  fontSize: 11,
-                                  color: Theme.of(context).colorScheme.outline,
-                                ),
-                              ),
-                            ],
-                          ),
-                          onTap: () => _openSurah(surah),
+                            const SizedBox(height: 2),
+                            Text(
+                              '${lastProgress.title} • ${lastProgress.subtitle}',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13.5),
+                            ),
+                          ],
                         ),
-                      );
-                    },
+                      ),
+                      FilledButton.tonal(
+                        onPressed: () async {
+                          final surahNum = int.tryParse(lastProgress.targetId) ?? 1;
+                          final surah = await scope.contentRepository.getSurah(surahNum);
+                          if (surah != null && context.mounted) {
+                            _openSurah(surah, ayahNumber: lastProgress.itemNumber);
+                          }
+                        },
+                        style: FilledButton.styleFrom(
+                          visualDensity: VisualDensity.compact,
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        ),
+                        child: const Text('Resume'),
+                      ),
+                    ],
                   ),
                 ),
+
+              // Search Surahs Bar
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 6.0),
+                child: TextField(
+                  controller: _searchController,
+                  decoration: InputDecoration(
+                    hintText: 'Search Surah by name or number...',
+                    prefixIcon: const Icon(Icons.search, size: 20),
+                    suffixIcon: _searchController.text.isNotEmpty
+                        ? IconButton(
+                            icon: const Icon(Icons.clear, size: 18),
+                            onPressed: () {
+                              _searchController.clear();
+                              _filter('');
+                              FocusScope.of(context).unfocus();
+                            },
+                          )
+                        : null,
+                    filled: true,
+                    fillColor: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.35),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                      borderSide: BorderSide(
+                        color: const Color(0xFFC5A059).withValues(alpha: 0.25),
+                      ),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                      borderSide: BorderSide(
+                        color: const Color(0xFFC5A059).withValues(alpha: 0.25),
+                      ),
+                    ),
+                  ),
+                  onChanged: _filter,
+                ),
+              ),
+
+                // Surahs List
+                Expanded(
+                  child: _filteredSurahs.isEmpty
+                      ? Center(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.search_off_rounded,
+                                  size: 40, color: Theme.of(context).colorScheme.outline),
+                              const SizedBox(height: 8),
+                              Text(
+                                'No Surahs found',
+                                style: TextStyle(
+                                  color: Theme.of(context).colorScheme.outline,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      : ListView.separated(
+                          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          itemCount: _filteredSurahs.length,
+                          separatorBuilder: (context, index) => const SizedBox(height: 8),
+                          itemBuilder: (context, index) {
+                            final surah = _filteredSurahs[index];
+
+                            return Card(
+                              elevation: 0,
+                              child: InkWell(
+                                borderRadius: BorderRadius.circular(20),
+                                onTap: () => _openSurah(surah),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                                  child: Row(
+                                    children: [
+                                      RubElHizbBadge(
+                                        number: surah.number,
+                                        size: 42,
+                                      ),
+                                      const SizedBox(width: 14),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              surah.nameEnglish,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 3),
+                                            Text(
+                                              surah.nameTranslation,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: TextStyle(
+                                                fontSize: 12.5,
+                                                color: Theme.of(context).colorScheme.outline,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.end,
+                                        children: [
+                                          Text(
+                                            surah.nameArabic,
+                                            textAlign: TextAlign.right,
+                                            style: AppTypography.arabic(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold,
+                                              height: 1.3,
+                                              color: const Color(0xFFC5A059),
+                                            ),
+                                          ),
+                                          const SizedBox(height: 2),
+                                          Text(
+                                            '${surah.revelationType} • ${surah.ayahCount} verses',
+                                            textAlign: TextAlign.right,
+                                            style: TextStyle(
+                                              fontSize: 11,
+                                              fontWeight: FontWeight.w500,
+                                              color: Theme.of(context).colorScheme.outline,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                ),
               ],
-            ),
-    );
+            );
+
+    if (widget.showAppBar) {
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text('Holy Quran', style: TextStyle(fontWeight: FontWeight.bold)),
+        ),
+        body: body,
+      );
+    }
+
+    return body;
   }
 }

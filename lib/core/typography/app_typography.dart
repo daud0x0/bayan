@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../domain/models/user_preferences.dart';
 
 /// App typography definitions ensuring comfortable Arabic rendering
 /// and balanced bilingual layout. Implements Section 12 of the Product Plan.
@@ -15,6 +16,37 @@ class AppTypography {
     'Geeza Pro',
   ];
 
+  /// Specialized font fallbacks tailored to the chosen calligraphy style.
+  static List<String> fontFallbacksFor(ArabicScriptStyle style) {
+    switch (style) {
+      case ArabicScriptStyle.uthmani:
+        return const [
+          'Amiri',
+          'Scheherazade New',
+          'Noto Naskh Arabic',
+          'KFGQPC Uthman Taha Naskh',
+          'Traditional Arabic',
+          'Geeza Pro',
+        ];
+      case ArabicScriptStyle.indopak:
+        return const [
+          'Urdu Typesetting',
+          'Noto Nastaliq Urdu',
+          'Jameel Noori Nastaleeq',
+          'Scheherazade New',
+          'Amiri',
+        ];
+      case ArabicScriptStyle.naskh:
+        return const [
+          'Noto Naskh Arabic',
+          'Arial',
+          'Geeza Pro',
+          'Scheherazade New',
+          'Amiri',
+        ];
+    }
+  }
+
   /// Arabic TextStyle builder with sufficient line-height to avoid
   /// clipping upper and lower diacritics / harakat.
   static TextStyle arabic({
@@ -22,13 +54,14 @@ class AppTypography {
     Color? color,
     FontWeight fontWeight = FontWeight.w500,
     double height = 2.0,
+    ArabicScriptStyle scriptStyle = ArabicScriptStyle.uthmani,
   }) {
     return TextStyle(
       fontSize: fontSize,
       fontWeight: fontWeight,
       height: height,
       color: color,
-      fontFamilyFallback: arabicFontFallbacks,
+      fontFamilyFallback: fontFallbacksFor(scriptStyle),
     );
   }
 
@@ -73,6 +106,23 @@ class AppTypography {
       fontWeight: fontWeight,
       color: color,
       letterSpacing: 0.5,
+    );
+  }
+
+  /// Transliteration style for phonetic pronunciation guides.
+  static TextStyle transliteration({
+    required double fontSize,
+    Color? color,
+    FontWeight fontWeight = FontWeight.w400,
+    double height = 1.4,
+  }) {
+    return TextStyle(
+      fontSize: fontSize,
+      fontWeight: fontWeight,
+      fontStyle: FontStyle.italic,
+      height: height,
+      color: color,
+      letterSpacing: 0.2,
     );
   }
 }

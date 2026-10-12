@@ -4,10 +4,11 @@ import '../../../domain/models/bookmark_model.dart';
 import '../../../domain/models/content_item.dart';
 import '../../../domain/use_cases/feed_algorithm.dart';
 import '../../categories/category_explorer_sheet.dart';
+import '../../quran/views/quran_reader_view.dart';
 import '../../search/views/search_view.dart';
 import 'discovery_card.dart';
 
-/// Discover screen providing a calm, personalized feed of Quran & Hadith teachings.
+/// Discover screen providing an illuminated, calm, personalized feed of Quran & Hadith teachings.
 /// Complies with Section 4.1 of the Product Plan.
 class DiscoverView extends StatefulWidget {
   const DiscoverView({
@@ -23,6 +24,222 @@ class DiscoverView extends StatefulWidget {
 
 class _DiscoverViewState extends State<DiscoverView> {
   String? _activeCategoryFilterId;
+
+  Widget _buildHeroGreetingCard(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final primary = theme.colorScheme.primary;
+    final scope = AppScope.of(context);
+    final lastQuran = scope.lastQuranProgress;
+
+    final gradColors = isDark
+        ? [
+            primary.withValues(alpha: 0.32),
+            theme.colorScheme.surface,
+          ]
+        : [
+            primary,
+            Color.lerp(primary, Colors.black, 0.28)!,
+          ];
+
+    return Container(
+      margin: const EdgeInsets.fromLTRB(16, 4, 16, 12),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: gradColors,
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(
+          color: const Color(0xFFC5A059).withValues(alpha: 0.35),
+          width: 1.2,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: primary.withValues(alpha: isDark ? 0.12 : 0.22),
+            blurRadius: 18,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFC5A059).withValues(alpha: 0.20),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: const Color(0xFFC5A059).withValues(alpha: 0.40),
+                    width: 0.8,
+                  ),
+                ),
+                child: const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.wb_sunny_outlined, size: 13, color: Color(0xFFE5C07B)),
+                    SizedBox(width: 5),
+                    Text(
+                      'DAILY INSPIRATION',
+                      style: TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 0.8,
+                        color: Color(0xFFE5C07B),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const Icon(
+                Icons.auto_awesome,
+                size: 18,
+                color: Color(0xFFE5C07B),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          const Text(
+            'Assalamu Alaikum',
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+              letterSpacing: -0.4,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            'Find peace, patience, and guidance in timeless verses and authentic traditions.',
+            style: TextStyle(
+              fontSize: 13,
+              height: 1.4,
+              color: Colors.white.withValues(alpha: 0.85),
+            ),
+          ),
+          if (lastQuran != null) ...[
+            const SizedBox(height: 12),
+            InkWell(
+              borderRadius: BorderRadius.circular(14),
+              onTap: () async {
+                final surahNum = int.tryParse(lastQuran.targetId);
+                if (surahNum != null) {
+                  final surah = await scope.contentRepository.getSurah(surahNum);
+                  if (surah != null && context.mounted) {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => QuranReaderView(
+                          surah: surah,
+                          initialAyahNumber: lastQuran.itemNumber,
+                        ),
+                      ),
+                    );
+                  }
+                }
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.16),
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(
+                    color: const Color(0xFFC5A059).withValues(alpha: 0.4),
+                  ),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.play_circle_filled_rounded, size: 16, color: Color(0xFFE5C07B)),
+                    const SizedBox(width: 6),
+                    Flexible(
+                      child: Text(
+                        'Continue: ${lastQuran.title} (${lastQuran.subtitle})',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 11.5,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+          const SizedBox(height: 16),
+          // Topic Quick Jump Pills
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                _buildQuickTopicPill('hardship_and_hope', 'Hardship & Hope', Icons.healing_rounded),
+                const SizedBox(width: 8),
+                _buildQuickTopicPill('patience', 'Patience (Sabr)', Icons.self_improvement_rounded),
+                const SizedBox(width: 8),
+                _buildQuickTopicPill('gratitude', 'Gratitude (Shukr)', Icons.spa_rounded),
+                const SizedBox(width: 8),
+                _buildQuickTopicPill('repentance_and_mercy', 'Repentance', Icons.favorite_rounded),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildQuickTopicPill(String catId, String title, IconData icon) {
+    final isSelected = _activeCategoryFilterId == catId;
+    return InkWell(
+      borderRadius: BorderRadius.circular(16),
+      onTap: () {
+        setState(() {
+          _activeCategoryFilterId = isSelected ? null : catId;
+        });
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? const Color(0xFFC5A059)
+              : Colors.white.withValues(alpha: 0.12),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: isSelected
+                ? Colors.white
+                : Colors.white.withValues(alpha: 0.20),
+            width: 1,
+          ),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              icon,
+              size: 14,
+              color: isSelected ? Colors.black87 : Colors.white,
+            ),
+            const SizedBox(width: 6),
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 11.5,
+                fontWeight: FontWeight.w600,
+                color: isSelected ? Colors.black87 : Colors.white,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -94,6 +311,9 @@ class _DiscoverViewState extends State<DiscoverView> {
             preferences: scope.preferences,
           );
 
+          final showHero = _activeCategoryFilterId == null &&
+              scope.preferences.contentTypeFilter == null;
+
           return Column(
             children: [
               // Filter Chips Carousel
@@ -144,9 +364,12 @@ class _DiscoverViewState extends State<DiscoverView> {
                       )
                     : ListView.builder(
                         padding: const EdgeInsets.only(top: 4, bottom: 24),
-                        itemCount: rankedItems.length,
+                        itemCount: rankedItems.length + (showHero ? 1 : 0),
                         itemBuilder: (context, index) {
-                          final item = rankedItems[index];
+                          if (showHero && index == 0) {
+                            return _buildHeroGreetingCard(context);
+                          }
+                          final item = rankedItems[showHero ? index - 1 : index];
                           return DiscoveryCard(
                             key: ValueKey(item.id),
                             item: item,
@@ -167,7 +390,7 @@ class _DiscoverViewState extends State<DiscoverView> {
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       child: Row(
         children: [
           FilterChip(

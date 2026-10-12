@@ -17,13 +17,20 @@ class QuranHadithApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scope = AppScope.of(context);
+    final prefs = scope.preferences;
 
     return MaterialApp(
       title: 'Quran & Hadith Discovery',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.light(),
-      darkTheme: AppTheme.dark(),
-      themeMode: scope.preferences.themeMode,
+      theme: AppTheme.light(
+        palette: prefs.themePalette,
+        eyeComfortSepia: prefs.eyeComfortSepia,
+      ),
+      darkTheme: AppTheme.dark(
+        palette: prefs.themePalette,
+        pureBlack: prefs.pureBlackDark,
+      ),
+      themeMode: prefs.themeMode,
       home: const MainNavigationScaffold(),
     );
   }

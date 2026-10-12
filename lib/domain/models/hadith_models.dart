@@ -25,7 +25,7 @@ class HadithCollection {
       nameArabic: json['name_ar'] as String,
       author: json['author'] as String,
       description: json['description'] as String,
-      totalHadiths: json['total_hadiths'] as int,
+      totalHadiths: (json['total_hadiths'] as num).toInt(),
       attribution: json['attribution'] as String,
     );
   }
@@ -82,8 +82,8 @@ class HadithItem {
     return HadithItem(
       id: json['id'] as String,
       collectionId: json['collection_id'] as String,
-      hadithNumber: json['hadith_number'] as int,
-      bookNumber: json['book_number'] as int,
+      hadithNumber: (json['hadith_number'] as num).toInt(),
+      bookNumber: (json['book_number'] as num).toInt(),
       bookNameEnglish: json['book_name_en'] as String,
       bookNameArabic: json['book_name_ar'] as String,
       chapterName: json['chapter_name'] as String,
@@ -112,3 +112,25 @@ class HadithItem {
     };
   }
 }
+
+/// Represents a thematic Book / Section within a Hadith collection (e.g. Book 1: Revelation).
+class HadithBook {
+  const HadithBook({
+    required this.collectionId,
+    required this.bookNumber,
+    required this.nameEnglish,
+    required this.nameArabic,
+    required this.hadithCount,
+    required this.firstHadithNumber,
+    required this.lastHadithNumber,
+  });
+
+  final String collectionId;
+  final int bookNumber;
+  final String nameEnglish;
+  final String nameArabic;
+  final int hadithCount;
+  final int firstHadithNumber;
+  final int lastHadithNumber;
+}
+
