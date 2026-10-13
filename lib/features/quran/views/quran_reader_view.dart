@@ -559,46 +559,41 @@ class _QuranReaderViewState extends State<QuranReaderView> {
 
     return Scaffold(
       appBar: AppBar(
+        titleSpacing: 0,
         title: InkWell(
           borderRadius: BorderRadius.circular(10),
           onTap: _openSurahSelector,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-            child: Row(
+            padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+            child: Column(
               mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Flexible(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Flexible(
-                            child: Text(
-                              '${widget.surah.number}. ${widget.surah.nameEnglish}',
-                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                          const SizedBox(width: 4),
-                          const Icon(
-                            Icons.keyboard_arrow_down_rounded,
-                            size: 18,
-                            color: Color(0xFFC5A059),
-                          ),
-                        ],
-                      ),
-                      Text(
-                        '${widget.surah.nameTranslation} • ${widget.surah.nameArabic}',
-                        style: TextStyle(
-                          fontSize: 11.5,
-                          color: Theme.of(context).colorScheme.outline,
-                        ),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Flexible(
+                      child: Text(
+                        '${widget.surah.number}. ${widget.surah.nameEnglish}',
+                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                         overflow: TextOverflow.ellipsis,
                       ),
-                    ],
+                    ),
+                    const SizedBox(width: 3),
+                    const Icon(
+                      Icons.keyboard_arrow_down_rounded,
+                      size: 16,
+                      color: Color(0xFFC5A059),
+                    ),
+                  ],
+                ),
+                Text(
+                  '${widget.surah.nameTranslation} • ${widget.surah.nameArabic}',
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: Theme.of(context).colorScheme.outline,
                   ),
+                  overflow: TextOverflow.ellipsis,
                 ),
               ],
             ),
@@ -606,11 +601,20 @@ class _QuranReaderViewState extends State<QuranReaderView> {
         ),
         actions: [
           IconButton(
+            visualDensity: VisualDensity.compact,
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(minWidth: 30, minHeight: 32),
+            style: IconButton.styleFrom(
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              padding: const EdgeInsets.all(4),
+              minimumSize: const Size(30, 32),
+            ),
             icon: Icon(
               (_audioService?.currentSurahNumber == widget.surah.number &&
                       (_audioService?.isPlaying ?? false))
                   ? Icons.headphones_rounded
                   : Icons.headphones_outlined,
+              size: 21,
               color: (_audioService?.currentSurahNumber == widget.surah.number &&
                       ((_audioService?.isPlaying ?? false) ||
                           (_audioService?.currentAyahNumber != null)))
@@ -636,30 +640,64 @@ class _QuranReaderViewState extends State<QuranReaderView> {
             },
           ),
           IconButton(
+            visualDensity: VisualDensity.compact,
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(minWidth: 30, minHeight: 32),
+            style: IconButton.styleFrom(
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              padding: const EdgeInsets.all(4),
+              minimumSize: const Size(30, 32),
+            ),
             icon: Icon(
               _isAutoScrollActive
                   ? Icons.motion_photos_paused_rounded
                   : Icons.slow_motion_video_rounded,
+              size: 21,
               color: _isAutoScrollActive ? const Color(0xFFC5A059) : null,
             ),
             tooltip: _isAutoScrollActive ? 'Auto-Scroll Active' : 'Start Auto-Scroll',
             onPressed: _toggleAutoScroll,
           ),
           IconButton(
-            icon: const Icon(Icons.pin_outlined),
+            visualDensity: VisualDensity.compact,
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(minWidth: 30, minHeight: 32),
+            style: IconButton.styleFrom(
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              padding: const EdgeInsets.all(4),
+              minimumSize: const Size(30, 32),
+            ),
+            icon: const Icon(Icons.pin_outlined, size: 20),
             tooltip: 'Jump to Verse',
             onPressed: _showJumpToAyahDialog,
           ),
           IconButton(
-            icon: const Icon(Icons.info_outline_rounded),
+            visualDensity: VisualDensity.compact,
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(minWidth: 30, minHeight: 32),
+            style: IconButton.styleFrom(
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              padding: const EdgeInsets.all(4),
+              minimumSize: const Size(30, 32),
+            ),
+            icon: const Icon(Icons.info_outline_rounded, size: 20),
             tooltip: 'Surah Overview',
             onPressed: () => _showSurahInfoDialog(context),
           ),
           IconButton(
-            icon: const Icon(Icons.format_size_rounded),
+            visualDensity: VisualDensity.compact,
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(minWidth: 30, minHeight: 32),
+            style: IconButton.styleFrom(
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              padding: const EdgeInsets.all(4),
+              minimumSize: const Size(30, 32),
+            ),
+            icon: const Icon(Icons.format_size_rounded, size: 20),
             tooltip: 'Typography Controls',
             onPressed: _showTypographySheet,
           ),
+          const SizedBox(width: 4),
         ],
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(3.0),
@@ -731,67 +769,34 @@ class _QuranReaderViewState extends State<QuranReaderView> {
   }
 
   Widget _buildHeader(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
-      margin: const EdgeInsets.only(bottom: 18),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            Theme.of(context).colorScheme.primary.withValues(alpha: 0.12),
-            const Color(0xFFC5A059).withValues(alpha: 0.10),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(22),
-        border: Border.all(
-          color: const Color(0xFFC5A059).withValues(alpha: 0.35),
-          width: 1.4,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 14,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 16),
       child: Column(
         children: [
-          const IslamicOrnamentalDivider(height: 16),
-          const SizedBox(height: 6),
           Text(
             widget.surah.nameArabic,
             style: AppTypography.arabic(
-              fontSize: 32,
+              fontSize: 34,
               fontWeight: FontWeight.bold,
               color: const Color(0xFFC5A059),
             ),
           ),
           const SizedBox(height: 6),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surface,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(
-                color: const Color(0xFFC5A059).withValues(alpha: 0.25),
-              ),
-            ),
-            child: Text(
-              '${widget.surah.revelationType} • ${widget.surah.ayahCount} Verses',
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-                color: Theme.of(context).colorScheme.primary,
-              ),
+          Text(
+            '${widget.surah.revelationType} • ${widget.surah.ayahCount} Verses',
+            style: TextStyle(
+              fontSize: 12.5,
+              fontWeight: FontWeight.w500,
+              letterSpacing: 0.3,
+              color: theme.colorScheme.outline,
             ),
           ),
           if (widget.surah.number != 1 && widget.surah.number != 9) ...[
             const SizedBox(height: 16),
             const BismillahBanner(),
           ] else ...[
-            const SizedBox(height: 10),
+            const SizedBox(height: 12),
             const IslamicOrnamentalDivider(height: 16),
           ],
         ],
@@ -808,6 +813,26 @@ class _QuranReaderViewState extends State<QuranReaderView> {
           textAlign: TextAlign.center,
           style: TextStyle(color: Theme.of(context).colorScheme.outline),
         ),
+      ),
+    );
+  }
+
+  Widget _buildActionIconButton({
+    required Widget icon,
+    required String tooltip,
+    required VoidCallback onPressed,
+  }) {
+    return IconButton(
+      icon: icon,
+      tooltip: tooltip,
+      onPressed: onPressed,
+      visualDensity: VisualDensity.compact,
+      padding: EdgeInsets.zero,
+      constraints: const BoxConstraints(minWidth: 26, minHeight: 26),
+      style: IconButton.styleFrom(
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        minimumSize: const Size(26, 26),
+        padding: const EdgeInsets.all(3),
       ),
     );
   }
@@ -839,54 +864,37 @@ class _QuranReaderViewState extends State<QuranReaderView> {
       ayahNumber: ayah.ayahNumber,
     );
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: 14),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: isCurrentlyReciting
-            ? const Color(0xFFC5A059).withValues(alpha: 0.12)
-            : (isHighlighted
-                ? Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.25)
-                : Theme.of(context).colorScheme.surface),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: isCurrentlyReciting
-              ? const Color(0xFFC5A059)
-              : (isHighlighted || isReadingPosition
-                  ? Theme.of(context).colorScheme.primary
-                  : const Color(0xFFC5A059).withValues(alpha: 0.22)),
-          width: isCurrentlyReciting ? 2.0 : (isHighlighted || isReadingPosition ? 1.6 : 1.0),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
-            blurRadius: 10,
-            offset: const Offset(0, 3),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Container(
+          margin: const EdgeInsets.symmetric(vertical: 2),
+          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+          decoration: BoxDecoration(
+            color: isCurrentlyReciting
+                ? const Color(0xFFC5A059).withValues(alpha: 0.08)
+                : (isHighlighted || isReadingPosition
+                    ? Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.15)
+                    : Colors.transparent),
+            borderRadius: BorderRadius.circular(12),
           ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          // Ayah Number and Actions row
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              // Ayah Number and Actions row
               Row(
                 children: [
                   RubElHizbBadge(
                     number: ayah.ayahNumber,
-                    size: 36,
-                    accentColor: isCurrentlyReciting || isReadingPosition
-                        ? const Color(0xFFC5A059)
-                        : const Color(0xFFC5A059),
+                    size: 30,
+                    accentColor: const Color(0xFFC5A059),
                   ),
                   if (isCurrentlyReciting) ...[
-                    const SizedBox(width: 8),
+                    const SizedBox(width: 6),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFC5A059).withValues(alpha: 0.20),
+                        color: const Color(0xFFC5A059).withValues(alpha: 0.18),
                         borderRadius: BorderRadius.circular(6),
                       ),
                       child: Row(
@@ -901,8 +909,9 @@ class _QuranReaderViewState extends State<QuranReaderView> {
                           Text(
                             audio.isPlaying ? 'RECITING' : 'PAUSED',
                             style: const TextStyle(
-                              fontSize: 9,
+                              fontSize: 8.5,
                               fontWeight: FontWeight.bold,
+                              letterSpacing: 0.3,
                               color: Color(0xFFC5A059),
                             ),
                           ),
@@ -910,7 +919,7 @@ class _QuranReaderViewState extends State<QuranReaderView> {
                       ),
                     ),
                   ] else if (isReadingPosition) ...[
-                    const SizedBox(width: 8),
+                    const SizedBox(width: 6),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                       decoration: BoxDecoration(
@@ -920,161 +929,170 @@ class _QuranReaderViewState extends State<QuranReaderView> {
                       child: Text(
                         'LAST READ',
                         style: TextStyle(
-                          fontSize: 9,
+                          fontSize: 8.5,
                           fontWeight: FontWeight.bold,
+                          letterSpacing: 0.3,
                           color: Theme.of(context).colorScheme.primary,
                         ),
                       ),
                     ),
                   ],
-                ],
-              ),
-              Row(
-                children: [
-                  IconButton(
-                    icon: Icon(
-                      isCurrentlyReciting && audio.isPlaying
-                          ? Icons.pause_circle_rounded
-                          : (isCurrentlyReciting
-                              ? Icons.play_circle_fill_rounded
-                              : Icons.play_circle_outline_rounded),
-                      size: 20,
-                      color: isCurrentlyReciting ? const Color(0xFFC5A059) : null,
-                    ),
-                    tooltip: isCurrentlyReciting && audio.isPlaying
-                        ? 'Pause Recitation'
-                        : 'Play Verse Recitation',
-                    onPressed: () {
-                      if (prefs.hapticFeedbackEnabled) {
-                        HapticFeedback.lightImpact();
-                      }
-                      if (isCurrentlyReciting) {
-                        audio.togglePlayPause();
-                      } else {
-                        audio.playAyah(
-                          surah: widget.surah.number,
-                          ayah: ayah.ayahNumber,
-                          totalAyahs: widget.surah.ayahCount,
-                        );
-                      }
-                    },
-                    visualDensity: VisualDensity.compact,
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.copy_rounded, size: 18),
-                    tooltip: 'Copy Verse',
-                    onPressed: () {
-                      if (prefs.hapticFeedbackEnabled) {
-                        HapticFeedback.lightImpact();
-                      }
-                      Clipboard.setData(ClipboardData(
-                        text: '${ayah.arabicText}\n\n${ayah.englishTranslation}\n— Surah ${widget.surah.nameEnglish} [${ayah.surahNumber}:${ayah.ayahNumber}]',
-                      ));
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('Copied verse ${ayah.ayahNumber} to clipboard'),
-                          behavior: SnackBarBehavior.floating,
-                          duration: const Duration(seconds: 2),
+                  const Spacer(),
+                  Flexible(
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                      _buildActionIconButton(
+                        icon: Icon(
+                          isCurrentlyReciting && audio.isPlaying
+                              ? Icons.pause_circle_rounded
+                              : (isCurrentlyReciting
+                                  ? Icons.play_circle_fill_rounded
+                                  : Icons.play_circle_outline_rounded),
+                          size: 20,
+                          color: isCurrentlyReciting ? const Color(0xFFC5A059) : null,
                         ),
-                      );
-                    },
-                    visualDensity: VisualDensity.compact,
-                  ),
-                  IconButton(
-                    icon: Icon(
-                      isReadingPosition ? Icons.bookmark_added : Icons.bookmark_add_outlined,
-                      size: 19,
-                      color: isReadingPosition ? Theme.of(context).colorScheme.primary : null,
+                        tooltip: isCurrentlyReciting && audio.isPlaying
+                            ? 'Pause Recitation'
+                            : 'Play Verse Recitation',
+                        onPressed: () {
+                          if (prefs.hapticFeedbackEnabled) {
+                            HapticFeedback.lightImpact();
+                          }
+                          if (isCurrentlyReciting) {
+                            audio.togglePlayPause();
+                          } else {
+                            audio.playAyah(
+                              surah: widget.surah.number,
+                              ayah: ayah.ayahNumber,
+                              totalAyahs: widget.surah.ayahCount,
+                            );
+                          }
+                        },
+                      ),
+                      _buildActionIconButton(
+                        icon: const Icon(Icons.copy_rounded, size: 18),
+                        tooltip: 'Copy Verse',
+                        onPressed: () {
+                          if (prefs.hapticFeedbackEnabled) {
+                            HapticFeedback.lightImpact();
+                          }
+                          Clipboard.setData(ClipboardData(
+                            text: '${ayah.arabicText}\n\n${ayah.englishTranslation}\n— Surah ${widget.surah.nameEnglish} [${ayah.surahNumber}:${ayah.ayahNumber}]',
+                          ));
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Copied verse ${ayah.ayahNumber} to clipboard'),
+                              behavior: SnackBarBehavior.floating,
+                              duration: const Duration(seconds: 2),
+                            ),
+                          );
+                        },
+                      ),
+                      _buildActionIconButton(
+                        icon: Icon(
+                          isReadingPosition ? Icons.bookmark_added : Icons.bookmark_add_outlined,
+                          size: 19,
+                          color: isReadingPosition ? Theme.of(context).colorScheme.primary : null,
+                        ),
+                        tooltip: isReadingPosition ? 'Active reading position' : 'Mark as reading position',
+                        onPressed: () => _setReadingPosition(ayah),
+                      ),
+                      _buildActionIconButton(
+                        icon: Icon(
+                          isBookmarked ? Icons.bookmark : Icons.bookmark_border,
+                          size: 19,
+                          color: isBookmarked ? const Color(0xFFC5A059) : null,
+                        ),
+                        tooltip: 'Bookmark Verse',
+                        onPressed: () {
+                          if (prefs.hapticFeedbackEnabled) {
+                            HapticFeedback.mediumImpact();
+                          }
+                          scope.toggleBookmark(contentItem);
+                        },
+                      ),
+                      _buildActionIconButton(
+                        icon: const Icon(Icons.share_outlined, size: 18),
+                        tooltip: 'Share Card',
+                        onPressed: () {
+                          if (prefs.hapticFeedbackEnabled) {
+                            HapticFeedback.lightImpact();
+                          }
+                          ShareCardSheet.show(context, contentItem);
+                        },
+                      ),
+                      _buildActionIconButton(
+                        icon: Icon(
+                          hasReflection ? Icons.edit_note_rounded : Icons.edit_note_outlined,
+                          size: 20,
+                          color: hasReflection ? const Color(0xFFC5A059) : null,
+                        ),
+                        tooltip: hasReflection ? 'Edit Reflection' : 'Add Reflection (Tadabbur)',
+                        onPressed: () async {
+                          if (prefs.hapticFeedbackEnabled) {
+                            HapticFeedback.lightImpact();
+                          }
+                          final changed = await ReflectionNoteSheet.show(
+                            context,
+                            contentId: 'quran_${ayah.id}',
+                            contentType: ContentType.quran,
+                            reference: 'Surah ${widget.surah.nameEnglish} [${ayah.surahNumber}:${ayah.ayahNumber}]',
+                            arabicExcerpt: ayah.arabicText,
+                            translationExcerpt: ayah.englishTranslation,
+                          );
+                          if (changed == true && mounted) {
+                            await _loadReflectionNotes();
+                          }
+                        },
+                      ),
+                    ],
+                      ),
                     ),
-                    tooltip: isReadingPosition ? 'Active reading position' : 'Mark as reading position',
-                    onPressed: () => _setReadingPosition(ayah),
-                    visualDensity: VisualDensity.compact,
-                  ),
-                  IconButton(
-                    icon: Icon(
-                      isBookmarked ? Icons.bookmark : Icons.bookmark_border,
-                      size: 19,
-                      color: isBookmarked ? const Color(0xFFC5A059) : null,
-                    ),
-                    tooltip: 'Bookmark Verse',
-                    onPressed: () {
-                      if (prefs.hapticFeedbackEnabled) {
-                        HapticFeedback.mediumImpact();
-                      }
-                      scope.toggleBookmark(contentItem);
-                    },
-                    visualDensity: VisualDensity.compact,
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.share_outlined, size: 19),
-                    tooltip: 'Share Card',
-                    onPressed: () {
-                      if (prefs.hapticFeedbackEnabled) {
-                        HapticFeedback.lightImpact();
-                      }
-                      ShareCardSheet.show(context, contentItem);
-                    },
-                    visualDensity: VisualDensity.compact,
-                  ),
-                  IconButton(
-                    icon: Icon(
-                      hasReflection ? Icons.edit_note_rounded : Icons.edit_note_outlined,
-                      size: 20,
-                      color: hasReflection ? const Color(0xFFC5A059) : null,
-                    ),
-                    tooltip: hasReflection ? 'Edit Reflection' : 'Add Reflection (Tadabbur)',
-                    onPressed: () async {
-                      if (prefs.hapticFeedbackEnabled) {
-                        HapticFeedback.lightImpact();
-                      }
-                      final changed = await ReflectionNoteSheet.show(
-                        context,
-                        contentId: 'quran_${ayah.id}',
-                        contentType: ContentType.quran,
-                        reference: 'Surah ${widget.surah.nameEnglish} [${ayah.surahNumber}:${ayah.ayahNumber}]',
-                        arabicExcerpt: ayah.arabicText,
-                        translationExcerpt: ayah.englishTranslation,
-                      );
-                      if (changed == true && mounted) {
-                        await _loadReflectionNotes();
-                      }
-                    },
-                    visualDensity: VisualDensity.compact,
                   ),
                 ],
               ),
+              const SizedBox(height: 12),
+
+              // Arabic Text
+              if (prefs.readingDisplayMode != ReadingDisplayMode.translationOnly) ...[
+                Text(
+                  ayah.arabicText,
+                  textAlign: TextAlign.right,
+                  textDirection: TextDirection.rtl,
+                  style: AppTypography.arabic(
+                    fontSize: prefs.arabicFontSize,
+                    scriptStyle: prefs.arabicScriptStyle,
+                    height: prefs.lineSpacing,
+                  ),
+                ),
+              ],
+              if (prefs.readingDisplayMode == ReadingDisplayMode.dual)
+                const SizedBox(height: 12),
+
+              // English Translation
+              if (prefs.readingDisplayMode != ReadingDisplayMode.arabicOnly) ...[
+                Text(
+                  ayah.englishTranslation,
+                  style: AppTypography.translation(
+                    fontSize: prefs.translationFontSize,
+                    height: (prefs.lineSpacing * 0.88).clamp(1.4, 2.2),
+                  ),
+                ),
+              ],
             ],
           ),
-          const SizedBox(height: 12),
-
-          // Arabic Text
-          if (prefs.readingDisplayMode != ReadingDisplayMode.translationOnly) ...[
-            Text(
-              ayah.arabicText,
-              textAlign: TextAlign.right,
-              textDirection: TextDirection.rtl,
-              style: AppTypography.arabic(
-                fontSize: prefs.arabicFontSize,
-                scriptStyle: prefs.arabicScriptStyle,
-                height: prefs.lineSpacing,
-              ),
-            ),
-          ],
-          if (prefs.readingDisplayMode == ReadingDisplayMode.dual)
-            const SizedBox(height: 12),
-
-          // English Translation
-          if (prefs.readingDisplayMode != ReadingDisplayMode.arabicOnly) ...[
-            Text(
-              ayah.englishTranslation,
-              style: AppTypography.translation(
-                fontSize: prefs.translationFontSize,
-                height: (prefs.lineSpacing * 0.88).clamp(1.4, 2.2),
-              ),
-            ),
-          ],
-        ],
-      ),
+        ),
+        Divider(
+          height: 18,
+          thickness: 0.6,
+          indent: 8,
+          endIndent: 8,
+          color: Theme.of(context).dividerColor.withValues(alpha: 0.12),
+        ),
+      ],
     );
   }
 

@@ -41,7 +41,7 @@ void main() {
 
         final pureBlackTheme = AppTheme.dark(palette: palette, pureBlack: true);
         expect(pureBlackTheme.scaffoldBackgroundColor, equals(Colors.black));
-        expect(pureBlackTheme.cardTheme.color, equals(const Color(0xFF0C0C0C)));
+        expect(pureBlackTheme.cardTheme.color, equals(Colors.black));
       }
     });
 

@@ -31,12 +31,18 @@ class _DiscoverViewState extends State<DiscoverView> {
     final primary = theme.colorScheme.primary;
     final scope = AppScope.of(context);
     final lastQuran = scope.lastQuranProgress;
+    final isPureBlack = isDark && (scope.preferences.pureBlackDark || theme.scaffoldBackgroundColor == Colors.black);
 
     final gradColors = isDark
-        ? [
-            primary.withValues(alpha: 0.32),
-            theme.colorScheme.surface,
-          ]
+        ? (isPureBlack
+            ? [
+                Colors.black,
+                Colors.black,
+              ]
+            : [
+                primary.withValues(alpha: 0.32),
+                theme.colorScheme.surface,
+              ])
         : [
             primary,
             Color.lerp(primary, Colors.black, 0.28)!,
@@ -46,23 +52,30 @@ class _DiscoverViewState extends State<DiscoverView> {
       margin: const EdgeInsets.fromLTRB(16, 4, 16, 12),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: gradColors,
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        color: isPureBlack ? Colors.black : null,
+        gradient: isPureBlack
+            ? null
+            : LinearGradient(
+                colors: gradColors,
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
-          color: const Color(0xFFC5A059).withValues(alpha: 0.35),
-          width: 1.2,
+          color: isPureBlack
+              ? Colors.white.withValues(alpha: 0.16)
+              : const Color(0xFFC5A059).withValues(alpha: 0.35),
+          width: 1.0,
         ),
-        boxShadow: [
-          BoxShadow(
-            color: primary.withValues(alpha: isDark ? 0.12 : 0.22),
-            blurRadius: 18,
-            offset: const Offset(0, 8),
-          ),
-        ],
+        boxShadow: isPureBlack
+            ? null
+            : [
+                BoxShadow(
+                  color: primary.withValues(alpha: isDark ? 0.12 : 0.22),
+                  blurRadius: 18,
+                  offset: const Offset(0, 8),
+                ),
+              ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -325,17 +338,16 @@ class _DiscoverViewState extends State<DiscoverView> {
 
   Widget _buildFilterChips(AppScope scope) {
     final currentFilter = scope.preferences.contentTypeFilter;
-    final theme = Theme.of(context);
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       child: Row(
         children: [
-          FilterChip(
-            label: const Text('All'),
-            selected: currentFilter == null && _activeCategoryFilterId == null,
-            onSelected: (_) {
+          _buildCompactChip(
+            label: 'All',
+            isSelected: currentFilter == null && _activeCategoryFilterId == null,
+            onTap: () {
               setState(() => _activeCategoryFilterId = null);
               scope.updatePreferences(scope.preferences.copyWith(
                 contentTypeFilter: () => null,
@@ -343,46 +355,54 @@ class _DiscoverViewState extends State<DiscoverView> {
             },
           ),
           const SizedBox(width: 8),
-          FilterChip(
-            avatar: const Icon(Icons.auto_stories_outlined, size: 15),
-            label: const Text('Quran'),
-            selected: currentFilter == ContentType.quran,
-            onSelected: (_) {
+          _buildCompactChip(
+            label: 'Quran',
+            isSelected: currentFilter == ContentType.quran,
+            onTap: () {
               scope.updatePreferences(scope.preferences.copyWith(
                 contentTypeFilter: () => ContentType.quran,
               ));
             },
           ),
           const SizedBox(width: 8),
-          FilterChip(
-            avatar: const Icon(Icons.menu_book_outlined, size: 15),
-            label: const Text('Hadith'),
-            selected: currentFilter == ContentType.hadith,
-            onSelected: (_) {
+          _buildCompactChip(
+            label: 'Hadith',
+            isSelected: currentFilter == ContentType.hadith,
+            onTap: () {
               scope.updatePreferences(scope.preferences.copyWith(
                 contentTypeFilter: () => ContentType.hadith,
               ));
             },
           ),
           const SizedBox(width: 8),
-          Container(
-            height: 22,
-            width: 1,
-            margin: const EdgeInsets.symmetric(horizontal: 2),
-            color: theme.colorScheme.outlineVariant.withValues(alpha: 0.5),
+          _buildCompactChip(
+            label: 'Hardship & Hope',
+            isSelected: _activeCategoryFilterId == 'hardship_and_hope',
+            onTap: () => _toggleCategory('hardship_and_hope'),
           ),
           const SizedBox(width: 8),
-          _buildTopicChip('hardship_and_hope', 'Hardship & Hope', Icons.healing_rounded),
+          _buildCompactChip(
+            label: 'Patience',
+            isSelected: _activeCategoryFilterId == 'patience',
+            onTap: () => _toggleCategory('patience'),
+          ),
           const SizedBox(width: 8),
-          _buildTopicChip('patience', 'Patience (Sabr)', Icons.self_improvement_rounded),
+          _buildCompactChip(
+            label: 'Gratitude',
+            isSelected: _activeCategoryFilterId == 'gratitude',
+            onTap: () => _toggleCategory('gratitude'),
+          ),
           const SizedBox(width: 8),
-          _buildTopicChip('gratitude', 'Gratitude (Shukr)', Icons.spa_rounded),
-          const SizedBox(width: 8),
-          _buildTopicChip('repentance_and_mercy', 'Repentance', Icons.favorite_rounded),
+          _buildCompactChip(
+            label: 'Repentance',
+            isSelected: _activeCategoryFilterId == 'repentance_and_mercy',
+            onTap: () => _toggleCategory('repentance_and_mercy'),
+          ),
           const SizedBox(width: 8),
           ActionChip(
-            avatar: const Icon(Icons.grid_view_rounded, size: 15),
-            label: const Text('All Topics'),
+            label: const Text('All Topics', style: TextStyle(fontSize: 12)),
+            visualDensity: VisualDensity.compact,
+            padding: const EdgeInsets.symmetric(horizontal: 4),
             onPressed: () {
               CategoryExplorerSheet.show(
                 context,
@@ -397,17 +417,23 @@ class _DiscoverViewState extends State<DiscoverView> {
     );
   }
 
-  Widget _buildTopicChip(String catId, String title, IconData icon) {
-    final isSelected = _activeCategoryFilterId == catId;
+  void _toggleCategory(String catId) {
+    setState(() {
+      _activeCategoryFilterId = _activeCategoryFilterId == catId ? null : catId;
+    });
+  }
+
+  Widget _buildCompactChip({
+    required String label,
+    required bool isSelected,
+    required VoidCallback onTap,
+  }) {
     return FilterChip(
-      avatar: Icon(icon, size: 15),
-      label: Text(title),
+      label: Text(label),
       selected: isSelected,
-      onSelected: (_) {
-        setState(() {
-          _activeCategoryFilterId = isSelected ? null : catId;
-        });
-      },
+      visualDensity: VisualDensity.compact,
+      padding: const EdgeInsets.symmetric(horizontal: 4),
+      onSelected: (_) => onTap(),
     );
   }
 }

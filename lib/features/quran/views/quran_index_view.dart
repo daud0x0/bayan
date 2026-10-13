@@ -121,17 +121,10 @@ class _QuranIndexViewState extends State<QuranIndexView> {
                   margin: const EdgeInsets.fromLTRB(16, 8, 16, 4),
                   padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        Theme.of(context).colorScheme.primary.withValues(alpha: 0.12),
-                        const Color(0xFFC5A059).withValues(alpha: 0.10),
-                      ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
+                    color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.35),
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(
-                      color: const Color(0xFFC5A059).withValues(alpha: 0.35),
+                      color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.15),
                       width: 1.0,
                     ),
                   ),
@@ -252,7 +245,7 @@ class _QuranIndexViewState extends State<QuranIndexView> {
                     hintText: _selectedTab == 0
                         ? 'Search Surah by name or number...'
                         : 'Search Juz by number or name...',
-                    prefixIcon: const Icon(Icons.search, size: 20),
+                    prefixIcon: Icon(Icons.search, size: 20, color: Theme.of(context).colorScheme.outline),
                     suffixIcon: _searchController.text.isNotEmpty
                         ? IconButton(
                             icon: const Icon(Icons.clear, size: 18),
@@ -264,18 +257,21 @@ class _QuranIndexViewState extends State<QuranIndexView> {
                           )
                         : null,
                     filled: true,
-                    fillColor: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.35),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+                    fillColor: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.45),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 11),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20),
-                      borderSide: BorderSide(
-                        color: const Color(0xFFC5A059).withValues(alpha: 0.25),
-                      ),
+                      borderRadius: BorderRadius.circular(14),
+                      borderSide: BorderSide.none,
                     ),
                     enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(14),
+                      borderSide: BorderSide.none,
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14),
                       borderSide: BorderSide(
-                        color: const Color(0xFFC5A059).withValues(alpha: 0.25),
+                        color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.4),
+                        width: 1.2,
                       ),
                     ),
                   ),
@@ -286,15 +282,18 @@ class _QuranIndexViewState extends State<QuranIndexView> {
               // Revelation Filter Chips (only when on Surahs tab)
               if (_selectedTab == 0)
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 6),
-                  child: Row(
-                    children: [
-                      _buildRevelationChip('All', _surahs.length),
-                      const SizedBox(width: 8),
-                      _buildRevelationChip('Meccan', 86),
-                      const SizedBox(width: 8),
-                      _buildRevelationChip('Medinan', 28),
-                    ],
+                  padding: const EdgeInsets.fromLTRB(16, 2, 16, 6),
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        _buildRevelationChip('All', _surahs.length),
+                        const SizedBox(width: 8),
+                        _buildRevelationChip('Meccan', 86),
+                        const SizedBox(width: 8),
+                        _buildRevelationChip('Medinan', 28),
+                      ],
+                    ),
                   ),
                 ),
 
@@ -342,24 +341,29 @@ class _QuranIndexViewState extends State<QuranIndexView> {
 
     return ListView.separated(
       keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       itemCount: _filteredSurahs.length,
-      separatorBuilder: (context, index) => const SizedBox(height: 8),
+      separatorBuilder: (context, index) => Divider(
+        height: 1,
+        thickness: 0.6,
+        indent: 54,
+        color: Theme.of(context).dividerColor.withValues(alpha: 0.12),
+      ),
       itemBuilder: (context, index) {
         final surah = _filteredSurahs[index];
 
-        return Card(
-          elevation: 0,
+        return Material(
+          color: Colors.transparent,
           child: InkWell(
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(12),
             onTap: () => _openSurah(surah),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 11),
               child: Row(
                 children: [
                   RubElHizbBadge(
                     number: surah.number,
-                    size: 42,
+                    size: 40,
                   ),
                   const SizedBox(width: 14),
                   Expanded(
@@ -444,24 +448,29 @@ class _QuranIndexViewState extends State<QuranIndexView> {
 
     return ListView.separated(
       keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       itemCount: _filteredJuz.length,
-      separatorBuilder: (context, index) => const SizedBox(height: 8),
+      separatorBuilder: (context, index) => Divider(
+        height: 1,
+        thickness: 0.6,
+        indent: 54,
+        color: Theme.of(context).dividerColor.withValues(alpha: 0.12),
+      ),
       itemBuilder: (context, index) {
         final juz = _filteredJuz[index];
 
-        return Card(
-          elevation: 0,
+        return Material(
+          color: Colors.transparent,
           child: InkWell(
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(12),
             onTap: () => _openJuz(juz),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 12),
               child: Row(
                 children: [
                   RubElHizbBadge(
                     number: juz.number,
-                    size: 42,
+                    size: 40,
                   ),
                   const SizedBox(width: 14),
                   Expanded(

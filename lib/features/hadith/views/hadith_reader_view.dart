@@ -434,6 +434,7 @@ class _HadithReaderViewState extends State<HadithReaderView> {
     final nextHadith = hasNext ? _collectionHadiths[currentIndex + 1] : null;
 
     final isPlain = prefs.plainReadingMode;
+    final isPureBlack = isDark && prefs.pureBlackDark;
     final hasReflection = scope.hasReflection('hadith_${_currentHadith.id}');
 
     return Scaffold(
@@ -470,28 +471,62 @@ class _HadithReaderViewState extends State<HadithReaderView> {
         ),
         actions: [
           IconButton(
+            visualDensity: VisualDensity.compact,
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(minWidth: 28, minHeight: 32),
+            style: IconButton.styleFrom(
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              padding: const EdgeInsets.all(3),
+              minimumSize: const Size(28, 32),
+            ),
             icon: Icon(
               _isAutoScrollActive
                   ? Icons.motion_photos_paused_rounded
                   : Icons.slow_motion_video_rounded,
+              size: 20,
               color: _isAutoScrollActive ? const Color(0xFFC5A059) : null,
             ),
             tooltip: _isAutoScrollActive ? 'Auto-Scroll Active' : 'Start Auto-Scroll',
             onPressed: _toggleAutoScroll,
           ),
           IconButton(
-            icon: const Icon(Icons.tag),
+            visualDensity: VisualDensity.compact,
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(minWidth: 28, minHeight: 32),
+            style: IconButton.styleFrom(
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              padding: const EdgeInsets.all(3),
+              minimumSize: const Size(28, 32),
+            ),
+            icon: const Icon(Icons.tag, size: 20),
             tooltip: 'Jump to Hadith',
             onPressed: () => _showJumpToHadithDialog(context),
           ),
           IconButton(
-            icon: const Icon(Icons.format_size_rounded),
+            visualDensity: VisualDensity.compact,
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(minWidth: 28, minHeight: 32),
+            style: IconButton.styleFrom(
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              padding: const EdgeInsets.all(3),
+              minimumSize: const Size(28, 32),
+            ),
+            icon: const Icon(Icons.format_size_rounded, size: 20),
             tooltip: 'Typography & Plain Mode',
             onPressed: () => _showTypographySheet(context),
           ),
           IconButton(
+            visualDensity: VisualDensity.compact,
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(minWidth: 28, minHeight: 32),
+            style: IconButton.styleFrom(
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              padding: const EdgeInsets.all(3),
+              minimumSize: const Size(28, 32),
+            ),
             icon: Icon(
               isBookmarked ? Icons.bookmark_rounded : Icons.bookmark_border_rounded,
+              size: 20,
               color: isBookmarked ? const Color(0xFFC5A059) : null,
             ),
             tooltip: 'Bookmark Hadith',
@@ -503,7 +538,15 @@ class _HadithReaderViewState extends State<HadithReaderView> {
             },
           ),
           IconButton(
-            icon: const Icon(Icons.copy_rounded, size: 20),
+            visualDensity: VisualDensity.compact,
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(minWidth: 28, minHeight: 32),
+            style: IconButton.styleFrom(
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              padding: const EdgeInsets.all(3),
+              minimumSize: const Size(28, 32),
+            ),
+            icon: const Icon(Icons.copy_rounded, size: 19),
             tooltip: 'Copy Hadith',
             onPressed: () {
               if (prefs.hapticFeedbackEnabled) {
@@ -522,7 +565,15 @@ class _HadithReaderViewState extends State<HadithReaderView> {
             },
           ),
           IconButton(
-            icon: const Icon(Icons.share_outlined),
+            visualDensity: VisualDensity.compact,
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(minWidth: 28, minHeight: 32),
+            style: IconButton.styleFrom(
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              padding: const EdgeInsets.all(3),
+              minimumSize: const Size(28, 32),
+            ),
+            icon: const Icon(Icons.share_outlined, size: 19),
             tooltip: 'Share Card',
             onPressed: () {
               if (prefs.hapticFeedbackEnabled) {
@@ -532,8 +583,17 @@ class _HadithReaderViewState extends State<HadithReaderView> {
             },
           ),
           IconButton(
+            visualDensity: VisualDensity.compact,
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(minWidth: 28, minHeight: 32),
+            style: IconButton.styleFrom(
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              padding: const EdgeInsets.all(3),
+              minimumSize: const Size(28, 32),
+            ),
             icon: Icon(
               hasReflection ? Icons.note_alt_rounded : Icons.edit_note_rounded,
+              size: 20,
               color: hasReflection ? const Color(0xFFC5A059) : null,
             ),
             tooltip: hasReflection ? 'Edit Reflection' : 'Tadabbur Reflection',
@@ -551,6 +611,7 @@ class _HadithReaderViewState extends State<HadithReaderView> {
               );
             },
           ),
+          const SizedBox(width: 4),
         ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -584,7 +645,7 @@ class _HadithReaderViewState extends State<HadithReaderView> {
           Container(
             padding: const EdgeInsets.all(18),
             decoration: BoxDecoration(
-              gradient: isPlain
+              gradient: isPlain || isPureBlack
                   ? null
                   : LinearGradient(
                       begin: Alignment.topLeft,
@@ -593,15 +654,19 @@ class _HadithReaderViewState extends State<HadithReaderView> {
                           ? const [Color(0xFF0F261E), Color(0xFF0A1913)]
                           : const [Color(0xFFF9F5ED), Color(0xFFEFE8DB)],
                     ),
-              color: isPlain ? Theme.of(context).cardColor : null,
+              color: isPureBlack
+                  ? Colors.black
+                  : (isPlain ? Theme.of(context).cardColor : null),
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
-                color: isPlain
-                    ? Theme.of(context).dividerColor
-                    : const Color(0xFFC5A059).withValues(alpha: isDark ? 0.35 : 0.30),
+                color: isPureBlack
+                    ? Colors.white.withValues(alpha: 0.16)
+                    : (isPlain
+                        ? Theme.of(context).dividerColor
+                        : const Color(0xFFC5A059).withValues(alpha: isDark ? 0.35 : 0.30)),
                 width: 1.2,
               ),
-              boxShadow: isPlain
+              boxShadow: isPlain || isPureBlack
                   ? null
                   : [
                       BoxShadow(
@@ -825,31 +890,39 @@ class _HadithReaderViewState extends State<HadithReaderView> {
               child: Row(
                 children: [
                   if (hasPrevious && previousHadith != null)
-                    OutlinedButton.icon(
-                      onPressed: () => _navigateToHadith(previousHadith),
-                      icon: const Icon(Icons.arrow_back_rounded, size: 16),
-                      label: Text('Hadith ${previousHadith.hadithNumber}'),
-                      style: OutlinedButton.styleFrom(
-                        side: BorderSide(
-                          color: const Color(0xFFC5A059).withValues(alpha: 0.4),
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        onPressed: () => _navigateToHadith(previousHadith),
+                        icon: const Icon(Icons.arrow_back_rounded, size: 16),
+                        label: Text('Hadith ${previousHadith.hadithNumber}', overflow: TextOverflow.ellipsis),
+                        style: OutlinedButton.styleFrom(
+                          side: BorderSide(
+                            color: const Color(0xFFC5A059).withValues(alpha: 0.4),
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
                         ),
                       ),
-                    ),
-                  const Spacer(),
+                    )
+                  else
+                    const Spacer(),
+                  const SizedBox(width: 12),
                   if (hasNext && nextHadith != null)
-                    FilledButton.tonalIcon(
-                      onPressed: () => _navigateToHadith(nextHadith),
-                      icon: const Icon(Icons.arrow_forward_rounded, size: 16),
-                      label: Text('Hadith ${nextHadith.hadithNumber}'),
-                      style: FilledButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
+                    Expanded(
+                      child: FilledButton.tonalIcon(
+                        onPressed: () => _navigateToHadith(nextHadith),
+                        icon: const Icon(Icons.arrow_forward_rounded, size: 16),
+                        label: Text('Hadith ${nextHadith.hadithNumber}', overflow: TextOverflow.ellipsis),
+                        style: FilledButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
                         ),
                       ),
-                    ),
+                    )
+                  else
+                    const Spacer(),
                 ],
               ),
             ),

@@ -146,14 +146,27 @@ class AppTheme {
     bool pureBlack = false,
   }) {
     final (primary, accent, _, darkBg, darkSurf) = _colorsFor(palette);
-    final surfaceColor = pureBlack ? const Color(0xFF0C0C0C) : darkSurf;
+    final surfaceColor = pureBlack ? Colors.black : darkSurf;
     final backgroundColor = pureBlack ? Colors.black : darkBg;
 
-    final colorScheme = ColorScheme.fromSeed(
+    var colorScheme = ColorScheme.fromSeed(
       seedColor: primary,
       brightness: Brightness.dark,
       surface: surfaceColor,
     );
+
+    if (pureBlack) {
+      colorScheme = colorScheme.copyWith(
+        surface: Colors.black,
+        surfaceDim: Colors.black,
+        surfaceBright: const Color(0xFF121212),
+        surfaceContainerLowest: Colors.black,
+        surfaceContainerLow: Colors.black,
+        surfaceContainer: Colors.black,
+        surfaceContainerHigh: const Color(0xFF0A0A0A),
+        surfaceContainerHighest: const Color(0xFF141414),
+      );
+    }
 
     return ThemeData(
       useMaterial3: true,

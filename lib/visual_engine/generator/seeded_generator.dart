@@ -39,6 +39,7 @@ class BackgroundParams {
     required this.scrimAlpha,
     required this.primaryTextColor,
     required this.secondaryTextColor,
+    this.isPlainMode = false,
   });
 
   final String seedKey;
@@ -52,6 +53,7 @@ class BackgroundParams {
   final double scrimAlpha;
   final Color primaryTextColor;
   final Color secondaryTextColor;
+  final bool isPlainMode;
 }
 
 /// Deterministic, seeded mathematical visual generator complying with Section 11 of the Product Plan.
@@ -96,6 +98,7 @@ class SeededVisualGenerator {
         scrimAlpha: 0.0,
         primaryTextColor: textPrimary,
         secondaryTextColor: textSecondary,
+        isPlainMode: true,
       );
       _cache[cacheKey] = params;
       return params;
@@ -114,7 +117,7 @@ class SeededVisualGenerator {
     final gradientStart = Alignment(math.cos(angle), math.sin(angle));
     final gradientEnd = Alignment(-math.cos(angle), -math.sin(angle));
 
-    // 3. Generate 2 to 3 organic diffused shapes positioned away from center text
+    // 3. Generate organic diffused mesh shapes positioned around periphery
     final shapeCount = 2 + random.nextInt(2);
     final shapes = <OrganicShapeParam>[];
 
@@ -125,12 +128,12 @@ class SeededVisualGenerator {
       final cx = isLeft ? (0.05 + random.nextDouble() * 0.25) : (0.70 + random.nextDouble() * 0.25);
       final cy = isTop ? (0.05 + random.nextDouble() * 0.25) : (0.70 + random.nextDouble() * 0.25);
 
-      final rx = (0.25 + random.nextDouble() * 0.40);
-      final ry = (0.25 + random.nextDouble() * 0.40);
+      final rx = (0.35 + random.nextDouble() * 0.40);
+      final ry = (0.35 + random.nextDouble() * 0.40);
 
       final colorPick = rawColors[(i + 1) % rawColors.length];
-      final opacity = (0.18 + random.nextDouble() * 0.22) * intensity.value;
-      final blurSigma = 30.0 + random.nextDouble() * 25.0;
+      final opacity = (0.24 + random.nextDouble() * 0.24) * intensity.value;
+      final blurSigma = 32.0 + random.nextDouble() * 24.0;
 
       shapes.add(
         OrganicShapeParam(

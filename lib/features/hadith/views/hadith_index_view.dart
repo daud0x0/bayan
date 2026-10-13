@@ -191,23 +191,26 @@ class _HadithIndexViewState extends State<HadithIndexView> {
                 padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
                 child: Row(
                   children: [
-                    ActionChip(
-                      avatar: Icon(
-                        Icons.menu_book_rounded,
-                        size: 16,
-                        color: selectedBook != null ? Theme.of(context).colorScheme.primary : null,
-                      ),
-                      label: Text(
-                        selectedBook != null
-                            ? 'Book ${selectedBook.bookNumber}: ${selectedBook.nameEnglish}'
-                            : 'Browse ${_books.length} Books',
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: selectedBook != null ? FontWeight.bold : FontWeight.w500,
+                    Flexible(
+                      child: ActionChip(
+                        avatar: Icon(
+                          Icons.menu_book_rounded,
+                          size: 16,
+                          color: selectedBook != null ? Theme.of(context).colorScheme.primary : null,
                         ),
+                        label: Text(
+                          selectedBook != null
+                              ? 'Book ${selectedBook.bookNumber}: ${selectedBook.nameEnglish}'
+                              : 'Browse ${_books.length} Books',
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: selectedBook != null ? FontWeight.bold : FontWeight.w500,
+                          ),
+                        ),
+                        onPressed: _openBooksSheet,
+                        visualDensity: VisualDensity.compact,
                       ),
-                      onPressed: _openBooksSheet,
-                      visualDensity: VisualDensity.compact,
                     ),
                     if (selectedBook != null) ...[
                       const SizedBox(width: 4),
@@ -223,13 +226,17 @@ class _HadithIndexViewState extends State<HadithIndexView> {
                         },
                       ),
                     ],
-                    const Spacer(),
-                    Text(
-                      '${currentCol.nameArabic} • ${_filteredHadiths.length} Hadiths',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                        color: Theme.of(context).colorScheme.outline,
+                    const SizedBox(width: 8),
+                    Flexible(
+                      child: Text(
+                        '${currentCol.nameArabic} • ${_filteredHadiths.length} Hadiths',
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.end,
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                          color: Theme.of(context).colorScheme.outline,
+                        ),
                       ),
                     ),
                   ],
@@ -325,7 +332,7 @@ class _HadithIndexViewState extends State<HadithIndexView> {
                     hintText: selectedBook != null
                         ? 'Search inside Book ${selectedBook.bookNumber}...'
                         : 'Search hadith, narrator, or keyword...',
-                    prefixIcon: const Icon(Icons.search, size: 20),
+                    prefixIcon: Icon(Icons.search, size: 20, color: Theme.of(context).colorScheme.outline),
                     suffixIcon: _searchController.text.isNotEmpty
                         ? IconButton(
                             icon: const Icon(Icons.clear, size: 18),
@@ -337,18 +344,21 @@ class _HadithIndexViewState extends State<HadithIndexView> {
                           )
                         : null,
                     filled: true,
-                    fillColor: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.35),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+                    fillColor: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.45),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 11),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20),
-                      borderSide: BorderSide(
-                        color: const Color(0xFFC5A059).withValues(alpha: 0.25),
-                      ),
+                      borderRadius: BorderRadius.circular(14),
+                      borderSide: BorderSide.none,
                     ),
                     enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(14),
+                      borderSide: BorderSide.none,
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14),
                       borderSide: BorderSide(
-                        color: const Color(0xFFC5A059).withValues(alpha: 0.25),
+                        color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.4),
+                        width: 1.2,
                       ),
                     ),
                   ),

@@ -58,57 +58,7 @@ class SettingsView extends StatelessWidget {
     );
   }
 
-  void _showDonationDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Row(
-          children: [
-            Icon(Icons.volunteer_activism_outlined, size: 22),
-            SizedBox(width: 8),
-            Expanded(child: Text('Support This Project')),
-          ],
-        ),
-        content: const Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'This application is 100% free, ad-free, account-free, and privacy-respecting.',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 10),
-            Text(
-              'Donations are entirely optional and never unlock or restrict any feature. Contributions help support accessibility enhancements, content rights reviews, and ongoing software maintenance.',
-            ),
-            SizedBox(height: 12),
-            Text(
-              'No payment credentials are ever accepted or stored inside this app.',
-              style: TextStyle(fontSize: 11.5, fontStyle: FontStyle.italic),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('Dismiss'),
-          ),
-          FilledButton(
-            onPressed: () {
-              Navigator.of(ctx).pop();
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Donation gateway link opened in external browser.'),
-                  behavior: SnackBarBehavior.floating,
-                ),
-              );
-            },
-            child: const Text('Open External Link'),
-          ),
-        ],
-      ),
-    );
-  }
+
 
   void _showReportCorrectionDialog(BuildContext context) {
     // Inline stateful dialog via StatefulBuilder — no additional file needed.
@@ -960,14 +910,7 @@ class SettingsView extends StatelessWidget {
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () => _confirmClearReadingHistory(context, scope),
                 ),
-                Divider(height: 1, indent: 16, endIndent: 16, color: Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.3)),
-                ListTile(
-                  leading: const Icon(Icons.volunteer_activism_outlined),
-                  title: const Text('Support & Donations'),
-                  subtitle: const Text('Optional donations. No locked features or ads.'),
-                  trailing: const Icon(Icons.chevron_right),
-                  onTap: () => _showDonationDialog(context),
-                ),
+
                 Divider(height: 1, indent: 16, endIndent: 16, color: Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.3)),
                 ListTile(
                   leading: const Icon(Icons.delete_forever_outlined, color: Colors.red),

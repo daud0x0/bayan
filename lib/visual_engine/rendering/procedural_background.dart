@@ -3,14 +3,15 @@ import 'package:flutter/material.dart';
 import '../generator/seeded_generator.dart';
 
 /// Renders the deterministic color-only procedural background with
-/// illuminated sacred geometry watermark and subtle border highlight.
+/// illuminated sacred geometry watermark, subtle border highlight,
+/// blurred mesh gradient anchors, and tactile film grain / noise texture.
 /// Implements Section 11 of the Product Plan.
 class ProceduralBackground extends StatelessWidget {
   const ProceduralBackground({
     super.key,
     required this.params,
     required this.child,
-    this.borderRadius = 22.0,
+    this.borderRadius = 24.0,
     this.clipBehavior = Clip.antiAlias,
   });
 
@@ -24,13 +25,15 @@ class ProceduralBackground extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(borderRadius),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.08),
-            blurRadius: 18,
-            offset: const Offset(0, 6),
-          ),
-        ],
+        boxShadow: params.isPlainMode
+            ? null
+            : [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: params.isDarkMode ? 0.22 : 0.05),
+                  blurRadius: 16,
+                  offset: const Offset(0, 5),
+                ),
+              ],
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(borderRadius),
@@ -64,17 +67,26 @@ class _ProceduralBackgroundPainter extends CustomPainter {
       ).createShader(rect);
     canvas.drawRect(rect, basePaint);
 
-    // 2. Draw organic diffused shapes (if any)
+    // 2. Draw organic diffused mesh shapes using smooth radial shaders
     for (final shape in params.shapes) {
       final center = Offset(shape.centerX * size.width, shape.centerY * size.height);
       final rx = shape.radiusX * size.width;
       final ry = shape.radiusY * size.height;
       final shapeRect = Rect.fromCenter(center: center, width: rx * 2, height: ry * 2);
 
-      final shapePaint = Paint()
-        ..color = shape.color.withValues(alpha: shape.opacity)
-        ..maskFilter = MaskFilter.blur(BlurStyle.normal, shape.blurSigma);
+      // RadialGradient creates soft, GPU-rasterized diffused illumination without blur raster cost
+      final shapeShader = RadialGradient(
+        center: Alignment.center,
+        radius: 0.85,
+        colors: [
+          shape.color.withValues(alpha: shape.opacity),
+          shape.color.withValues(alpha: shape.opacity * 0.45),
+          shape.color.withValues(alpha: 0.0),
+        ],
+        stops: const [0.0, 0.55, 1.0],
+      ).createShader(shapeRect);
 
+      final shapePaint = Paint()..shader = shapeShader;
       canvas.drawOval(shapeRect, shapePaint);
     }
 
@@ -83,23 +95,30 @@ class _ProceduralBackgroundPainter extends CustomPainter {
       _drawGeometricLattice(canvas, size);
     }
 
-    // 4. Draw contrast scrim overlay to protect text legibility
+    // 4. Draw contrast scrim overlay to guarantee text legibility in reading center
     if (params.scrimAlpha > 0.0) {
       final scrimPaint = Paint()
-        ..color = params.scrimColor.withValues(alpha: params.scrimAlpha);
+        ..shader = RadialGradient(
+          center: Alignment.center,
+          radius: 0.85,
+          colors: [
+            params.scrimColor.withValues(alpha: params.scrimAlpha),
+            params.scrimColor.withValues(alpha: params.scrimAlpha * 0.70),
+          ],
+        ).createShader(rect);
       canvas.drawRect(rect, scrimPaint);
     }
 
-    // 5. Delicate border highlight (subtle gold/light perimeter stroke)
+    // 5. Delicate border perimeter highlight (subtle luminous stroke)
     final borderPaint = Paint()
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.2
+      ..strokeWidth = 1.0
       ..shader = LinearGradient(
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
         colors: [
-          params.primaryTextColor.withValues(alpha: 0.28),
-          params.primaryTextColor.withValues(alpha: 0.08),
+          params.primaryTextColor.withValues(alpha: params.isDarkMode ? 0.16 : 0.10),
+          params.primaryTextColor.withValues(alpha: params.isDarkMode ? 0.04 : 0.02),
         ],
       ).createShader(rect);
     canvas.drawRRect(rrect, borderPaint);
@@ -107,9 +126,9 @@ class _ProceduralBackgroundPainter extends CustomPainter {
 
   void _drawGeometricLattice(Canvas canvas, Size size) {
     final latticePaint = Paint()
-      ..color = params.primaryTextColor.withValues(alpha: 0.04)
+      ..color = params.primaryTextColor.withValues(alpha: 0.035)
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 0.8
+      ..strokeWidth = 0.75
       ..isAntiAlias = true;
 
     const spacing = 48.0;

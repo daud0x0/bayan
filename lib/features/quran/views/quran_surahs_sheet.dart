@@ -91,7 +91,8 @@ class _QuranSurahsSheetState extends State<QuranSurahsSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
     return DraggableScrollableSheet(
       initialChildSize: 0.85,
@@ -100,36 +101,32 @@ class _QuranSurahsSheetState extends State<QuranSurahsSheet> {
       builder: (context, scrollController) {
         return Container(
           decoration: BoxDecoration(
-            color: isDark ? const Color(0xFF0F1E19) : const Color(0xFFFAF8F5),
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
-            border: Border.all(
-              color: const Color(0xFFC5A059).withValues(alpha: 0.35),
-              width: 1.2,
-            ),
+            color: theme.colorScheme.surface,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: isDark ? 0.45 : 0.15),
-                blurRadius: 20,
+                color: Colors.black.withValues(alpha: isDark ? 0.35 : 0.08),
+                blurRadius: 24,
                 offset: const Offset(0, -4),
               ),
             ],
           ),
           child: Column(
             children: [
-              // Grab handle
+              // Apple-style Grab handle
               Container(
-                margin: const EdgeInsets.only(top: 12, bottom: 8),
-                width: 44,
+                margin: const EdgeInsets.only(top: 10, bottom: 6),
+                width: 36,
                 height: 4.5,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFC5A059).withValues(alpha: 0.4),
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
 
               // Header
               Padding(
-                padding: const EdgeInsets.fromLTRB(20, 6, 20, 10),
+                padding: const EdgeInsets.fromLTRB(20, 6, 16, 8),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -141,35 +138,40 @@ class _QuranSurahsSheetState extends State<QuranSurahsSheet> {
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 18,
-                            letterSpacing: -0.2,
+                            letterSpacing: -0.3,
                           ),
                         ),
+                        const SizedBox(height: 1),
                         Text(
                           '${_surahs.length} Chapters of the Noble Quran',
                           style: TextStyle(
                             fontSize: 12,
-                            color: Theme.of(context).colorScheme.outline,
+                            color: theme.colorScheme.outline,
                           ),
                         ),
                       ],
                     ),
                     IconButton(
-                      icon: const Icon(Icons.close_rounded),
+                      icon: const Icon(Icons.close_rounded, size: 20),
                       tooltip: 'Close',
+                      style: IconButton.styleFrom(
+                        backgroundColor: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+                        visualDensity: VisualDensity.compact,
+                      ),
                       onPressed: () => Navigator.of(context).pop(),
                     ),
                   ],
                 ),
               ),
 
-              // Search Bar
+              // Apple-style Search Bar
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
                 child: TextField(
                   controller: _searchController,
                   decoration: InputDecoration(
                     hintText: 'Search Surah by name or number...',
-                    prefixIcon: const Icon(Icons.search, size: 20),
+                    prefixIcon: Icon(Icons.search, size: 20, color: theme.colorScheme.outline),
                     suffixIcon: _searchController.text.isNotEmpty
                         ? IconButton(
                             icon: const Icon(Icons.clear, size: 18),
@@ -180,21 +182,21 @@ class _QuranSurahsSheetState extends State<QuranSurahsSheet> {
                           )
                         : null,
                     filled: true,
-                    fillColor: Theme.of(context)
-                        .colorScheme
-                        .surfaceContainerHighest
-                        .withValues(alpha: 0.35),
+                    fillColor: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.45),
                     contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(16),
-                      borderSide: BorderSide(
-                        color: const Color(0xFFC5A059).withValues(alpha: 0.25),
-                      ),
+                      borderRadius: BorderRadius.circular(14),
+                      borderSide: BorderSide.none,
                     ),
                     enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(14),
+                      borderSide: BorderSide.none,
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14),
                       borderSide: BorderSide(
-                        color: const Color(0xFFC5A059).withValues(alpha: 0.25),
+                        color: theme.colorScheme.primary.withValues(alpha: 0.4),
+                        width: 1.2,
                       ),
                     ),
                   ),
@@ -202,21 +204,33 @@ class _QuranSurahsSheetState extends State<QuranSurahsSheet> {
                 ),
               ),
 
-              // Revelation Filter Chips
+              // Apple-style Revelation Segmented Control
               Padding(
-                padding: const EdgeInsets.fromLTRB(16, 4, 16, 6),
-                child: Row(
-                  children: [
-                    _buildRevelationChip('All', _surahs.length),
-                    const SizedBox(width: 8),
-                    _buildRevelationChip('Meccan', 86),
-                    const SizedBox(width: 8),
-                    _buildRevelationChip('Medinan', 28),
-                  ],
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                child: Container(
+                  height: 34,
+                  padding: const EdgeInsets.all(2.5),
+                  decoration: BoxDecoration(
+                    color: isDark
+                        ? const Color(0xFF1E1E1E)
+                        : const Color(0xFFEBEBF0),
+                    borderRadius: BorderRadius.circular(9),
+                  ),
+                  child: Row(
+                    children: [
+                      _buildAppleSegment('All', _surahs.length, isDark),
+                      _buildAppleSegment('Meccan', 86, isDark),
+                      _buildAppleSegment('Medinan', 28, isDark),
+                    ],
+                  ),
                 ),
               ),
 
-              const Divider(height: 1),
+              Divider(
+                height: 1,
+                thickness: 0.6,
+                color: theme.dividerColor.withValues(alpha: 0.12),
+              ),
 
               // Surahs List
               Expanded(
@@ -230,13 +244,13 @@ class _QuranSurahsSheetState extends State<QuranSurahsSheet> {
                                 Icon(
                                   Icons.search_off_rounded,
                                   size: 40,
-                                  color: Theme.of(context).colorScheme.outline,
+                                  color: theme.colorScheme.outline,
                                 ),
                                 const SizedBox(height: 8),
                                 Text(
                                   'No matching Surahs found',
                                   style: TextStyle(
-                                    color: Theme.of(context).colorScheme.outline,
+                                    color: theme.colorScheme.outline,
                                     fontSize: 14,
                                   ),
                                 ),
@@ -246,40 +260,37 @@ class _QuranSurahsSheetState extends State<QuranSurahsSheet> {
                         : ListView.separated(
                             controller: scrollController,
                             keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                             itemCount: _filteredSurahs.length,
-                            separatorBuilder: (_, index) => const SizedBox(height: 6),
+                            separatorBuilder: (_, index) => Divider(
+                              height: 1,
+                              thickness: 0.6,
+                              indent: 54,
+                              color: theme.dividerColor.withValues(alpha: 0.12),
+                            ),
                             itemBuilder: (context, index) {
                               final surah = _filteredSurahs[index];
                               final isCurrent = surah.number == widget.currentSurahNumber;
 
-                              return Card(
-                                elevation: 0,
+                              return Material(
                                 color: isCurrent
-                                    ? const Color(0xFFC5A059).withValues(alpha: isDark ? 0.16 : 0.10)
-                                    : null,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16),
-                                  side: BorderSide(
-                                    color: isCurrent
-                                        ? const Color(0xFFC5A059)
-                                        : Theme.of(context).dividerColor.withValues(alpha: 0.2),
-                                    width: isCurrent ? 1.4 : 0.8,
-                                  ),
-                                ),
+                                    ? theme.colorScheme.primaryContainer.withValues(alpha: 0.22)
+                                    : Colors.transparent,
+                                borderRadius: BorderRadius.circular(12),
                                 child: InkWell(
-                                  borderRadius: BorderRadius.circular(16),
+                                  borderRadius: BorderRadius.circular(12),
                                   onTap: () {
                                     Navigator.of(context).pop();
                                     widget.onSelectSurah(surah);
                                   },
                                   child: Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+                                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                                     child: Row(
                                       children: [
                                         RubElHizbBadge(
                                           number: surah.number,
-                                          size: 38,
+                                          size: 36,
+                                          accentColor: isCurrent ? theme.colorScheme.primary : null,
                                         ),
                                         const SizedBox(width: 12),
                                         Expanded(
@@ -288,29 +299,33 @@ class _QuranSurahsSheetState extends State<QuranSurahsSheet> {
                                             children: [
                                               Row(
                                                 children: [
-                                                  Text(
-                                                    surah.nameEnglish,
-                                                    style: TextStyle(
-                                                      fontWeight: isCurrent ? FontWeight.bold : FontWeight.w600,
-                                                      fontSize: 15,
-                                                      color: isCurrent ? const Color(0xFFC5A059) : null,
+                                                  Flexible(
+                                                    child: Text(
+                                                      surah.nameEnglish,
+                                                      maxLines: 1,
+                                                      overflow: TextOverflow.ellipsis,
+                                                      style: TextStyle(
+                                                        fontWeight: isCurrent ? FontWeight.bold : FontWeight.w600,
+                                                        fontSize: 15,
+                                                        color: isCurrent ? theme.colorScheme.primary : null,
+                                                      ),
                                                     ),
                                                   ),
                                                   if (isCurrent) ...[
-                                                    const SizedBox(width: 8),
+                                                    const SizedBox(width: 6),
                                                     Container(
                                                       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1.5),
                                                       decoration: BoxDecoration(
-                                                        color: const Color(0xFFC5A059).withValues(alpha: 0.2),
+                                                        color: theme.colorScheme.primary.withValues(alpha: 0.15),
                                                         borderRadius: BorderRadius.circular(6),
                                                       ),
-                                                      child: const Text(
+                                                      child: Text(
                                                         'READING NOW',
                                                         style: TextStyle(
                                                           fontSize: 8.5,
                                                           fontWeight: FontWeight.bold,
-                                                          letterSpacing: 0.4,
-                                                          color: Color(0xFFC5A059),
+                                                          letterSpacing: 0.3,
+                                                          color: theme.colorScheme.primary,
                                                         ),
                                                       ),
                                                     ),
@@ -324,33 +339,40 @@ class _QuranSurahsSheetState extends State<QuranSurahsSheet> {
                                                 overflow: TextOverflow.ellipsis,
                                                 style: TextStyle(
                                                   fontSize: 12,
-                                                  color: Theme.of(context).colorScheme.outline,
+                                                  color: theme.colorScheme.outline,
                                                 ),
                                               ),
                                             ],
                                           ),
                                         ),
-                                        const SizedBox(width: 10),
-                                        Column(
-                                          crossAxisAlignment: CrossAxisAlignment.end,
-                                          children: [
-                                            Text(
-                                              surah.nameArabic,
-                                              style: AppTypography.arabic(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.bold,
-                                                color: const Color(0xFFC5A059),
+                                        const SizedBox(width: 8),
+                                        ConstrainedBox(
+                                          constraints: const BoxConstraints(maxWidth: 105),
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.end,
+                                            children: [
+                                              Text(
+                                                surah.nameArabic,
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: AppTypography.arabic(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: const Color(0xFFC5A059),
+                                                ),
                                               ),
-                                            ),
-                                            const SizedBox(height: 2),
-                                            Text(
-                                              '${surah.revelationType} • ${surah.ayahCount} v',
-                                              style: TextStyle(
-                                                fontSize: 10.5,
-                                                color: Theme.of(context).colorScheme.outline,
+                                              const SizedBox(height: 2),
+                                              Text(
+                                                '${surah.revelationType} • ${surah.ayahCount} v',
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: TextStyle(
+                                                  fontSize: 10.5,
+                                                  color: theme.colorScheme.outline,
+                                                ),
                                               ),
-                                            ),
-                                          ],
+                                            ],
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -367,25 +389,49 @@ class _QuranSurahsSheetState extends State<QuranSurahsSheet> {
     );
   }
 
-  Widget _buildRevelationChip(String type, int count) {
+  Widget _buildAppleSegment(String type, int count, bool isDark) {
     final isSelected = _revelationFilter == type;
     final theme = Theme.of(context);
-    return FilterChip(
-      label: Text('$type ($count)'),
-      labelStyle: TextStyle(
-        fontSize: 11.5,
-        fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-        color: isSelected ? theme.colorScheme.onSecondaryContainer : theme.colorScheme.onSurfaceVariant,
+    return Expanded(
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () {
+          setState(() {
+            _revelationFilter = type;
+          });
+          _applyFilter();
+        },
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 180),
+          curve: Curves.easeInOut,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: isSelected
+                ? (isDark ? const Color(0xFF2C2C2E) : Colors.white)
+                : Colors.transparent,
+            borderRadius: BorderRadius.circular(7),
+            boxShadow: isSelected
+                ? [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.10),
+                      blurRadius: 3,
+                      offset: const Offset(0, 1),
+                    )
+                  ]
+                : null,
+          ),
+          child: Text(
+            '$type ($count)',
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+              color: isSelected
+                  ? theme.colorScheme.onSurface
+                  : theme.colorScheme.outline,
+            ),
+          ),
+        ),
       ),
-      selected: isSelected,
-      visualDensity: VisualDensity.compact,
-      padding: const EdgeInsets.symmetric(horizontal: 4),
-      onSelected: (_) {
-        setState(() {
-          _revelationFilter = type;
-        });
-        _applyFilter();
-      },
     );
   }
 }
