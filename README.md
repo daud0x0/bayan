@@ -3,7 +3,7 @@
 # Bayan • بَيَان
 ### Luxury Minimalist Quran & Hadith Companion
 
-An ad-free, privacy-first Islamic contemplation companion crafted with Apple-inspired minimalism and a pure OLED black aesthetic. Built for deep reflection (*Tadabbur*), synchronized recitation, and daily spiritual grounding.
+An ad-free, privacy-first Islamic contemplation companion crafted with modern minimalism and a pure OLED black aesthetic. Built for deep reflection (*Tadabbur*), synchronized recitation, and daily spiritual grounding.
 
 [![Flutter](https://img.shields.io/badge/Flutter-3.x-02569B?logo=flutter&logoColor=white)](https://flutter.dev)
 [![Platform](https://img.shields.io/badge/Platform-Android-3DDC84?logo=android&logoColor=white)](https://android.com)
@@ -66,7 +66,7 @@ A quick 20-second walkthrough demonstrating the Discovery feed, Surah reading, a
 
 ### 5. 🌙 Pure OLED Minimalist Aesthetic
 - True Black (`#000000`) background designed for OLED/AMOLED battery efficiency and eye comfort during night readings.
-- Elegant Islamic gold accents (`#C5A059`) and Apple-inspired typographic hierarchy.
+- Elegant Islamic gold accents (`#C5A059`) and refined typographic hierarchy.
 - Zero visual clutter, zero banners, zero distractions.
 
 ### 6. 🔒 100% Privacy & Offline-First
